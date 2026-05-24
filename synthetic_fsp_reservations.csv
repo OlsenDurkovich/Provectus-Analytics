@@ -1,0 +1,1698 @@
+Reservation #,Flight #,Date,Length (hrs),Reservation Type,Status,Client,Aircraft Tail,Aircraft Make,Aircraft Model,Instructor,Rating Hint (synthetic answer key)
+R101534,,2020-01-20,3.2,Maintenance,Completed,,N4521P,Cessna,172N,,
+R101570,F051490,2020-01-25,3.2,Owner Flight,Completed,Robert Klein,N4521P,Cessna,172N,,
+R101529,,2020-02-15,1.0,Maintenance,Completed,,N9923R,Cessna,182RG,,
+R100640,F050622,2020-03-04,1.6,Dual Flight Training,Completed,Ryan O'Brien,N8814M,Piper,PA-28-181,Jenny Park,PPL
+R101556,,2020-03-13,1.8,Maintenance,Completed,,N5567W,Piper,PA-44-180,,
+R100657,F050639,2020-03-17,1.4,Dual Flight Training,Completed,Ryan O'Brien,N6603L,Cessna,172S,Sarah Phillips,PPL
+R100651,F050633,2020-04-02,2.2,Dual Flight Training,Completed,Ryan O'Brien,N6603L,Cessna,172S,Sarah Phillips,PPL
+R101566,F051486,2020-04-07,3.1,Owner Flight,Completed,Patricia O'Donnell,N7732K,Cessna,172S,,
+R100633,F050617,2020-04-24,2.2,Dual Flight Training,Completed,Ryan O'Brien,N7732K,Cessna,172S,Sarah Phillips,PPL
+R100656,F050638,2020-04-27,1.9,Dual Flight Training,Completed,Ryan O'Brien,N7732K,Cessna,172S,Sarah Phillips,PPL
+R100628,F050612,2020-04-29,1.4,Dual Flight Training,Completed,Ryan O'Brien,N7732K,Cessna,172S,Sarah Phillips,PPL
+R100654,F050636,2020-05-03,2.1,Dual Flight Training,Completed,Ryan O'Brien,N6603L,Cessna,172S,Jenny Park,PPL
+R101531,,2020-05-21,2.0,Maintenance,Completed,,N6603L,Cessna,172S,,
+R100648,F050630,2020-05-24,1.6,Dual Flight Training,Completed,Ryan O'Brien,N8814M,Piper,PA-28-181,Jenny Park,PPL
+R100642,F050624,2020-06-03,2.3,Dual Flight Training,Completed,Ryan O'Brien,N6603L,Cessna,172S,Sarah Phillips,PPL
+R100649,F050631,2020-06-13,1.9,Dual Flight Training,Completed,Ryan O'Brien,N6603L,Cessna,172S,Sarah Phillips,PPL
+R101541,,2020-06-29,2.3,Maintenance,Completed,,N3340T,Piper,PA-44-180,,
+R100627,F050611,2020-07-09,2.1,Dual Flight Training,Completed,Ryan O'Brien,N6603L,Cessna,172S,Mike Anderson,PPL
+R101532,,2020-07-14,1.9,Maintenance,Completed,,N7732K,Cessna,172S,,
+R100637,F050620,2020-07-28,1.8,Dual Flight Training,Completed,Ryan O'Brien,N7732K,Cessna,172S,Sarah Phillips,PPL
+R100644,F050626,2020-08-17,2.1,Dual Flight Training,Completed,Ryan O'Brien,N7732K,Cessna,172S,Sarah Phillips,PPL
+R101560,,2020-09-02,1.8,Maintenance,Completed,,N8814M,Piper,PA-28-181,,
+R101539,,2020-09-15,3.9,Maintenance,Completed,,N6603L,Cessna,172S,,
+R100631,F050615,2020-09-16,1.4,Dual Flight Training,Completed,Ryan O'Brien,N6603L,Cessna,172S,Sarah Phillips,PPL
+R100629,F050613,2020-09-21,1.3,Dual Flight Training,Completed,Ryan O'Brien,N8814M,Piper,PA-28-181,Doug Hayes,PPL
+R100635,,2020-09-30,0,Dual Flight Training,Canceled,Ryan O'Brien,N7732K,Cessna,172S,Sarah Phillips,PPL
+R100658,F050640,2020-10-02,1.7,Dual Flight Training,Completed,Ryan O'Brien,N4521P,Cessna,172N,Jenny Park,PPL
+R100579,F050564,2020-10-11,1.8,Dual Flight Training,Completed,Emma Thompson,N4521P,Cessna,172N,Tom Reyes,PPL
+R100581,F050566,2020-10-31,1.2,Dual Flight Training,Completed,Emma Thompson,N7732K,Cessna,172S,Jenny Park,PPL
+R100582,F050567,2020-11-07,1.6,Dual Flight Training,Completed,Emma Thompson,N6603L,Cessna,172S,Tom Reyes,PPL
+R100639,F050621,2020-11-14,2.0,Student Solo,Completed,Ryan O'Brien,N8814M,Piper,PA-28-181,,PPL
+R100557,F050544,2020-11-16,2.1,Dual Flight Training,Completed,Emma Thompson,N8814M,Piper,PA-28-181,Tom Reyes,PPL
+R100549,F050536,2020-11-18,1.8,Dual Flight Training,Completed,Emma Thompson,N6603L,Cessna,172S,Tom Reyes,PPL
+R100653,F050635,2020-11-18,2.3,Student Solo,Completed,Ryan O'Brien,N6603L,Cessna,172S,,PPL
+R100580,F050565,2020-12-06,1.6,Dual Flight Training,Completed,Emma Thompson,N7732K,Cessna,172S,Jenny Park,PPL
+R100567,F050553,2020-12-16,1.2,Dual Flight Training,Completed,Emma Thompson,N7732K,Cessna,172S,Tom Reyes,PPL
+R100655,F050637,2020-12-21,1.3,Student Solo,Completed,Ryan O'Brien,N6603L,Cessna,172S,,PPL
+R100630,F050614,2020-12-22,2.3,Student Solo,Completed,Ryan O'Brien,N4521P,Cessna,172N,,PPL
+R100625,F050609,2020-12-27,1.3,Student Solo,Completed,Ryan O'Brien,N6603L,Cessna,172S,,PPL
+R100578,F050563,2020-12-29,1.8,Dual Flight Training,Completed,Emma Thompson,N4521P,Cessna,172N,Tom Reyes,PPL
+R100641,F050623,2021-01-01,2.1,Student Solo,Completed,Ryan O'Brien,N8814M,Piper,PA-28-181,,PPL
+R100569,F050555,2021-01-11,2.0,Dual Flight Training,Completed,Emma Thompson,N7732K,Cessna,172S,Mike Anderson,PPL
+R100634,F050618,2021-01-12,1.4,Dual Flight Training,Completed,Ryan O'Brien,N6603L,Cessna,172S,Mike Anderson,PPL
+R100645,F050627,2021-01-17,1.8,Dual Flight Training,Completed,Ryan O'Brien,N6603L,Cessna,172S,Sarah Phillips,PPL
+R100561,F050547,2021-01-22,1.4,Dual Flight Training,Completed,Emma Thompson,N6603L,Cessna,172S,Tom Reyes,PPL
+R101540,,2021-01-30,3.0,Maintenance,Completed,,N8814M,Piper,PA-28-181,,
+R100643,F050625,2021-02-04,1.2,Dual Flight Training,Completed,Ryan O'Brien,N6603L,Cessna,172S,Sarah Phillips,PPL
+R100660,F050641,2021-02-10,1.5,Dual Flight Training,Completed,Ryan O'Brien,N8814M,Piper,PA-28-181,Sarah Phillips,PPL
+R100574,F050559,2021-02-14,1.8,Dual Flight Training,Completed,Emma Thompson,N4521P,Cessna,172N,Doug Hayes,PPL
+R100626,F050610,2021-02-14,1.8,Dual Flight Training,Completed,Ryan O'Brien,N8814M,Piper,PA-28-181,Sarah Phillips,PPL
+R100647,F050629,2021-02-14,1.5,Dual Flight Training,Completed,Ryan O'Brien,N7732K,Cessna,172S,Sarah Phillips,PPL
+R100659,,2021-02-22,0,Student Solo,Canceled,Ryan O'Brien,N7732K,Cessna,172S,,PPL
+R100558,,2021-03-03,0,Dual Flight Training,Canceled,Emma Thompson,N7732K,Cessna,172S,Tom Reyes,PPL
+R100555,F050542,2021-03-07,1.8,Dual Flight Training,Completed,Emma Thompson,N4521P,Cessna,172N,Jenny Park,PPL
+R100551,F050538,2021-03-11,2.3,Dual Flight Training,Completed,Emma Thompson,N6603L,Cessna,172S,Tom Reyes,PPL
+R100552,F050539,2021-03-12,1.7,Student Solo,Completed,Emma Thompson,N7732K,Cessna,172S,,PPL
+R100583,F050568,2021-03-15,1.4,Dual Flight Training,Completed,Emma Thompson,N7732K,Cessna,172S,Tom Reyes,PPL
+R100564,F050550,2021-03-19,1.3,Student Solo,Completed,Emma Thompson,N6603L,Cessna,172S,,PPL
+R100636,F050619,2021-03-19,2.3,Dual Flight Training,Completed,Ryan O'Brien,N8814M,Piper,PA-28-181,Sarah Phillips,PPL
+R100638,,2021-03-29,0,Dual Flight Training,Canceled,Ryan O'Brien,N4521P,Cessna,172N,Jenny Park,PPL
+R100566,F050552,2021-03-31,1.5,Student Solo,Completed,Emma Thompson,N7732K,Cessna,172S,,PPL
+R100575,F050560,2021-03-31,2.3,Student Solo,Completed,Emma Thompson,N7732K,Cessna,172S,,PPL
+R100646,F050628,2021-04-08,1.4,Dual Flight Training,Completed,Ryan O'Brien,N7732K,Cessna,172S,Sarah Phillips,PPL
+R100570,F050556,2021-04-14,2.1,Dual Flight Training,Completed,Emma Thompson,N8814M,Piper,PA-28-181,Tom Reyes,PPL
+R100650,F050632,2021-04-19,2.0,Dual Flight Training,Completed,Ryan O'Brien,N4521P,Cessna,172N,Sarah Phillips,PPL
+R100652,F050634,2021-04-21,2.2,Dual Flight Training,Completed,Ryan O'Brien,N7732K,Cessna,172S,Sarah Phillips,PPL
+R100632,F050616,2021-05-03,1.5,Dual Flight Training,Completed,Ryan O'Brien,N4521P,Cessna,172N,Sarah Phillips,PPL
+R100806,F050781,2021-05-03,2.2,Dual Flight Training,Completed,Olivia Nguyen,N7732K,Cessna,172S,Doug Hayes,PPL
+R100798,F050773,2021-05-04,1.7,Dual Flight Training,Completed,Olivia Nguyen,N7732K,Cessna,172S,Doug Hayes,PPL
+R100565,F050551,2021-05-10,2.2,Dual Flight Training,Completed,Emma Thompson,N6603L,Cessna,172S,Tom Reyes,PPL
+R100550,F050537,2021-05-11,2.0,Student Solo,Completed,Emma Thompson,N7732K,Cessna,172S,,PPL
+R100559,F050545,2021-05-20,1.9,Student Solo,Completed,Emma Thompson,N7732K,Cessna,172S,,PPL
+R100661,F050642,2021-05-20,1.7,Check Ride,Completed,Ryan O'Brien,N8814M,Piper,PA-28-181,,PPL
+R101558,,2021-05-23,1.3,Maintenance,Completed,,N9923R,Cessna,182RG,,
+R100554,F050541,2021-05-27,1.6,Dual Flight Training,Completed,Emma Thompson,N4521P,Cessna,172N,Tom Reyes,PPL
+R100784,F050759,2021-05-29,1.4,Dual Flight Training,Completed,Olivia Nguyen,N7732K,Cessna,172S,Doug Hayes,PPL
+R100789,F050764,2021-06-05,1.5,Dual Flight Training,Completed,Olivia Nguyen,N6603L,Cessna,172S,Doug Hayes,PPL
+R100547,F050534,2021-06-09,2.4,Dual Flight Training,Completed,Emma Thompson,N7732K,Cessna,172S,Doug Hayes,PPL
+R101243,F051208,2021-06-11,2.0,Dual Flight Training,Completed,Ava Singh,N4521P,Cessna,172N,Tom Reyes,PPL
+R100807,F050782,2021-06-15,1.3,Dual Flight Training,Completed,Olivia Nguyen,N7732K,Cessna,172S,Doug Hayes,PPL
+R101242,F051207,2021-06-20,1.8,Dual Flight Training,Completed,Ava Singh,N6603L,Cessna,172S,Jenny Park,PPL
+R101247,F051212,2021-06-25,1.6,Dual Flight Training,Completed,Ava Singh,N6603L,Cessna,172S,Tom Reyes,PPL
+R101554,,2021-06-28,1.1,Maintenance,Completed,,N1175C,Piper,PA-28R-201,,
+R100573,F050558,2021-06-29,1.6,Dual Flight Training,Completed,Emma Thompson,N7732K,Cessna,172S,Tom Reyes,PPL
+R101255,F051220,2021-07-01,1.8,Dual Flight Training,Completed,Ava Singh,N8814M,Piper,PA-28-181,Tom Reyes,PPL
+R101237,F051202,2021-07-02,1.2,Dual Flight Training,Completed,Ava Singh,N4521P,Cessna,172N,Tom Reyes,PPL
+R100693,F050672,2021-07-03,2.0,Dual Flight Training,Completed,Ryan O'Brien,N7732K,Cessna,172S,Sarah Phillips,IFR
+R100690,F050669,2021-07-04,2.0,Dual Flight Training,Completed,Ryan O'Brien,N7732K,Cessna,172S,Sarah Phillips,IFR
+R101222,F051188,2021-07-04,1.6,Dual Flight Training,Completed,Ava Singh,N7732K,Cessna,172S,Tom Reyes,PPL
+R100568,F050554,2021-07-09,1.8,Student Solo,Completed,Emma Thompson,N4521P,Cessna,172N,,PPL
+R100803,F050778,2021-07-10,2.2,Dual Flight Training,Completed,Olivia Nguyen,N4521P,Cessna,172N,Doug Hayes,PPL
+R101229,F051195,2021-07-10,2.0,Dual Flight Training,Completed,Ava Singh,N6603L,Cessna,172S,Tom Reyes,PPL
+R100681,F050660,2021-07-12,1.2,Dual Flight Training,Completed,Ryan O'Brien,N7732K,Cessna,172S,Sarah Phillips,IFR
+R100787,F050762,2021-07-13,2.2,Dual Flight Training,Completed,Olivia Nguyen,N7732K,Cessna,172S,Doug Hayes,PPL
+R100571,,2021-07-17,0,Student Solo,Canceled,Emma Thompson,N6603L,Cessna,172S,,PPL
+R100577,F050562,2021-07-18,1.9,Dual Flight Training,Completed,Emma Thompson,N7732K,Cessna,172S,Jenny Park,PPL
+R101248,F051213,2021-07-18,2.1,Dual Flight Training,Completed,Ava Singh,N4521P,Cessna,172N,Tom Reyes,PPL
+R100782,,2021-07-22,0,Dual Flight Training,Canceled,Olivia Nguyen,N6603L,Cessna,172S,Doug Hayes,PPL
+R101220,F051186,2021-07-24,1.7,Dual Flight Training,Completed,Ava Singh,N4521P,Cessna,172N,Tom Reyes,PPL
+R100788,F050763,2021-07-25,2.1,Dual Flight Training,Completed,Olivia Nguyen,N8814M,Piper,PA-28-181,Doug Hayes,PPL
+R100668,F050648,2021-07-28,2.0,Dual Flight Training,Completed,Ryan O'Brien,N4521P,Cessna,172N,Sarah Phillips,IFR
+R100676,F050655,2021-07-29,2.2,Dual Flight Training,Completed,Ryan O'Brien,N6603L,Cessna,172S,Sarah Phillips,IFR
+R100572,F050557,2021-08-02,1.5,Student Solo,Completed,Emma Thompson,N8814M,Piper,PA-28-181,,PPL
+R100665,F050645,2021-08-03,1.5,Dual Flight Training,Completed,Ryan O'Brien,N4521P,Cessna,172N,Sarah Phillips,IFR
+R100663,F050644,2021-08-04,1.6,Dual Flight Training,Completed,Ryan O'Brien,N6603L,Cessna,172S,Sarah Phillips,IFR
+R100816,F050791,2021-08-08,1.7,Dual Flight Training,Completed,Olivia Nguyen,N6603L,Cessna,172S,Doug Hayes,PPL
+R100674,F050654,2021-08-11,1.2,Dual Flight Training,Completed,Ryan O'Brien,N6603L,Cessna,172S,Sarah Phillips,IFR
+R100562,F050548,2021-08-27,1.3,Dual Flight Training,Completed,Emma Thompson,N8814M,Piper,PA-28-181,Sarah Phillips,PPL
+R100563,F050549,2021-08-27,1.7,Student Solo,Completed,Emma Thompson,N7732K,Cessna,172S,,PPL
+R100796,F050771,2021-08-28,2.3,Dual Flight Training,Completed,Olivia Nguyen,N4521P,Cessna,172N,Jenny Park,PPL
+R101253,F051218,2021-09-04,1.9,Dual Flight Training,Completed,Ava Singh,N7732K,Cessna,172S,Doug Hayes,PPL
+R100797,F050772,2021-09-09,1.4,Dual Flight Training,Completed,Olivia Nguyen,N4521P,Cessna,172N,Doug Hayes,PPL
+R100672,F050652,2021-09-11,1.3,Dual Flight Training,Completed,Ryan O'Brien,N4521P,Cessna,172N,Sarah Phillips,IFR
+R101251,F051216,2021-09-11,1.7,Dual Flight Training,Completed,Ava Singh,N8814M,Piper,PA-28-181,Tom Reyes,PPL
+R100140,F050135,2021-09-14,1.3,Dual Flight Training,Completed,Jamie Chen,N4521P,Cessna,172N,Mike Anderson,PPL
+R100548,F050535,2021-09-24,2.3,Dual Flight Training,Completed,Emma Thompson,N6603L,Cessna,172S,Tom Reyes,PPL
+R100691,F050670,2021-09-25,1.8,Dual Flight Training,Completed,Ryan O'Brien,N4521P,Cessna,172N,Sarah Phillips,IFR
+R100556,F050543,2021-09-26,2.0,Dual Flight Training,Completed,Emma Thompson,N4521P,Cessna,172N,Sarah Phillips,PPL
+R100129,F050125,2021-09-28,1.4,Dual Flight Training,Completed,Jamie Chen,N8814M,Piper,PA-28-181,Mike Anderson,PPL
+R100682,F050661,2021-09-30,2.3,Dual Flight Training,Completed,Ryan O'Brien,N8814M,Piper,PA-28-181,Sarah Phillips,IFR
+R100688,F050667,2021-09-30,1.9,Dual Flight Training,Completed,Ryan O'Brien,N7732K,Cessna,172S,Sarah Phillips,IFR
+R101580,F051500,2021-09-30,1.0,Owner Flight,Completed,Patricia O'Donnell,N6603L,Cessna,172S,,
+R100137,F050132,2021-10-01,1.4,Dual Flight Training,Completed,Jamie Chen,N8814M,Piper,PA-28-181,Jenny Park,PPL
+R100666,F050646,2021-10-02,2.1,Dual Flight Training,Completed,Ryan O'Brien,N4521P,Cessna,172N,Sarah Phillips,IFR
+R101240,F051205,2021-10-04,1.5,Dual Flight Training,Completed,Ava Singh,N8814M,Piper,PA-28-181,Mike Anderson,PPL
+R100576,F050561,2021-10-13,2.0,Dual Flight Training,Completed,Emma Thompson,N4521P,Cessna,172N,Tom Reyes,PPL
+R101254,F051219,2021-10-16,2.3,Dual Flight Training,Completed,Ava Singh,N6603L,Cessna,172S,Tom Reyes,PPL
+R100143,F050138,2021-10-17,1.8,Dual Flight Training,Completed,Jamie Chen,N6603L,Cessna,172S,Mike Anderson,PPL
+R100151,F050146,2021-10-18,1.5,Dual Flight Training,Completed,Jamie Chen,N4521P,Cessna,172N,Mike Anderson,PPL
+R100805,F050780,2021-10-21,2.2,Student Solo,Completed,Olivia Nguyen,N4521P,Cessna,172N,,PPL
+R100669,F050649,2021-10-22,1.7,Dual Flight Training,Completed,Ryan O'Brien,N8814M,Piper,PA-28-181,Sarah Phillips,IFR
+R100678,F050657,2021-10-25,2.4,Dual Flight Training,Completed,Ryan O'Brien,N8814M,Piper,PA-28-181,Sarah Phillips,IFR
+R100675,,2021-11-01,0,Dual Flight Training,Canceled,Ryan O'Brien,N4521P,Cessna,172N,Sarah Phillips,IFR
+R100692,F050671,2021-11-01,1.6,Dual Flight Training,Completed,Ryan O'Brien,N6603L,Cessna,172S,Mike Anderson,IFR
+R100799,F050774,2021-11-02,1.3,Dual Flight Training,Completed,Olivia Nguyen,N6603L,Cessna,172S,Jenny Park,PPL
+R100126,F050122,2021-11-04,2.0,Dual Flight Training,Completed,Jamie Chen,N6603L,Cessna,172S,Mike Anderson,PPL
+R100553,F050540,2021-11-04,2.1,Dual Flight Training,Completed,Emma Thompson,N4521P,Cessna,172N,Tom Reyes,PPL
+R100677,F050656,2021-11-08,1.3,Dual Flight Training,Completed,Ryan O'Brien,N4521P,Cessna,172N,Sarah Phillips,IFR
+R100560,F050546,2021-11-11,1.4,Dual Flight Training,Completed,Emma Thompson,N4521P,Cessna,172N,Tom Reyes,PPL
+R100584,F050569,2021-11-14,2.1,Check Ride,Completed,Emma Thompson,N6603L,Cessna,172S,,PPL
+R100152,F050147,2021-11-18,1.8,Dual Flight Training,Completed,Jamie Chen,N8814M,Piper,PA-28-181,Mike Anderson,PPL
+R101245,F051210,2021-11-20,1.8,Student Solo,Completed,Ava Singh,N8814M,Piper,PA-28-181,,PPL
+R100813,F050788,2021-11-21,1.6,Dual Flight Training,Completed,Olivia Nguyen,N6603L,Cessna,172S,Doug Hayes,PPL
+R100144,F050139,2021-11-22,1.6,Dual Flight Training,Completed,Jamie Chen,N6603L,Cessna,172S,Sarah Phillips,PPL
+R100817,F050792,2021-11-25,1.8,Dual Flight Training,Completed,Olivia Nguyen,N4521P,Cessna,172N,Doug Hayes,PPL
+R100133,,2021-11-28,0,Dual Flight Training,Canceled,Jamie Chen,N7732K,Cessna,172S,Mike Anderson,PPL
+R101552,,2021-12-03,3.9,Maintenance,Completed,,N9923R,Cessna,182RG,,
+R100147,F050142,2021-12-06,1.8,Dual Flight Training,Completed,Jamie Chen,N6603L,Cessna,172S,Mike Anderson,PPL
+R100810,F050785,2021-12-11,1.2,Student Solo,Completed,Olivia Nguyen,N8814M,Piper,PA-28-181,,PPL
+R101239,F051204,2021-12-12,1.3,Dual Flight Training,Completed,Ava Singh,N8814M,Piper,PA-28-181,Tom Reyes,PPL
+R101546,,2021-12-12,1.9,Maintenance,Completed,,N4521P,Cessna,172N,,
+R100148,F050143,2021-12-14,1.5,Dual Flight Training,Completed,Jamie Chen,N7732K,Cessna,172S,Mike Anderson,PPL
+R100132,F050128,2021-12-16,2.0,Dual Flight Training,Completed,Jamie Chen,N8814M,Piper,PA-28-181,Mike Anderson,PPL
+R100671,F050651,2021-12-17,1.8,Dual Flight Training,Completed,Ryan O'Brien,N7732K,Cessna,172S,Mike Anderson,IFR
+R101244,F051209,2021-12-17,1.6,Dual Flight Training,Completed,Ava Singh,N4521P,Cessna,172N,Tom Reyes,PPL
+R101236,F051201,2021-12-18,1.5,Dual Flight Training,Completed,Ava Singh,N6603L,Cessna,172S,Jenny Park,PPL
+R100680,F050659,2021-12-21,1.6,Dual Flight Training,Completed,Ryan O'Brien,N4521P,Cessna,172N,Sarah Phillips,IFR
+R101223,F051189,2021-12-24,1.3,Dual Flight Training,Completed,Ava Singh,N6603L,Cessna,172S,Tom Reyes,PPL
+R100670,F050650,2021-12-25,2.0,Dual Flight Training,Completed,Ryan O'Brien,N4521P,Cessna,172N,Sarah Phillips,IFR
+R100786,F050761,2021-12-28,2.2,Student Solo,Completed,Olivia Nguyen,N7732K,Cessna,172S,,PPL
+R100150,F050145,2022-01-01,2.1,Dual Flight Training,Completed,Jamie Chen,N8814M,Piper,PA-28-181,Mike Anderson,PPL
+R100593,F050578,2022-01-01,1.3,Dual Flight Training,Completed,Emma Thompson,N6603L,Cessna,172S,Doug Hayes,IFR
+R100802,F050777,2022-01-03,1.5,Dual Flight Training,Completed,Olivia Nguyen,N8814M,Piper,PA-28-181,Doug Hayes,PPL
+R100425,F050414,2022-01-05,2.0,Dual Flight Training,Completed,Priya Patel,N4521P,Cessna,172N,Sarah Phillips,PPL
+R101234,F051199,2022-01-07,1.4,Dual Flight Training,Completed,Ava Singh,N6603L,Cessna,172S,Tom Reyes,PPL
+R100410,F050399,2022-01-09,1.5,Dual Flight Training,Completed,Priya Patel,N6603L,Cessna,172S,Sarah Phillips,PPL
+R100429,F050418,2022-01-09,2.4,Dual Flight Training,Completed,Priya Patel,N7732K,Cessna,172S,Sarah Phillips,PPL
+R101246,F051211,2022-01-10,1.4,Dual Flight Training,Completed,Ava Singh,N4521P,Cessna,172N,Tom Reyes,PPL
+R100667,F050647,2022-01-14,1.8,Dual Flight Training,Completed,Ryan O'Brien,N4521P,Cessna,172N,Sarah Phillips,IFR
+R100141,F050136,2022-01-16,1.9,Dual Flight Training,Completed,Jamie Chen,N7732K,Cessna,172S,Mike Anderson,PPL
+R100673,F050653,2022-01-16,1.5,Dual Flight Training,Completed,Ryan O'Brien,N7732K,Cessna,172S,Sarah Phillips,IFR
+R100811,F050786,2022-01-17,1.8,Dual Flight Training,Completed,Olivia Nguyen,N7732K,Cessna,172S,Doug Hayes,PPL
+R101232,,2022-01-17,0,Dual Flight Training,Canceled,Ava Singh,N6603L,Cessna,172S,Tom Reyes,PPL
+R100125,F050121,2022-01-19,1.3,Dual Flight Training,Completed,Jamie Chen,N4521P,Cessna,172N,Mike Anderson,PPL
+R100142,F050137,2022-01-21,1.4,Dual Flight Training,Completed,Jamie Chen,N6603L,Cessna,172S,Mike Anderson,PPL
+R100685,F050664,2022-01-21,1.4,Dual Flight Training,Completed,Ryan O'Brien,N7732K,Cessna,172S,Sarah Phillips,IFR
+R100687,F050666,2022-01-22,1.9,Dual Flight Training,Completed,Ryan O'Brien,N6603L,Cessna,172S,Sarah Phillips,IFR
+R100790,F050765,2022-01-23,2.2,Dual Flight Training,Completed,Olivia Nguyen,N6603L,Cessna,172S,Doug Hayes,PPL
+R100127,F050123,2022-01-24,1.8,Dual Flight Training,Completed,Jamie Chen,N6603L,Cessna,172S,Jenny Park,PPL
+R100602,F050587,2022-01-25,1.3,Dual Flight Training,Completed,Emma Thompson,N6603L,Cessna,172S,Tom Reyes,IFR
+R100679,F050658,2022-01-25,1.4,Dual Flight Training,Completed,Ryan O'Brien,N4521P,Cessna,172N,Sarah Phillips,IFR
+R100683,F050662,2022-01-25,1.6,Dual Flight Training,Completed,Ryan O'Brien,N4521P,Cessna,172N,Jenny Park,IFR
+R100794,F050769,2022-01-27,1.7,Dual Flight Training,Completed,Olivia Nguyen,N6603L,Cessna,172S,Doug Hayes,PPL
+R100684,F050663,2022-01-30,1.7,Dual Flight Training,Completed,Ryan O'Brien,N6603L,Cessna,172S,Sarah Phillips,IFR
+R100417,F050406,2022-01-31,1.9,Dual Flight Training,Completed,Priya Patel,N6603L,Cessna,172S,Sarah Phillips,PPL
+R100416,F050405,2022-02-04,2.0,Dual Flight Training,Completed,Priya Patel,N4521P,Cessna,172N,Sarah Phillips,PPL
+R100403,F050392,2022-02-07,1.4,Dual Flight Training,Completed,Priya Patel,N7732K,Cessna,172S,Jenny Park,PPL
+R100801,F050776,2022-02-07,2.1,Student Solo,Completed,Olivia Nguyen,N6603L,Cessna,172S,,PPL
+R100401,F050390,2022-02-10,2.3,Dual Flight Training,Completed,Priya Patel,N8814M,Piper,PA-28-181,Sarah Phillips,PPL
+R101226,F051192,2022-02-10,1.5,Student Solo,Completed,Ava Singh,N7732K,Cessna,172S,,PPL
+R100815,F050790,2022-02-11,2.3,Dual Flight Training,Completed,Olivia Nguyen,N8814M,Piper,PA-28-181,Doug Hayes,PPL
+R100604,F050589,2022-02-13,2.0,Dual Flight Training,Completed,Emma Thompson,N4521P,Cessna,172N,Tom Reyes,IFR
+R100689,F050668,2022-02-13,1.7,Dual Flight Training,Completed,Ryan O'Brien,N4521P,Cessna,172N,Sarah Phillips,IFR
+R100785,F050760,2022-02-13,2.0,Dual Flight Training,Completed,Olivia Nguyen,N8814M,Piper,PA-28-181,Doug Hayes,PPL
+R100586,F050571,2022-02-14,1.7,Dual Flight Training,Completed,Emma Thompson,N8814M,Piper,PA-28-181,Tom Reyes,IFR
+R100800,F050775,2022-02-14,1.6,Dual Flight Training,Completed,Olivia Nguyen,N8814M,Piper,PA-28-181,Doug Hayes,PPL
+R101543,,2022-02-15,3.8,Maintenance,Completed,,N6603L,Cessna,172S,,
+R100424,F050413,2022-02-17,1.7,Dual Flight Training,Completed,Priya Patel,N6603L,Cessna,172S,Sarah Phillips,PPL
+R100607,F050592,2022-02-17,1.7,Dual Flight Training,Completed,Emma Thompson,N8814M,Piper,PA-28-181,Tom Reyes,IFR
+R101225,F051191,2022-02-17,1.5,Student Solo,Completed,Ava Singh,N6603L,Cessna,172S,,PPL
+R100157,F050152,2022-02-18,1.9,Dual Flight Training,Completed,Jamie Chen,N6603L,Cessna,172S,Mike Anderson,PPL
+R100601,F050586,2022-02-18,1.7,Dual Flight Training,Completed,Emma Thompson,N8814M,Piper,PA-28-181,Tom Reyes,IFR
+R100783,,2022-02-18,0,Dual Flight Training,Canceled,Olivia Nguyen,N7732K,Cessna,172S,Doug Hayes,PPL
+R100408,F050397,2022-02-20,2.2,Dual Flight Training,Completed,Priya Patel,N6603L,Cessna,172S,Sarah Phillips,PPL
+R100686,F050665,2022-02-27,2.2,Dual Flight Training,Completed,Ryan O'Brien,N4521P,Cessna,172N,Sarah Phillips,IFR
+R101571,F051491,2022-02-27,2.6,Owner Flight,Completed,Robert Klein,N4521P,Cessna,172N,,
+R100662,F050643,2022-02-28,1.5,Dual Flight Training,Completed,Ryan O'Brien,N8814M,Piper,PA-28-181,Sarah Phillips,IFR
+R100664,,2022-02-28,0,Dual Flight Training,Canceled,Ryan O'Brien,N6603L,Cessna,172S,Sarah Phillips,IFR
+R100405,F050394,2022-03-02,2.1,Dual Flight Training,Completed,Priya Patel,N6603L,Cessna,172S,Sarah Phillips,PPL
+R100590,F050575,2022-03-02,1.6,Dual Flight Training,Completed,Emma Thompson,N8814M,Piper,PA-28-181,Mike Anderson,IFR
+R100003,F050003,2022-03-04,2.1,Dual Flight Training,Completed,Alex Martinez,N7732K,Cessna,172S,Jenny Park,PPL
+R100592,F050577,2022-03-05,2.0,Dual Flight Training,Completed,Emma Thompson,N8814M,Piper,PA-28-181,Tom Reyes,IFR
+R100792,F050767,2022-03-05,1.8,Dual Flight Training,Completed,Olivia Nguyen,N4521P,Cessna,172N,Doug Hayes,PPL
+R100694,F050673,2022-03-10,2.4,Check Ride,Completed,Ryan O'Brien,N6603L,Cessna,172S,,IFR
+R100791,F050766,2022-03-11,1.9,Dual Flight Training,Completed,Olivia Nguyen,N4521P,Cessna,172N,Doug Hayes,PPL
+R100002,F050002,2022-03-14,1.9,Dual Flight Training,Completed,Alex Martinez,N6603L,Cessna,172S,Jenny Park,PPL
+R100398,F050387,2022-03-18,1.6,Dual Flight Training,Completed,Priya Patel,N7732K,Cessna,172S,Sarah Phillips,PPL
+R101249,F051214,2022-03-18,2.2,Dual Flight Training,Completed,Ava Singh,N6603L,Cessna,172S,Tom Reyes,PPL
+R101361,F051321,2022-03-23,1.4,Dual Flight Training,Completed,Mia Foster,N8814M,Piper,PA-28-181,Jenny Park,PPL
+R101224,F051190,2022-03-25,1.9,Dual Flight Training,Completed,Ava Singh,N6603L,Cessna,172S,Doug Hayes,PPL
+R101359,F051319,2022-03-26,1.4,Dual Flight Training,Completed,Mia Foster,N4521P,Cessna,172N,Sarah Phillips,PPL
+R101358,F051318,2022-03-27,2.1,Dual Flight Training,Completed,Mia Foster,N4521P,Cessna,172N,Jenny Park,PPL
+R100033,F050031,2022-03-28,2.0,Dual Flight Training,Completed,Alex Martinez,N4521P,Cessna,172N,Jenny Park,PPL
+R100597,F050582,2022-03-29,1.4,Dual Flight Training,Completed,Emma Thompson,N6603L,Cessna,172S,Tom Reyes,IFR
+R100793,F050768,2022-03-29,1.7,Dual Flight Training,Completed,Olivia Nguyen,N6603L,Cessna,172S,Doug Hayes,PPL
+R100029,F050027,2022-03-31,1.5,Dual Flight Training,Completed,Alex Martinez,N4521P,Cessna,172N,Jenny Park,PPL
+R100396,F050385,2022-03-31,2.0,Dual Flight Training,Completed,Priya Patel,N6603L,Cessna,172S,Sarah Phillips,PPL
+R101355,F051315,2022-03-31,1.9,Dual Flight Training,Completed,Mia Foster,N4521P,Cessna,172N,Jenny Park,PPL
+R100155,F050150,2022-04-01,1.6,Dual Flight Training,Completed,Jamie Chen,N8814M,Piper,PA-28-181,Mike Anderson,PPL
+R100812,F050787,2022-04-01,1.2,Dual Flight Training,Completed,Olivia Nguyen,N7732K,Cessna,172S,Doug Hayes,PPL
+R100420,F050409,2022-04-02,1.3,Dual Flight Training,Completed,Priya Patel,N4521P,Cessna,172N,Sarah Phillips,PPL
+R100007,F050007,2022-04-05,1.3,Dual Flight Training,Completed,Alex Martinez,N7732K,Cessna,172S,Sarah Phillips,PPL
+R100698,F050677,2022-04-05,1.3,Dual Flight Training,Completed,Ryan O'Brien,N9923R,Cessna,182RG,Sarah Phillips,COM
+R101380,F051339,2022-04-05,1.7,Dual Flight Training,Completed,Mia Foster,N4521P,Cessna,172N,Sarah Phillips,PPL
+R100136,F050131,2022-04-06,1.3,Dual Flight Training,Completed,Jamie Chen,N7732K,Cessna,172S,Sarah Phillips,PPL
+R101535,,2022-04-06,1.8,Maintenance,Completed,,N6603L,Cessna,172S,,
+R100402,F050391,2022-04-08,1.3,Dual Flight Training,Completed,Priya Patel,N6603L,Cessna,172S,Sarah Phillips,PPL
+R101384,F051343,2022-04-08,1.8,Dual Flight Training,Completed,Mia Foster,N6603L,Cessna,172S,Jenny Park,PPL
+R100138,F050133,2022-04-13,1.3,Dual Flight Training,Completed,Jamie Chen,N8814M,Piper,PA-28-181,Mike Anderson,PPL
+R100409,F050398,2022-04-15,1.6,Dual Flight Training,Completed,Priya Patel,N6603L,Cessna,172S,Tom Reyes,PPL
+R101572,F051492,2022-04-16,1.2,Owner Flight,Completed,Robert Klein,N7732K,Cessna,172S,,
+R101562,,2022-04-17,1.3,Maintenance,Completed,,N4521P,Cessna,172N,,
+R100032,F050030,2022-04-18,1.3,Dual Flight Training,Completed,Alex Martinez,N6603L,Cessna,172S,Jenny Park,PPL
+R100427,F050416,2022-04-19,2.3,Dual Flight Training,Completed,Priya Patel,N6603L,Cessna,172S,Jenny Park,PPL
+R100603,F050588,2022-04-20,1.3,Dual Flight Training,Completed,Emma Thompson,N6603L,Cessna,172S,Tom Reyes,IFR
+R100008,F050008,2022-04-21,1.7,Dual Flight Training,Completed,Alex Martinez,N6603L,Cessna,172S,Jenny Park,PPL
+R100145,F050140,2022-04-21,1.3,Dual Flight Training,Completed,Jamie Chen,N8814M,Piper,PA-28-181,Mike Anderson,PPL
+R100697,F050676,2022-04-23,2.2,Dual Flight Training,Completed,Ryan O'Brien,N9923R,Cessna,182RG,Sarah Phillips,COM
+R101377,F051336,2022-04-23,1.2,Dual Flight Training,Completed,Mia Foster,N8814M,Piper,PA-28-181,Jenny Park,PPL
+R100804,F050779,2022-04-24,2.3,Dual Flight Training,Completed,Olivia Nguyen,N4521P,Cessna,172N,Doug Hayes,PPL
+R100034,F050032,2022-04-25,1.5,Dual Flight Training,Completed,Alex Martinez,N7732K,Cessna,172S,Jenny Park,PPL
+R100399,F050388,2022-04-26,1.6,Dual Flight Training,Completed,Priya Patel,N7732K,Cessna,172S,Doug Hayes,PPL
+R100814,F050789,2022-04-26,1.3,Dual Flight Training,Completed,Olivia Nguyen,N4521P,Cessna,172N,Doug Hayes,PPL
+R100411,F050400,2022-04-28,1.7,Dual Flight Training,Completed,Priya Patel,N7732K,Cessna,172S,Sarah Phillips,PPL
+R100703,F050682,2022-04-28,1.3,Dual Flight Training,Completed,Ryan O'Brien,N9923R,Cessna,182RG,Sarah Phillips,COM
+R100809,F050784,2022-04-30,2.4,Dual Flight Training,Completed,Olivia Nguyen,N4521P,Cessna,172N,Jenny Park,PPL
+R101354,F051314,2022-05-01,2.2,Dual Flight Training,Completed,Mia Foster,N4521P,Cessna,172N,Jenny Park,PPL
+R100128,F050124,2022-05-03,1.3,Dual Flight Training,Completed,Jamie Chen,N4521P,Cessna,172N,Mike Anderson,PPL
+R100595,F050580,2022-05-03,2.1,Dual Flight Training,Completed,Emma Thompson,N7732K,Cessna,172S,Tom Reyes,IFR
+R100599,F050584,2022-05-04,2.0,Dual Flight Training,Completed,Emma Thompson,N6603L,Cessna,172S,Tom Reyes,IFR
+R101233,F051198,2022-05-04,2.2,Dual Flight Training,Completed,Ava Singh,N8814M,Piper,PA-28-181,Tom Reyes,PPL
+R101235,F051200,2022-05-04,1.9,Dual Flight Training,Completed,Ava Singh,N6603L,Cessna,172S,Mike Anderson,PPL
+R100025,F050024,2022-05-05,2.0,Dual Flight Training,Completed,Alex Martinez,N7732K,Cessna,172S,Doug Hayes,PPL
+R101230,F051196,2022-05-05,1.8,Dual Flight Training,Completed,Ava Singh,N8814M,Piper,PA-28-181,Mike Anderson,PPL
+R100153,F050148,2022-05-06,2.4,Dual Flight Training,Completed,Jamie Chen,N7732K,Cessna,172S,Mike Anderson,PPL
+R100808,F050783,2022-05-06,1.7,Dual Flight Training,Completed,Olivia Nguyen,N6603L,Cessna,172S,Doug Hayes,PPL
+R100594,F050579,2022-05-07,2.3,Dual Flight Training,Completed,Emma Thompson,N8814M,Piper,PA-28-181,Tom Reyes,IFR
+R100016,F050016,2022-05-10,1.8,Dual Flight Training,Completed,Alex Martinez,N4521P,Cessna,172N,Sarah Phillips,PPL
+R100139,F050134,2022-05-11,1.7,Dual Flight Training,Completed,Jamie Chen,N4521P,Cessna,172N,Mike Anderson,PPL
+R101374,,2022-05-13,0,Dual Flight Training,Canceled,Mia Foster,N4521P,Cessna,172N,Jenny Park,PPL
+R101219,F051185,2022-05-14,1.6,Dual Flight Training,Completed,Ava Singh,N4521P,Cessna,172N,Tom Reyes,PPL
+R101228,F051194,2022-05-14,1.6,Dual Flight Training,Completed,Ava Singh,N8814M,Piper,PA-28-181,Tom Reyes,PPL
+R100795,F050770,2022-05-15,2.3,Dual Flight Training,Completed,Olivia Nguyen,N4521P,Cessna,172N,Doug Hayes,PPL
+R101362,F051322,2022-05-15,1.7,Dual Flight Training,Completed,Mia Foster,N6603L,Cessna,172S,Jenny Park,PPL
+R101373,F051333,2022-05-17,2.3,Dual Flight Training,Completed,Mia Foster,N6603L,Cessna,172S,Doug Hayes,PPL
+R100004,F050004,2022-05-19,1.5,Dual Flight Training,Completed,Alex Martinez,N8814M,Piper,PA-28-181,Jenny Park,PPL
+R100818,F050793,2022-05-19,2.4,Check Ride,Completed,Olivia Nguyen,N8814M,Piper,PA-28-181,,PPL
+R100017,F050017,2022-05-21,2.2,Dual Flight Training,Completed,Alex Martinez,N6603L,Cessna,172S,Jenny Park,PPL
+R101376,F051335,2022-05-21,1.3,Dual Flight Training,Completed,Mia Foster,N8814M,Piper,PA-28-181,Jenny Park,PPL
+R100146,F050141,2022-05-22,2.2,Dual Flight Training,Completed,Jamie Chen,N4521P,Cessna,172N,Mike Anderson,PPL
+R101221,F051187,2022-05-22,1.9,Dual Flight Training,Completed,Ava Singh,N4521P,Cessna,172N,Sarah Phillips,PPL
+R100585,F050570,2022-05-24,2.0,Dual Flight Training,Completed,Emma Thompson,N8814M,Piper,PA-28-181,Tom Reyes,IFR
+R101545,,2022-05-25,1.7,Maintenance,Completed,,N7732K,Cessna,172S,,
+R100588,F050573,2022-05-26,1.2,Dual Flight Training,Completed,Emma Thompson,N8814M,Piper,PA-28-181,Sarah Phillips,IFR
+R100010,F050010,2022-05-27,1.8,Dual Flight Training,Completed,Alex Martinez,N7732K,Cessna,172S,Jenny Park,PPL
+R100702,F050681,2022-05-27,1.2,Dual Flight Training,Completed,Ryan O'Brien,N1175C,Piper,PA-28R-201,Sarah Phillips,COM
+R100035,F050033,2022-06-02,1.5,Dual Flight Training,Completed,Alex Martinez,N7732K,Cessna,172S,Jenny Park,PPL
+R100404,F050393,2022-06-05,2.3,Dual Flight Training,Completed,Priya Patel,N4521P,Cessna,172N,Sarah Phillips,PPL
+R100834,F050809,2022-06-05,1.2,Dual Flight Training,Completed,Olivia Nguyen,N7732K,Cessna,172S,Doug Hayes,IFR
+R100342,F050332,2022-06-09,1.9,Dual Flight Training,Completed,Marcus Johnson,N4521P,Cessna,172N,Sarah Phillips,IFR
+R100130,F050126,2022-06-13,2.1,Dual Flight Training,Completed,Jamie Chen,N7732K,Cessna,172S,Jenny Park,PPL
+R100589,F050574,2022-06-13,1.9,Dual Flight Training,Completed,Emma Thompson,N6603L,Cessna,172S,Tom Reyes,IFR
+R100606,F050591,2022-06-14,1.9,Dual Flight Training,Completed,Emma Thompson,N7732K,Cessna,172S,Tom Reyes,IFR
+R101550,,2022-06-14,1.6,Maintenance,Completed,,N3340T,Piper,PA-44-180,,
+R100026,F050025,2022-06-17,2.3,Dual Flight Training,Completed,Alex Martinez,N7732K,Cessna,172S,Jenny Park,PPL
+R101256,F051221,2022-06-18,2.0,Dual Flight Training,Completed,Ava Singh,N8814M,Piper,PA-28-181,Tom Reyes,PPL
+R100426,F050415,2022-06-19,1.9,Dual Flight Training,Completed,Priya Patel,N4521P,Cessna,172N,Tom Reyes,PPL
+R100695,F050674,2022-06-22,1.5,Dual Flight Training,Completed,Ryan O'Brien,N4521P,Cessna,172N,Sarah Phillips,COM
+R101372,F051332,2022-06-24,2.3,Dual Flight Training,Completed,Mia Foster,N7732K,Cessna,172S,Jenny Park,PPL
+R100842,F050817,2022-06-25,1.7,Dual Flight Training,Completed,Olivia Nguyen,N7732K,Cessna,172S,Jenny Park,IFR
+R100012,F050012,2022-06-26,2.2,Dual Flight Training,Completed,Alex Martinez,N8814M,Piper,PA-28-181,Jenny Park,PPL
+R100397,F050386,2022-06-26,2.3,Dual Flight Training,Completed,Priya Patel,N6603L,Cessna,172S,Sarah Phillips,PPL
+R101252,F051217,2022-06-26,1.9,Dual Flight Training,Completed,Ava Singh,N4521P,Cessna,172N,Tom Reyes,PPL
+R100700,F050679,2022-06-27,1.6,Dual Flight Training,Completed,Ryan O'Brien,N9923R,Cessna,182RG,Sarah Phillips,COM
+R101231,F051197,2022-06-27,1.2,Dual Flight Training,Completed,Ava Singh,N6603L,Cessna,172S,Tom Reyes,PPL
+R100156,F050151,2022-06-28,1.9,Dual Flight Training,Completed,Jamie Chen,N6603L,Cessna,172S,Mike Anderson,PPL
+R100328,F050318,2022-06-28,1.7,Dual Flight Training,Completed,Marcus Johnson,N8814M,Piper,PA-28-181,Sarah Phillips,IFR
+R100131,F050127,2022-06-29,2.4,Dual Flight Training,Completed,Jamie Chen,N8814M,Piper,PA-28-181,Sarah Phillips,PPL
+R100587,F050572,2022-06-29,2.3,Dual Flight Training,Completed,Emma Thompson,N6603L,Cessna,172S,Tom Reyes,IFR
+R100030,F050028,2022-06-30,1.5,Dual Flight Training,Completed,Alex Martinez,N6603L,Cessna,172S,Jenny Park,PPL
+R100134,F050129,2022-07-02,1.8,Dual Flight Training,Completed,Jamie Chen,N4521P,Cessna,172N,Mike Anderson,PPL
+R100154,F050149,2022-07-04,1.8,Dual Flight Training,Completed,Jamie Chen,N7732K,Cessna,172S,Mike Anderson,PPL
+R100334,F050324,2022-07-06,2.1,Dual Flight Training,Completed,Marcus Johnson,N6603L,Cessna,172S,Sarah Phillips,IFR
+R100696,F050675,2022-07-06,1.7,Dual Flight Training,Completed,Ryan O'Brien,N1175C,Piper,PA-28R-201,Sarah Phillips,COM
+R101371,F051331,2022-07-06,2.1,Dual Flight Training,Completed,Mia Foster,N8814M,Piper,PA-28-181,Jenny Park,PPL
+R100333,F050323,2022-07-07,1.4,Dual Flight Training,Completed,Marcus Johnson,N6603L,Cessna,172S,Sarah Phillips,IFR
+R100422,F050411,2022-07-11,2.4,Dual Flight Training,Completed,Priya Patel,N6603L,Cessna,172S,Sarah Phillips,PPL
+R100015,F050015,2022-07-13,2.1,Dual Flight Training,Completed,Alex Martinez,N6603L,Cessna,172S,Jenny Park,PPL
+R100020,F050019,2022-07-13,2.4,Dual Flight Training,Completed,Alex Martinez,N7732K,Cessna,172S,Jenny Park,PPL
+R100341,F050331,2022-07-14,1.8,Dual Flight Training,Completed,Marcus Johnson,N6603L,Cessna,172S,Sarah Phillips,IFR
+R100407,F050396,2022-07-14,1.8,Dual Flight Training,Completed,Priya Patel,N8814M,Piper,PA-28-181,Doug Hayes,PPL
+R100704,F050683,2022-07-14,1.3,Dual Flight Training,Completed,Ryan O'Brien,N9923R,Cessna,182RG,Tom Reyes,COM
+R100346,F050336,2022-07-15,1.8,Dual Flight Training,Completed,Marcus Johnson,N8814M,Piper,PA-28-181,Sarah Phillips,IFR
+R101382,F051341,2022-07-18,1.8,Dual Flight Training,Completed,Mia Foster,N7732K,Cessna,172S,Jenny Park,PPL
+R100000,F050000,2022-07-19,1.5,Dual Flight Training,Completed,Alex Martinez,N7732K,Cessna,172S,Mike Anderson,PPL
+R100324,F050314,2022-07-19,2.1,Dual Flight Training,Completed,Marcus Johnson,N6603L,Cessna,172S,Sarah Phillips,IFR
+R100605,F050590,2022-07-20,1.7,Dual Flight Training,Completed,Emma Thompson,N6603L,Cessna,172S,Tom Reyes,IFR
+R100843,F050818,2022-07-20,1.7,Dual Flight Training,Completed,Olivia Nguyen,N8814M,Piper,PA-28-181,Doug Hayes,IFR
+R101238,F051203,2022-07-20,2.1,Dual Flight Training,Completed,Ava Singh,N4521P,Cessna,172N,Tom Reyes,PPL
+R100839,F050814,2022-07-22,2.1,Dual Flight Training,Completed,Olivia Nguyen,N7732K,Cessna,172S,Sarah Phillips,IFR
+R100430,F050419,2022-07-23,2.3,Student Solo,Completed,Priya Patel,N8814M,Piper,PA-28-181,,PPL
+R101356,F051316,2022-07-25,2.1,Dual Flight Training,Completed,Mia Foster,N4521P,Cessna,172N,Mike Anderson,PPL
+R100705,F050684,2022-07-27,2.2,Dual Flight Training,Completed,Ryan O'Brien,N1175C,Piper,PA-28R-201,Sarah Phillips,COM
+R101250,F051215,2022-07-27,1.6,Dual Flight Training,Completed,Ava Singh,N8814M,Piper,PA-28-181,Tom Reyes,PPL
+R101258,F051223,2022-07-27,1.5,Dual Flight Training,Completed,Ava Singh,N7732K,Cessna,172S,Tom Reyes,PPL
+R100591,F050576,2022-07-30,2.1,Dual Flight Training,Completed,Emma Thompson,N8814M,Piper,PA-28-181,Tom Reyes,IFR
+R101381,F051340,2022-07-30,1.6,Dual Flight Training,Completed,Mia Foster,N7732K,Cessna,172S,Jenny Park,PPL
+R100395,F050384,2022-07-31,1.6,Dual Flight Training,Completed,Priya Patel,N4521P,Cessna,172N,Sarah Phillips,PPL
+R101227,F051193,2022-07-31,1.3,Dual Flight Training,Completed,Ava Singh,N4521P,Cessna,172N,Tom Reyes,PPL
+R100400,F050389,2022-08-02,1.9,Dual Flight Training,Completed,Priya Patel,N7732K,Cessna,172S,Sarah Phillips,PPL
+R101467,F051424,2022-08-02,1.6,Dual Flight Training,Completed,Lucas Bennett,N4521P,Cessna,172N,Sarah Phillips,IFR
+R100608,F050593,2022-08-03,1.5,Dual Flight Training,Completed,Emma Thompson,N4521P,Cessna,172N,Tom Reyes,IFR
+R100596,F050581,2022-08-05,1.2,Dual Flight Training,Completed,Emma Thompson,N4521P,Cessna,172N,Mike Anderson,IFR
+R100941,F050912,2022-08-05,1.3,Dual Flight Training,Completed,Hannah Davis,N8814M,Piper,PA-28-181,Jenny Park,PPL
+R101557,,2022-08-10,1.3,Maintenance,Completed,,N4521P,Cessna,172N,,
+R100331,F050321,2022-08-11,2.2,Dual Flight Training,Completed,Marcus Johnson,N4521P,Cessna,172N,Sarah Phillips,IFR
+R100327,F050317,2022-08-12,1.8,Dual Flight Training,Completed,Marcus Johnson,N6603L,Cessna,172S,Sarah Phillips,IFR
+R101440,F051397,2022-08-12,2.3,Dual Flight Training,Completed,Lucas Bennett,N7732K,Cessna,172S,Doug Hayes,IFR
+R100840,F050815,2022-08-14,2.2,Dual Flight Training,Completed,Olivia Nguyen,N7732K,Cessna,172S,Doug Hayes,IFR
+R101257,F051222,2022-08-15,2.2,Dual Flight Training,Completed,Ava Singh,N4521P,Cessna,172N,Jenny Park,PPL
+R101460,F051417,2022-08-15,1.5,Dual Flight Training,Completed,Lucas Bennett,N4521P,Cessna,172N,Sarah Phillips,IFR
+R100600,F050585,2022-08-16,1.7,Dual Flight Training,Completed,Emma Thompson,N4521P,Cessna,172N,Tom Reyes,IFR
+R100598,F050583,2022-08-18,2.4,Dual Flight Training,Completed,Emma Thompson,N8814M,Piper,PA-28-181,Tom Reyes,IFR
+R100828,F050803,2022-08-19,2.1,Dual Flight Training,Completed,Olivia Nguyen,N4521P,Cessna,172N,Doug Hayes,IFR
+R101241,F051206,2022-08-19,1.6,Dual Flight Training,Completed,Ava Singh,N8814M,Piper,PA-28-181,Tom Reyes,PPL
+R101447,F051404,2022-08-19,2.1,Dual Flight Training,Completed,Lucas Bennett,N6603L,Cessna,172S,Sarah Phillips,IFR
+R100028,,2022-08-21,0,Dual Flight Training,Canceled,Alex Martinez,N7732K,Cessna,172S,Jenny Park,PPL
+R100019,,2022-08-22,0,Student Solo,Canceled,Alex Martinez,N6603L,Cessna,172S,,PPL
+R100149,F050144,2022-08-24,1.8,Dual Flight Training,Completed,Jamie Chen,N4521P,Cessna,172N,Mike Anderson,PPL
+R100338,F050328,2022-08-24,2.0,Dual Flight Training,Completed,Marcus Johnson,N6603L,Cessna,172S,Sarah Phillips,IFR
+R101573,F051493,2022-08-25,1.2,Owner Flight,Completed,Patricia O'Donnell,N9923R,Cessna,182RG,,
+R100135,F050130,2022-08-26,2.2,Dual Flight Training,Completed,Jamie Chen,N4521P,Cessna,172N,Tom Reyes,PPL
+R100927,F050900,2022-08-26,1.9,Dual Flight Training,Completed,Hannah Davis,N8814M,Piper,PA-28-181,Mike Anderson,PPL
+R101385,F051344,2022-08-26,1.9,Dual Flight Training,Completed,Mia Foster,N6603L,Cessna,172S,Jenny Park,PPL
+R100923,F050896,2022-08-28,1.6,Dual Flight Training,Completed,Hannah Davis,N4521P,Cessna,172N,Mike Anderson,PPL
+R100833,F050808,2022-08-29,1.7,Dual Flight Training,Completed,Olivia Nguyen,N4521P,Cessna,172N,Doug Hayes,IFR
+R100845,F050820,2022-08-29,2.4,Dual Flight Training,Completed,Olivia Nguyen,N8814M,Piper,PA-28-181,Doug Hayes,IFR
+R100005,F050005,2022-08-31,2.2,Dual Flight Training,Completed,Alex Martinez,N8814M,Piper,PA-28-181,Jenny Park,PPL
+R100609,F050594,2022-08-31,1.6,Check Ride,Completed,Emma Thompson,N4521P,Cessna,172N,,IFR
+R101259,F051224,2022-08-31,1.7,Check Ride,Completed,Ava Singh,N6603L,Cessna,172S,,PPL
+R100023,F050022,2022-09-02,2.3,Student Solo,Completed,Alex Martinez,N8814M,Piper,PA-28-181,,PPL
+R100329,F050319,2022-09-02,1.3,Dual Flight Training,Completed,Marcus Johnson,N4521P,Cessna,172N,Sarah Phillips,IFR
+R100332,F050322,2022-09-04,2.2,Dual Flight Training,Completed,Marcus Johnson,N8814M,Piper,PA-28-181,Sarah Phillips,IFR
+R101365,F051325,2022-09-04,2.1,Dual Flight Training,Completed,Mia Foster,N7732K,Cessna,172S,Jenny Park,PPL
+R101536,,2022-09-04,0.8,Maintenance,Completed,,N6603L,Cessna,172S,,
+R100158,F050153,2022-09-05,2.5,Check Ride,Completed,Jamie Chen,N7732K,Cessna,172S,,PPL
+R100009,F050009,2022-09-06,1.6,Dual Flight Training,Completed,Alex Martinez,N8814M,Piper,PA-28-181,Jenny Park,PPL
+R100699,F050678,2022-09-06,2.0,Dual Flight Training,Completed,Ryan O'Brien,N7732K,Cessna,172S,Sarah Phillips,COM
+R100701,F050680,2022-09-06,1.9,Dual Flight Training,Completed,Ryan O'Brien,N8814M,Piper,PA-28-181,Sarah Phillips,COM
+R100826,F050801,2022-09-06,1.8,Dual Flight Training,Completed,Olivia Nguyen,N7732K,Cessna,172S,Doug Hayes,IFR
+R101468,F051425,2022-09-06,1.5,Dual Flight Training,Completed,Lucas Bennett,N7732K,Cessna,172S,Jenny Park,IFR
+R101459,F051416,2022-09-07,1.8,Dual Flight Training,Completed,Lucas Bennett,N8814M,Piper,PA-28-181,Tom Reyes,IFR
+R100027,F050026,2022-09-08,1.7,Student Solo,Completed,Alex Martinez,N6603L,Cessna,172S,,PPL
+R100414,F050403,2022-09-08,1.4,Dual Flight Training,Completed,Priya Patel,N4521P,Cessna,172N,Sarah Phillips,PPL
+R101262,F051227,2022-09-08,1.5,Dual Flight Training,Completed,Ava Singh,N8814M,Piper,PA-28-181,Tom Reyes,IFR
+R100336,F050326,2022-09-09,2.4,Dual Flight Training,Completed,Marcus Johnson,N8814M,Piper,PA-28-181,Sarah Phillips,IFR
+R100413,F050402,2022-09-09,1.8,Student Solo,Completed,Priya Patel,N8814M,Piper,PA-28-181,,PPL
+R100612,F050597,2022-09-09,1.8,Dual Flight Training,Completed,Emma Thompson,N7732K,Cessna,172S,Tom Reyes,COM
+R100006,F050006,2022-09-10,1.3,Dual Flight Training,Completed,Alex Martinez,N8814M,Piper,PA-28-181,Sarah Phillips,PPL
+R100706,F050685,2022-09-10,2.2,Dual Flight Training,Completed,Ryan O'Brien,N1175C,Piper,PA-28R-201,Sarah Phillips,COM
+R101464,F051421,2022-09-11,1.3,Dual Flight Training,Completed,Lucas Bennett,N4521P,Cessna,172N,Tom Reyes,IFR
+R101443,F051400,2022-09-12,1.6,Dual Flight Training,Completed,Lucas Bennett,N4521P,Cessna,172N,Sarah Phillips,IFR
+R100622,,2022-09-13,0,Dual Flight Training,Canceled,Emma Thompson,N8814M,Piper,PA-28-181,Jenny Park,COM
+R100935,F050908,2022-09-13,1.3,Dual Flight Training,Completed,Hannah Davis,N4521P,Cessna,172N,Mike Anderson,PPL
+R101284,F051248,2022-09-14,2.0,Dual Flight Training,Completed,Ava Singh,N7732K,Cessna,172S,Tom Reyes,IFR
+R101386,F051345,2022-09-14,2.0,Dual Flight Training,Completed,Mia Foster,N6603L,Cessna,172S,Jenny Park,PPL
+R100343,F050333,2022-09-16,1.4,Dual Flight Training,Completed,Marcus Johnson,N7732K,Cessna,172S,Sarah Phillips,IFR
+R100707,F050686,2022-09-16,1.5,Check Ride,Completed,Ryan O'Brien,N1175C,Piper,PA-28R-201,,COM
+R100837,F050812,2022-09-16,1.7,Dual Flight Training,Completed,Olivia Nguyen,N8814M,Piper,PA-28-181,Doug Hayes,IFR
+R101457,F051414,2022-09-17,1.5,Dual Flight Training,Completed,Lucas Bennett,N4521P,Cessna,172N,Sarah Phillips,IFR
+R100822,F050797,2022-09-21,2.0,Dual Flight Training,Completed,Olivia Nguyen,N7732K,Cessna,172S,Doug Hayes,IFR
+R101461,F051418,2022-09-21,2.0,Dual Flight Training,Completed,Lucas Bennett,N7732K,Cessna,172S,Sarah Phillips,IFR
+R101366,F051326,2022-09-23,2.3,Dual Flight Training,Completed,Mia Foster,N8814M,Piper,PA-28-181,Jenny Park,PPL
+R101278,F051242,2022-09-24,2.3,Dual Flight Training,Completed,Ava Singh,N7732K,Cessna,172S,Sarah Phillips,IFR
+R100326,F050316,2022-09-26,2.4,Dual Flight Training,Completed,Marcus Johnson,N7732K,Cessna,172S,Sarah Phillips,IFR
+R100619,F050604,2022-09-26,2.1,Dual Flight Training,Completed,Emma Thompson,N8814M,Piper,PA-28-181,Tom Reyes,COM
+R100937,,2022-09-26,0,Dual Flight Training,Canceled,Hannah Davis,N6603L,Cessna,172S,Mike Anderson,PPL
+R100931,F050904,2022-09-27,2.0,Dual Flight Training,Completed,Hannah Davis,N6603L,Cessna,172S,Mike Anderson,PPL
+R100418,F050407,2022-09-30,1.9,Student Solo,Completed,Priya Patel,N4521P,Cessna,172N,,PPL
+R101363,F051323,2022-10-01,1.6,Student Solo,Completed,Mia Foster,N7732K,Cessna,172S,,PPL
+R100419,F050408,2022-10-02,2.4,Dual Flight Training,Completed,Priya Patel,N4521P,Cessna,172N,Sarah Phillips,PPL
+R100001,F050001,2022-10-03,1.2,Student Solo,Completed,Alex Martinez,N4521P,Cessna,172N,,PPL
+R100428,F050417,2022-10-06,1.9,Student Solo,Completed,Priya Patel,N4521P,Cessna,172N,,PPL
+R100819,F050794,2022-10-07,2.0,Dual Flight Training,Completed,Olivia Nguyen,N6603L,Cessna,172S,Doug Hayes,IFR
+R100337,F050327,2022-10-09,1.8,Dual Flight Training,Completed,Marcus Johnson,N8814M,Piper,PA-28-181,Sarah Phillips,IFR
+R100844,F050819,2022-10-10,1.6,Dual Flight Training,Completed,Olivia Nguyen,N6603L,Cessna,172S,Sarah Phillips,IFR
+R100827,F050802,2022-10-14,1.4,Dual Flight Training,Completed,Olivia Nguyen,N7732K,Cessna,172S,Tom Reyes,IFR
+R101568,F051488,2022-10-14,2.7,Owner Flight,Completed,Robert Klein,N1175C,Piper,PA-28R-201,,
+R100613,F050598,2022-10-15,2.3,Dual Flight Training,Completed,Emma Thompson,N9923R,Cessna,182RG,Tom Reyes,COM
+R100936,,2022-10-15,0,Dual Flight Training,Canceled,Hannah Davis,N8814M,Piper,PA-28-181,Mike Anderson,PPL
+R100836,F050811,2022-10-16,1.8,Dual Flight Training,Completed,Olivia Nguyen,N8814M,Piper,PA-28-181,Doug Hayes,IFR
+R101387,F051346,2022-10-17,1.4,Student Solo,Completed,Mia Foster,N6603L,Cessna,172S,,PPL
+R101450,F051407,2022-10-17,1.9,Dual Flight Training,Completed,Lucas Bennett,N6603L,Cessna,172S,Sarah Phillips,IFR
+R100916,F050889,2022-10-19,1.4,Dual Flight Training,Completed,Hannah Davis,N8814M,Piper,PA-28-181,Mike Anderson,PPL
+R100330,F050320,2022-10-20,1.5,Dual Flight Training,Completed,Marcus Johnson,N6603L,Cessna,172S,Sarah Phillips,IFR
+R101441,F051398,2022-10-20,1.2,Dual Flight Training,Completed,Lucas Bennett,N7732K,Cessna,172S,Mike Anderson,IFR
+R100014,F050014,2022-10-21,1.4,Student Solo,Completed,Alex Martinez,N7732K,Cessna,172S,,PPL
+R100345,F050335,2022-10-22,1.6,Dual Flight Training,Completed,Marcus Johnson,N6603L,Cessna,172S,Sarah Phillips,IFR
+R100709,F050688,2022-10-23,2.0,Dual Flight Training,Completed,Ryan O'Brien,N3340T,Piper,PA-44-180,Sarah Phillips,AMEL
+R100847,F050822,2022-10-25,1.8,Dual Flight Training,Completed,Olivia Nguyen,N7732K,Cessna,172S,Doug Hayes,IFR
+R101370,F051330,2022-10-25,2.4,Dual Flight Training,Completed,Mia Foster,N6603L,Cessna,172S,Jenny Park,PPL
+R101445,F051402,2022-10-25,2.2,Dual Flight Training,Completed,Lucas Bennett,N7732K,Cessna,172S,Sarah Phillips,IFR
+R100018,F050018,2022-10-26,1.8,Dual Flight Training,Completed,Alex Martinez,N4521P,Cessna,172N,Tom Reyes,PPL
+R100714,F050693,2022-10-26,1.5,Dual Flight Training,Completed,Ryan O'Brien,N5567W,Piper,PA-44-180,Tom Reyes,AMEL
+R100824,F050799,2022-10-26,1.3,Dual Flight Training,Completed,Olivia Nguyen,N8814M,Piper,PA-28-181,Jenny Park,IFR
+R101446,F051403,2022-10-27,2.2,Dual Flight Training,Completed,Lucas Bennett,N8814M,Piper,PA-28-181,Sarah Phillips,IFR
+R101388,,2022-10-29,0,Dual Flight Training,Canceled,Mia Foster,N7732K,Cessna,172S,Jenny Park,PPL
+R101266,F051231,2022-10-31,1.3,Dual Flight Training,Completed,Ava Singh,N4521P,Cessna,172N,Jenny Park,IFR
+R101275,F051239,2022-11-01,1.5,Dual Flight Training,Completed,Ava Singh,N6603L,Cessna,172S,Jenny Park,IFR
+R101260,F051225,2022-11-02,2.2,Dual Flight Training,Completed,Ava Singh,N8814M,Piper,PA-28-181,Tom Reyes,IFR
+R100169,F050163,2022-11-08,1.3,Dual Flight Training,Completed,Jamie Chen,N4521P,Cessna,172N,Mike Anderson,IFR
+R100825,F050800,2022-11-08,1.6,Dual Flight Training,Completed,Olivia Nguyen,N8814M,Piper,PA-28-181,Doug Hayes,IFR
+R100830,F050805,2022-11-09,1.8,Dual Flight Training,Completed,Olivia Nguyen,N8814M,Piper,PA-28-181,Tom Reyes,IFR
+R101270,F051235,2022-11-10,1.7,Dual Flight Training,Completed,Ava Singh,N8814M,Piper,PA-28-181,Tom Reyes,IFR
+R100940,F050911,2022-11-11,2.1,Dual Flight Training,Completed,Hannah Davis,N8814M,Piper,PA-28-181,Mike Anderson,PPL
+R101353,F051313,2022-11-13,1.3,Dual Flight Training,Completed,Mia Foster,N4521P,Cessna,172N,Jenny Park,PPL
+R101439,F051396,2022-11-13,1.5,Dual Flight Training,Completed,Lucas Bennett,N6603L,Cessna,172S,Sarah Phillips,IFR
+R100421,F050410,2022-11-14,1.8,Dual Flight Training,Completed,Priya Patel,N8814M,Piper,PA-28-181,Sarah Phillips,PPL
+R101389,F051347,2022-11-14,1.6,Dual Flight Training,Completed,Mia Foster,N4521P,Cessna,172N,Jenny Park,PPL
+R101452,F051409,2022-11-14,1.5,Dual Flight Training,Completed,Lucas Bennett,N4521P,Cessna,172N,Sarah Phillips,IFR
+R100021,F050020,2022-11-15,1.9,Dual Flight Training,Completed,Alex Martinez,N7732K,Cessna,172S,Jenny Park,PPL
+R100340,F050330,2022-11-15,2.1,Dual Flight Training,Completed,Marcus Johnson,N7732K,Cessna,172S,Sarah Phillips,IFR
+R100167,F050161,2022-11-18,1.5,Dual Flight Training,Completed,Jamie Chen,N8814M,Piper,PA-28-181,Mike Anderson,IFR
+R101438,F051395,2022-11-18,2.0,Dual Flight Training,Completed,Lucas Bennett,N4521P,Cessna,172N,Sarah Phillips,IFR
+R101453,F051410,2022-11-18,2.3,Dual Flight Training,Completed,Lucas Bennett,N4521P,Cessna,172N,Mike Anderson,IFR
+R100623,F050607,2022-11-19,1.5,Dual Flight Training,Completed,Emma Thompson,N9923R,Cessna,182RG,Tom Reyes,COM
+R100710,F050689,2022-11-19,2.0,Dual Flight Training,Completed,Ryan O'Brien,N5567W,Piper,PA-44-180,Sarah Phillips,AMEL
+R100918,F050891,2022-11-20,2.1,Dual Flight Training,Completed,Hannah Davis,N8814M,Piper,PA-28-181,Mike Anderson,PPL
+R101268,F051233,2022-11-20,1.6,Dual Flight Training,Completed,Ava Singh,N6603L,Cessna,172S,Tom Reyes,IFR
+R101458,F051415,2022-11-20,1.8,Dual Flight Training,Completed,Lucas Bennett,N8814M,Piper,PA-28-181,Tom Reyes,IFR
+R100820,F050795,2022-11-21,2.4,Dual Flight Training,Completed,Olivia Nguyen,N6603L,Cessna,172S,Mike Anderson,IFR
+R100183,F050176,2022-11-24,2.3,Dual Flight Training,Completed,Jamie Chen,N8814M,Piper,PA-28-181,Mike Anderson,IFR
+R100708,F050687,2022-11-25,2.2,Dual Flight Training,Completed,Ryan O'Brien,N5567W,Piper,PA-44-180,Sarah Phillips,AMEL
+R101454,F051411,2022-11-25,1.8,Dual Flight Training,Completed,Lucas Bennett,N7732K,Cessna,172S,Sarah Phillips,IFR
+R100163,,2022-11-26,0,Dual Flight Training,Canceled,Jamie Chen,N6603L,Cessna,172S,Mike Anderson,IFR
+R100022,F050021,2022-11-27,2.3,Dual Flight Training,Completed,Alex Martinez,N8814M,Piper,PA-28-181,Jenny Park,PPL
+R100712,F050691,2022-11-27,2.2,Dual Flight Training,Completed,Ryan O'Brien,N3340T,Piper,PA-44-180,Sarah Phillips,AMEL
+R100943,F050914,2022-11-27,2.4,Dual Flight Training,Completed,Hannah Davis,N4521P,Cessna,172N,Mike Anderson,PPL
+R100823,F050798,2022-11-28,1.8,Dual Flight Training,Completed,Olivia Nguyen,N4521P,Cessna,172N,Doug Hayes,IFR
+R101444,F051401,2022-12-01,1.7,Dual Flight Training,Completed,Lucas Bennett,N4521P,Cessna,172N,Sarah Phillips,IFR
+R100339,F050329,2022-12-03,2.2,Dual Flight Training,Completed,Marcus Johnson,N4521P,Cessna,172N,Sarah Phillips,IFR
+R100835,F050810,2022-12-03,1.9,Dual Flight Training,Completed,Olivia Nguyen,N8814M,Piper,PA-28-181,Doug Hayes,IFR
+R100930,F050903,2022-12-03,1.3,Dual Flight Training,Completed,Hannah Davis,N6603L,Cessna,172S,Sarah Phillips,PPL
+R100036,F050034,2022-12-07,1.3,Dual Flight Training,Completed,Alex Martinez,N4521P,Cessna,172N,Sarah Phillips,PPL
+R100170,F050164,2022-12-08,1.5,Dual Flight Training,Completed,Jamie Chen,N6603L,Cessna,172S,Mike Anderson,IFR
+R100415,F050404,2022-12-09,1.3,Dual Flight Training,Completed,Priya Patel,N4521P,Cessna,172N,Tom Reyes,PPL
+R101456,F051413,2022-12-09,1.5,Dual Flight Training,Completed,Lucas Bennett,N6603L,Cessna,172S,Sarah Phillips,IFR
+R100917,F050890,2022-12-10,2.2,Dual Flight Training,Completed,Hannah Davis,N4521P,Cessna,172N,Mike Anderson,PPL
+R100011,F050011,2022-12-11,1.5,Dual Flight Training,Completed,Alex Martinez,N8814M,Piper,PA-28-181,Jenny Park,PPL
+R100174,F050168,2022-12-11,1.3,Dual Flight Training,Completed,Jamie Chen,N8814M,Piper,PA-28-181,Mike Anderson,IFR
+R100171,F050165,2022-12-14,1.4,Dual Flight Training,Completed,Jamie Chen,N6603L,Cessna,172S,Mike Anderson,IFR
+R101280,F051244,2022-12-14,2.1,Dual Flight Training,Completed,Ava Singh,N8814M,Piper,PA-28-181,Doug Hayes,IFR
+R100610,F050595,2022-12-15,2.4,Dual Flight Training,Completed,Emma Thompson,N9923R,Cessna,182RG,Doug Hayes,COM
+R100013,F050013,2022-12-16,2.3,Dual Flight Training,Completed,Alex Martinez,N8814M,Piper,PA-28-181,Jenny Park,PPL
+R100024,F050023,2022-12-16,2.3,Dual Flight Training,Completed,Alex Martinez,N4521P,Cessna,172N,Sarah Phillips,PPL
+R100412,F050401,2022-12-17,1.6,Dual Flight Training,Completed,Priya Patel,N6603L,Cessna,172S,Sarah Phillips,PPL
+R100423,F050412,2022-12-17,2.2,Dual Flight Training,Completed,Priya Patel,N4521P,Cessna,172N,Mike Anderson,PPL
+R100711,F050690,2022-12-17,2.3,Dual Flight Training,Completed,Ryan O'Brien,N3340T,Piper,PA-44-180,Jenny Park,AMEL
+R100031,F050029,2022-12-18,1.9,Dual Flight Training,Completed,Alex Martinez,N7732K,Cessna,172S,Sarah Phillips,PPL
+R100614,F050599,2022-12-18,1.3,Dual Flight Training,Completed,Emma Thompson,N9923R,Cessna,182RG,Tom Reyes,COM
+R101379,F051338,2022-12-19,1.8,Student Solo,Completed,Mia Foster,N4521P,Cessna,172N,,PPL
+R100831,F050806,2022-12-21,1.5,Dual Flight Training,Completed,Olivia Nguyen,N7732K,Cessna,172S,Doug Hayes,IFR
+R101261,F051226,2022-12-21,1.7,Dual Flight Training,Completed,Ava Singh,N4521P,Cessna,172N,Tom Reyes,IFR
+R101451,F051408,2022-12-22,1.3,Dual Flight Training,Completed,Lucas Bennett,N6603L,Cessna,172S,Sarah Phillips,IFR
+R101277,F051241,2022-12-23,1.7,Dual Flight Training,Completed,Ava Singh,N6603L,Cessna,172S,Jenny Park,IFR
+R100037,F050035,2022-12-24,1.9,Check Ride,Completed,Alex Martinez,N7732K,Cessna,172S,,PPL
+R101369,F051329,2022-12-26,1.4,Dual Flight Training,Completed,Mia Foster,N4521P,Cessna,172N,Jenny Park,PPL
+R100406,F050395,2022-12-27,1.4,Dual Flight Training,Completed,Priya Patel,N7732K,Cessna,172S,Sarah Phillips,PPL
+R101448,F051405,2022-12-27,1.3,Dual Flight Training,Completed,Lucas Bennett,N4521P,Cessna,172N,Sarah Phillips,IFR
+R101463,F051420,2022-12-27,1.9,Dual Flight Training,Completed,Lucas Bennett,N8814M,Piper,PA-28-181,Sarah Phillips,IFR
+R100159,F050154,2022-12-30,2.2,Dual Flight Training,Completed,Jamie Chen,N6603L,Cessna,172S,Mike Anderson,IFR
+R101281,F051245,2022-12-30,2.1,Dual Flight Training,Completed,Ava Singh,N8814M,Piper,PA-28-181,Mike Anderson,IFR
+R101273,,2022-12-31,0,Dual Flight Training,Canceled,Ava Singh,N8814M,Piper,PA-28-181,Mike Anderson,IFR
+R100841,F050816,2023-01-02,1.8,Dual Flight Training,Completed,Olivia Nguyen,N8814M,Piper,PA-28-181,Doug Hayes,IFR
+R100913,F050886,2023-01-02,1.2,Dual Flight Training,Completed,Hannah Davis,N7732K,Cessna,172S,Mike Anderson,PPL
+R101017,F050986,2023-01-03,1.6,Dual Flight Training,Completed,Isabella Rodriguez,N4521P,Cessna,172N,Doug Hayes,PPL
+R100713,F050692,2023-01-04,1.8,Dual Flight Training,Completed,Ryan O'Brien,N5567W,Piper,PA-44-180,Tom Reyes,AMEL
+R101267,F051232,2023-01-06,2.3,Dual Flight Training,Completed,Ava Singh,N7732K,Cessna,172S,Tom Reyes,IFR
+R100323,F050313,2023-01-08,2.3,Dual Flight Training,Completed,Marcus Johnson,N8814M,Piper,PA-28-181,Sarah Phillips,IFR
+R100431,F050420,2023-01-08,2.2,Check Ride,Completed,Priya Patel,N6603L,Cessna,172S,,PPL
+R100178,F050171,2023-01-10,1.2,Dual Flight Training,Completed,Jamie Chen,N4521P,Cessna,172N,Mike Anderson,IFR
+R100059,F050056,2023-01-11,2.3,Dual Flight Training,Completed,Alex Martinez,N7732K,Cessna,172S,Jenny Park,IFR
+R100325,F050315,2023-01-12,1.6,Dual Flight Training,Completed,Marcus Johnson,N4521P,Cessna,172N,Sarah Phillips,IFR
+R100040,F050038,2023-01-15,1.9,Dual Flight Training,Completed,Alex Martinez,N4521P,Cessna,172N,Jenny Park,IFR
+R100335,F050325,2023-01-15,1.8,Dual Flight Training,Completed,Marcus Johnson,N8814M,Piper,PA-28-181,Sarah Phillips,IFR
+R100924,F050897,2023-01-15,1.8,Dual Flight Training,Completed,Hannah Davis,N7732K,Cessna,172S,Mike Anderson,PPL
+R101025,F050994,2023-01-15,1.8,Dual Flight Training,Completed,Isabella Rodriguez,N4521P,Cessna,172N,Doug Hayes,PPL
+R101271,F051236,2023-01-15,1.6,Dual Flight Training,Completed,Ava Singh,N4521P,Cessna,172N,Tom Reyes,IFR
+R100611,F050596,2023-01-16,2.0,Dual Flight Training,Completed,Emma Thompson,N7732K,Cessna,172S,Tom Reyes,COM
+R100838,F050813,2023-01-17,1.4,Dual Flight Training,Completed,Olivia Nguyen,N7732K,Cessna,172S,Doug Hayes,IFR
+R100715,F050694,2023-01-18,2.0,Check Ride,Completed,Ryan O'Brien,N3340T,Piper,PA-44-180,,AMEL
+R101462,F051419,2023-01-18,1.8,Dual Flight Training,Completed,Lucas Bennett,N6603L,Cessna,172S,Sarah Phillips,IFR
+R101577,F051497,2023-01-18,1.2,Owner Flight,Completed,Patricia O'Donnell,N6603L,Cessna,172S,,
+R100182,F050175,2023-01-19,2.1,Dual Flight Training,Completed,Jamie Chen,N4521P,Cessna,172N,Mike Anderson,IFR
+R100616,F050601,2023-01-20,1.6,Dual Flight Training,Completed,Emma Thompson,N1175C,Piper,PA-28R-201,Tom Reyes,COM
+R100044,F050042,2023-01-21,1.7,Dual Flight Training,Completed,Alex Martinez,N8814M,Piper,PA-28-181,Jenny Park,IFR
+R100166,F050160,2023-01-21,2.0,Dual Flight Training,Completed,Jamie Chen,N6603L,Cessna,172S,Mike Anderson,IFR
+R100344,F050334,2023-01-22,1.8,Dual Flight Training,Completed,Marcus Johnson,N4521P,Cessna,172N,Sarah Phillips,IFR
+R100932,F050905,2023-01-24,1.9,Dual Flight Training,Completed,Hannah Davis,N4521P,Cessna,172N,Mike Anderson,PPL
+R101449,F051406,2023-01-25,1.3,Dual Flight Training,Completed,Lucas Bennett,N7732K,Cessna,172S,Mike Anderson,IFR
+R101465,F051422,2023-01-25,1.5,Dual Flight Training,Completed,Lucas Bennett,N7732K,Cessna,172S,Sarah Phillips,IFR
+R101357,F051317,2023-01-28,1.3,Dual Flight Training,Completed,Mia Foster,N6603L,Cessna,172S,Mike Anderson,PPL
+R100618,F050603,2023-01-29,1.9,Dual Flight Training,Completed,Emma Thompson,N4521P,Cessna,172N,Tom Reyes,COM
+R101455,F051412,2023-01-30,1.3,Dual Flight Training,Completed,Lucas Bennett,N7732K,Cessna,172S,Sarah Phillips,IFR
+R100043,F050041,2023-01-31,2.3,Dual Flight Training,Completed,Alex Martinez,N7732K,Cessna,172S,Jenny Park,IFR
+R100347,F050337,2023-01-31,2.1,Check Ride,Completed,Marcus Johnson,N8814M,Piper,PA-28-181,,IFR
+R100615,F050600,2023-01-31,1.5,Dual Flight Training,Completed,Emma Thompson,N4521P,Cessna,172N,Tom Reyes,COM
+R100832,F050807,2023-01-31,2.3,Dual Flight Training,Completed,Olivia Nguyen,N4521P,Cessna,172N,Doug Hayes,IFR
+R101383,F051342,2023-01-31,1.7,Dual Flight Training,Completed,Mia Foster,N6603L,Cessna,172S,Jenny Park,PPL
+R100058,F050055,2023-02-02,1.3,Dual Flight Training,Completed,Alex Martinez,N8814M,Piper,PA-28-181,Jenny Park,IFR
+R100821,F050796,2023-02-02,1.3,Dual Flight Training,Completed,Olivia Nguyen,N4521P,Cessna,172N,Doug Hayes,IFR
+R101283,F051247,2023-02-02,2.1,Dual Flight Training,Completed,Ava Singh,N8814M,Piper,PA-28-181,Tom Reyes,IFR
+R100048,F050045,2023-02-03,2.3,Dual Flight Training,Completed,Alex Martinez,N4521P,Cessna,172N,Jenny Park,IFR
+R100055,F050052,2023-02-03,2.0,Dual Flight Training,Completed,Alex Martinez,N8814M,Piper,PA-28-181,Jenny Park,IFR
+R101367,F051327,2023-02-03,2.2,Dual Flight Training,Completed,Mia Foster,N4521P,Cessna,172N,Jenny Park,PPL
+R100051,F050048,2023-02-04,1.5,Dual Flight Training,Completed,Alex Martinez,N4521P,Cessna,172N,Jenny Park,IFR
+R100846,F050821,2023-02-05,2.1,Dual Flight Training,Completed,Olivia Nguyen,N6603L,Cessna,172S,Doug Hayes,IFR
+R101442,F051399,2023-02-05,1.5,Dual Flight Training,Completed,Lucas Bennett,N6603L,Cessna,172S,Tom Reyes,IFR
+R100621,F050606,2023-02-06,1.9,Dual Flight Training,Completed,Emma Thompson,N9923R,Cessna,182RG,Sarah Phillips,COM
+R100176,F050170,2023-02-07,2.2,Dual Flight Training,Completed,Jamie Chen,N4521P,Cessna,172N,Mike Anderson,IFR
+R100617,F050602,2023-02-07,1.9,Dual Flight Training,Completed,Emma Thompson,N4521P,Cessna,172N,Tom Reyes,COM
+R100718,F050697,2023-02-07,1.7,Dual Flight Training,Completed,Ryan O'Brien,N4521P,Cessna,172N,Sarah Phillips,CFI
+R101375,F051334,2023-02-07,2.1,Dual Flight Training,Completed,Mia Foster,N7732K,Cessna,172S,Jenny Park,PPL
+R101378,F051337,2023-02-07,1.7,Dual Flight Training,Completed,Mia Foster,N4521P,Cessna,172N,Tom Reyes,PPL
+R100829,F050804,2023-02-08,1.9,Dual Flight Training,Completed,Olivia Nguyen,N4521P,Cessna,172N,Doug Hayes,IFR
+R101360,F051320,2023-02-08,1.6,Dual Flight Training,Completed,Mia Foster,N6603L,Cessna,172S,Jenny Park,PPL
+R100939,F050910,2023-02-09,1.9,Student Solo,Completed,Hannah Davis,N4521P,Cessna,172N,,PPL
+R100049,F050046,2023-02-10,1.7,Dual Flight Training,Completed,Alex Martinez,N8814M,Piper,PA-28-181,Mike Anderson,IFR
+R100727,F050705,2023-02-11,1.7,Dual Flight Training,Completed,Ryan O'Brien,N8814M,Piper,PA-28-181,Sarah Phillips,CFI
+R100357,F050347,2023-02-12,2.0,Dual Flight Training,Completed,Marcus Johnson,N9923R,Cessna,182RG,Sarah Phillips,COM
+R100355,F050345,2023-02-13,2.0,Dual Flight Training,Completed,Marcus Johnson,N9923R,Cessna,182RG,Doug Hayes,COM
+R101564,F051484,2023-02-13,2.6,Owner Flight,Completed,Robert Klein,N8814M,Piper,PA-28-181,,
+R101018,F050987,2023-02-14,1.6,Dual Flight Training,Completed,Isabella Rodriguez,N4521P,Cessna,172N,Doug Hayes,PPL
+R101549,,2023-02-14,0.7,Maintenance,Completed,,N1175C,Piper,PA-28R-201,,
+R100620,F050605,2023-02-15,1.8,Dual Flight Training,Completed,Emma Thompson,N9923R,Cessna,182RG,Tom Reyes,COM
+R101043,F051012,2023-02-15,1.9,Dual Flight Training,Completed,Isabella Rodriguez,N6603L,Cessna,172S,Mike Anderson,PPL
+R100042,F050040,2023-02-17,1.3,Dual Flight Training,Completed,Alex Martinez,N4521P,Cessna,172N,Jenny Park,IFR
+R100175,F050169,2023-02-17,2.0,Dual Flight Training,Completed,Jamie Chen,N6603L,Cessna,172S,Mike Anderson,IFR
+R100624,F050608,2023-02-18,2.3,Check Ride,Completed,Emma Thompson,N1175C,Piper,PA-28R-201,,COM
+R100925,F050898,2023-02-18,2.4,Student Solo,Completed,Hannah Davis,N4521P,Cessna,172N,,PPL
+R100926,F050899,2023-02-18,1.4,Student Solo,Completed,Hannah Davis,N8814M,Piper,PA-28-181,,PPL
+R100458,F050446,2023-02-19,1.7,Dual Flight Training,Completed,Priya Patel,N6603L,Cessna,172S,Sarah Phillips,IFR
+R100848,F050823,2023-02-19,1.9,Check Ride,Completed,Olivia Nguyen,N8814M,Piper,PA-28-181,,IFR
+R100929,F050902,2023-02-19,2.0,Dual Flight Training,Completed,Hannah Davis,N7732K,Cessna,172S,Mike Anderson,PPL
+R101028,F050997,2023-02-19,1.7,Dual Flight Training,Completed,Isabella Rodriguez,N6603L,Cessna,172S,Sarah Phillips,PPL
+R100168,F050162,2023-02-20,2.4,Dual Flight Training,Completed,Jamie Chen,N4521P,Cessna,172N,Mike Anderson,IFR
+R100726,F050704,2023-02-20,1.4,Dual Flight Training,Completed,Ryan O'Brien,N7732K,Cessna,172S,Sarah Phillips,CFI
+R101272,F051237,2023-02-22,1.5,Dual Flight Training,Completed,Ava Singh,N8814M,Piper,PA-28-181,Jenny Park,IFR
+R101364,F051324,2023-02-22,1.7,Dual Flight Training,Completed,Mia Foster,N7732K,Cessna,172S,Jenny Park,PPL
+R100358,F050348,2023-02-23,2.3,Dual Flight Training,Completed,Marcus Johnson,N1175C,Piper,PA-28R-201,Sarah Phillips,COM
+R101466,F051423,2023-02-25,1.6,Dual Flight Training,Completed,Lucas Bennett,N6603L,Cessna,172S,Sarah Phillips,IFR
+R100433,F050422,2023-02-26,1.7,Dual Flight Training,Completed,Priya Patel,N4521P,Cessna,172N,Sarah Phillips,IFR
+R100440,F050428,2023-02-27,1.4,Dual Flight Training,Completed,Priya Patel,N7732K,Cessna,172S,Sarah Phillips,IFR
+R100439,F050427,2023-02-28,1.3,Dual Flight Training,Completed,Priya Patel,N8814M,Piper,PA-28-181,Sarah Phillips,IFR
+R100448,F050436,2023-02-28,1.4,Dual Flight Training,Completed,Priya Patel,N4521P,Cessna,172N,Sarah Phillips,IFR
+R101469,F051426,2023-03-01,2.5,Check Ride,Completed,Lucas Bennett,N4521P,Cessna,172N,,IFR
+R100061,F050058,2023-03-02,2.2,Dual Flight Training,Completed,Alex Martinez,N7732K,Cessna,172S,Jenny Park,IFR
+R100716,F050695,2023-03-02,2.1,Dual Flight Training,Completed,Ryan O'Brien,N6603L,Cessna,172S,Doug Hayes,CFI
+R100861,F050834,2023-03-03,2.1,Dual Flight Training,Completed,Olivia Nguyen,N7732K,Cessna,172S,Doug Hayes,COM
+R101368,F051328,2023-03-03,1.4,Dual Flight Training,Completed,Mia Foster,N4521P,Cessna,172N,Jenny Park,PPL
+R100853,F050828,2023-03-07,2.1,Dual Flight Training,Completed,Olivia Nguyen,N9923R,Cessna,182RG,Doug Hayes,COM
+R101390,F051348,2023-03-07,1.5,Check Ride,Completed,Mia Foster,N8814M,Piper,PA-28-181,,PPL
+R100348,F050338,2023-03-08,1.9,Dual Flight Training,Completed,Marcus Johnson,N1175C,Piper,PA-28R-201,Sarah Phillips,COM
+R100053,F050050,2023-03-09,1.8,Dual Flight Training,Completed,Alex Martinez,N8814M,Piper,PA-28-181,Mike Anderson,IFR
+R100162,F050157,2023-03-09,2.4,Dual Flight Training,Completed,Jamie Chen,N8814M,Piper,PA-28-181,Doug Hayes,IFR
+R100350,F050340,2023-03-09,1.3,Dual Flight Training,Completed,Marcus Johnson,N1175C,Piper,PA-28R-201,Sarah Phillips,COM
+R100063,F050060,2023-03-10,1.4,Dual Flight Training,Completed,Alex Martinez,N4521P,Cessna,172N,Jenny Park,IFR
+R100729,F050707,2023-03-12,2.3,Dual Flight Training,Completed,Ryan O'Brien,N4521P,Cessna,172N,Sarah Phillips,CFI
+R100052,F050049,2023-03-14,1.9,Dual Flight Training,Completed,Alex Martinez,N8814M,Piper,PA-28-181,Jenny Park,IFR
+R100719,F050698,2023-03-14,2.4,Dual Flight Training,Completed,Ryan O'Brien,N8814M,Piper,PA-28-181,Sarah Phillips,CFI
+R101576,F051496,2023-03-14,2.1,Owner Flight,Completed,Robert Klein,N9923R,Cessna,182RG,,
+R100250,F050242,2023-03-17,1.6,Dual Flight Training,Completed,Sarah Williams,N6603L,Cessna,172S,Sarah Phillips,IFR
+R100351,F050341,2023-03-17,2.3,Dual Flight Training,Completed,Marcus Johnson,N8814M,Piper,PA-28-181,Mike Anderson,COM
+R100352,F050342,2023-03-17,2.3,Dual Flight Training,Completed,Marcus Johnson,N1175C,Piper,PA-28R-201,Jenny Park,COM
+R100849,F050824,2023-03-19,1.3,Dual Flight Training,Completed,Olivia Nguyen,N1175C,Piper,PA-28R-201,Doug Hayes,COM
+R100436,F050424,2023-03-20,2.0,Dual Flight Training,Completed,Priya Patel,N6603L,Cessna,172S,Sarah Phillips,IFR
+R100272,F050264,2023-03-21,1.2,Dual Flight Training,Completed,Sarah Williams,N7732K,Cessna,172S,Sarah Phillips,IFR
+R100852,F050827,2023-03-21,1.5,Dual Flight Training,Completed,Olivia Nguyen,N9923R,Cessna,182RG,Mike Anderson,COM
+R101588,F051508,2023-03-21,1.0,Introductory Flight,Completed,Michael Sanders,N4521P,Cessna,172N,Sarah Phillips,
+R100045,F050043,2023-03-22,1.5,Dual Flight Training,Completed,Alex Martinez,N6603L,Cessna,172S,Jenny Park,IFR
+R100854,F050829,2023-03-22,2.0,Dual Flight Training,Completed,Olivia Nguyen,N8814M,Piper,PA-28-181,Doug Hayes,COM
+R100725,F050703,2023-03-23,2.1,Dual Flight Training,Completed,Ryan O'Brien,N7732K,Cessna,172S,Sarah Phillips,CFI
+R100257,F050249,2023-03-26,1.8,Dual Flight Training,Completed,Sarah Williams,N4521P,Cessna,172N,Tom Reyes,IFR
+R100062,F050059,2023-03-27,2.1,Dual Flight Training,Completed,Alex Martinez,N6603L,Cessna,172S,Sarah Phillips,IFR
+R100177,,2023-03-28,0,Dual Flight Training,Canceled,Jamie Chen,N8814M,Piper,PA-28-181,Doug Hayes,IFR
+R100731,F050709,2023-03-29,2.3,Dual Flight Training,Completed,Ryan O'Brien,N4521P,Cessna,172N,Sarah Phillips,CFI
+R100172,F050166,2023-03-30,1.4,Dual Flight Training,Completed,Jamie Chen,N6603L,Cessna,172S,Mike Anderson,IFR
+R100721,F050700,2023-03-30,2.1,Dual Flight Training,Completed,Ryan O'Brien,N6603L,Cessna,172S,Sarah Phillips,CFI
+R101013,F050982,2023-03-31,1.3,Dual Flight Training,Completed,Isabella Rodriguez,N4521P,Cessna,172N,Jenny Park,PPL
+R101282,F051246,2023-03-31,1.4,Dual Flight Training,Completed,Ava Singh,N8814M,Piper,PA-28-181,Tom Reyes,IFR
+R100060,F050057,2023-04-01,2.1,Dual Flight Training,Completed,Alex Martinez,N6603L,Cessna,172S,Jenny Park,IFR
+R100266,F050258,2023-04-01,1.5,Dual Flight Training,Completed,Sarah Williams,N7732K,Cessna,172S,Tom Reyes,IFR
+R100356,F050346,2023-04-03,2.0,Dual Flight Training,Completed,Marcus Johnson,N8814M,Piper,PA-28-181,Sarah Phillips,COM
+R100444,F050432,2023-04-04,1.9,Dual Flight Training,Completed,Priya Patel,N7732K,Cessna,172S,Sarah Phillips,IFR
+R101274,F051238,2023-04-04,2.1,Dual Flight Training,Completed,Ava Singh,N4521P,Cessna,172N,Tom Reyes,IFR
+R100271,F050263,2023-04-05,2.1,Dual Flight Training,Completed,Sarah Williams,N6603L,Cessna,172S,Sarah Phillips,IFR
+R100447,F050435,2023-04-05,2.1,Dual Flight Training,Completed,Priya Patel,N6603L,Cessna,172S,Sarah Phillips,IFR
+R101404,F051361,2023-04-05,1.5,Dual Flight Training,Completed,Mia Foster,N7732K,Cessna,172S,Jenny Park,IFR
+R101415,F051372,2023-04-05,1.5,Dual Flight Training,Completed,Mia Foster,N4521P,Cessna,172N,Jenny Park,IFR
+R100252,F050244,2023-04-06,2.3,Dual Flight Training,Completed,Sarah Williams,N8814M,Piper,PA-28-181,Sarah Phillips,IFR
+R101476,F051433,2023-04-06,2.1,Dual Flight Training,Completed,Lucas Bennett,N1175C,Piper,PA-28R-201,Sarah Phillips,COM
+R100270,F050262,2023-04-07,1.4,Dual Flight Training,Completed,Sarah Williams,N8814M,Piper,PA-28-181,Sarah Phillips,IFR
+R100728,F050706,2023-04-07,1.2,Dual Flight Training,Completed,Ryan O'Brien,N6603L,Cessna,172S,Sarah Phillips,CFI
+R101263,F051228,2023-04-07,1.3,Dual Flight Training,Completed,Ava Singh,N6603L,Cessna,172S,Tom Reyes,IFR
+R101477,F051434,2023-04-07,2.0,Dual Flight Training,Completed,Lucas Bennett,N9923R,Cessna,182RG,Doug Hayes,COM
+R100165,F050159,2023-04-09,2.0,Dual Flight Training,Completed,Jamie Chen,N4521P,Cessna,172N,Doug Hayes,IFR
+R100354,F050344,2023-04-09,1.5,Dual Flight Training,Completed,Marcus Johnson,N9923R,Cessna,182RG,Sarah Phillips,COM
+R100445,F050433,2023-04-10,1.6,Dual Flight Training,Completed,Priya Patel,N6603L,Cessna,172S,Sarah Phillips,IFR
+R100264,F050256,2023-04-11,2.2,Dual Flight Training,Completed,Sarah Williams,N7732K,Cessna,172S,Sarah Phillips,IFR
+R100446,F050434,2023-04-12,1.7,Dual Flight Training,Completed,Priya Patel,N6603L,Cessna,172S,Sarah Phillips,IFR
+R100038,F050036,2023-04-13,2.3,Dual Flight Training,Completed,Alex Martinez,N7732K,Cessna,172S,Tom Reyes,IFR
+R100353,F050343,2023-04-13,2.0,Dual Flight Training,Completed,Marcus Johnson,N9923R,Cessna,182RG,Sarah Phillips,COM
+R101020,F050989,2023-04-13,1.4,Dual Flight Training,Completed,Isabella Rodriguez,N8814M,Piper,PA-28-181,Doug Hayes,PPL
+R101412,F051369,2023-04-14,1.4,Dual Flight Training,Completed,Mia Foster,N7732K,Cessna,172S,Jenny Park,IFR
+R100717,F050696,2023-04-15,2.3,Dual Flight Training,Completed,Ryan O'Brien,N6603L,Cessna,172S,Sarah Phillips,CFI
+R100722,F050701,2023-04-15,2.0,Dual Flight Training,Completed,Ryan O'Brien,N4521P,Cessna,172N,Sarah Phillips,CFI
+R101016,F050985,2023-04-16,2.1,Dual Flight Training,Completed,Isabella Rodriguez,N6603L,Cessna,172S,Mike Anderson,PPL
+R100164,F050158,2023-04-17,2.4,Dual Flight Training,Completed,Jamie Chen,N4521P,Cessna,172N,Jenny Park,IFR
+R100720,F050699,2023-04-17,1.4,Dual Flight Training,Completed,Ryan O'Brien,N4521P,Cessna,172N,Sarah Phillips,CFI
+R100862,F050835,2023-04-18,1.7,Dual Flight Training,Completed,Olivia Nguyen,N1175C,Piper,PA-28R-201,Doug Hayes,COM
+R101264,F051229,2023-04-18,1.3,Dual Flight Training,Completed,Ava Singh,N8814M,Piper,PA-28-181,Doug Hayes,IFR
+R101265,F051230,2023-04-18,1.6,Dual Flight Training,Completed,Ava Singh,N4521P,Cessna,172N,Sarah Phillips,IFR
+R101394,F051351,2023-04-18,2.2,Dual Flight Training,Completed,Mia Foster,N6603L,Cessna,172S,Jenny Park,IFR
+R100457,F050445,2023-04-19,1.5,Dual Flight Training,Completed,Priya Patel,N7732K,Cessna,172S,Sarah Phillips,IFR
+R100730,F050708,2023-04-19,1.8,Dual Flight Training,Completed,Ryan O'Brien,N8814M,Piper,PA-28-181,Sarah Phillips,CFI
+R100767,F050744,2023-04-19,1.9,Dual Flight Training,Completed,Sofia Garcia,N6603L,Cessna,172S,Jenny Park,PPL
+R100056,F050053,2023-04-20,1.9,Dual Flight Training,Completed,Alex Martinez,N4521P,Cessna,172N,Sarah Phillips,IFR
+R100173,F050167,2023-04-20,1.2,Dual Flight Training,Completed,Jamie Chen,N6603L,Cessna,172S,Mike Anderson,IFR
+R101276,F051240,2023-04-20,2.2,Dual Flight Training,Completed,Ava Singh,N4521P,Cessna,172N,Tom Reyes,IFR
+R100774,F050751,2023-04-21,2.4,Dual Flight Training,Completed,Sofia Garcia,N8814M,Piper,PA-28-181,Tom Reyes,PPL
+R100723,,2023-04-22,0,Dual Flight Training,Canceled,Ryan O'Brien,N4521P,Cessna,172N,Sarah Phillips,CFI
+R100773,F050750,2023-04-22,2.0,Dual Flight Training,Completed,Sofia Garcia,N8814M,Piper,PA-28-181,Mike Anderson,PPL
+R101040,F051009,2023-04-22,2.2,Dual Flight Training,Completed,Isabella Rodriguez,N4521P,Cessna,172N,Doug Hayes,PPL
+R100452,F050440,2023-04-23,1.5,Dual Flight Training,Completed,Priya Patel,N6603L,Cessna,172S,Sarah Phillips,IFR
+R101279,F051243,2023-04-23,1.7,Dual Flight Training,Completed,Ava Singh,N8814M,Piper,PA-28-181,Tom Reyes,IFR
+R101409,F051366,2023-04-23,1.4,Dual Flight Training,Completed,Mia Foster,N6603L,Cessna,172S,Jenny Park,IFR
+R101470,F051427,2023-04-23,1.5,Dual Flight Training,Completed,Lucas Bennett,N9923R,Cessna,182RG,Sarah Phillips,COM
+R101471,F051428,2023-04-23,1.4,Dual Flight Training,Completed,Lucas Bennett,N1175C,Piper,PA-28R-201,Sarah Phillips,COM
+R100453,F050441,2023-04-25,1.7,Dual Flight Training,Completed,Priya Patel,N6603L,Cessna,172S,Tom Reyes,IFR
+R100733,F050711,2023-04-26,1.6,Dual Flight Training,Completed,Ryan O'Brien,N7732K,Cessna,172S,Sarah Phillips,CFI
+R101408,F051365,2023-04-26,1.9,Dual Flight Training,Completed,Mia Foster,N8814M,Piper,PA-28-181,Jenny Park,IFR
+R100039,F050037,2023-04-27,1.5,Dual Flight Training,Completed,Alex Martinez,N6603L,Cessna,172S,Jenny Park,IFR
+R100269,F050261,2023-04-27,1.2,Dual Flight Training,Completed,Sarah Williams,N4521P,Cessna,172N,Sarah Phillips,IFR
+R101478,F051435,2023-04-27,2.1,Dual Flight Training,Completed,Lucas Bennett,N4521P,Cessna,172N,Sarah Phillips,COM
+R100046,,2023-04-28,0,Dual Flight Training,Canceled,Alex Martinez,N4521P,Cessna,172N,Jenny Park,IFR
+R101269,F051234,2023-04-28,1.7,Dual Flight Training,Completed,Ava Singh,N7732K,Cessna,172S,Tom Reyes,IFR
+R101561,,2023-04-29,1.0,Maintenance,Completed,,N6603L,Cessna,172S,,
+R100160,F050155,2023-04-30,2.3,Dual Flight Training,Completed,Jamie Chen,N6603L,Cessna,172S,Mike Anderson,IFR
+R100349,F050339,2023-04-30,2.0,Dual Flight Training,Completed,Marcus Johnson,N1175C,Piper,PA-28R-201,Jenny Park,COM
+R101285,F051249,2023-05-01,1.5,Check Ride,Completed,Ava Singh,N7732K,Cessna,172S,,IFR
+R100938,F050909,2023-05-03,1.5,Dual Flight Training,Completed,Hannah Davis,N8814M,Piper,PA-28-181,Sarah Phillips,PPL
+R100181,F050174,2023-05-04,2.1,Dual Flight Training,Completed,Jamie Chen,N7732K,Cessna,172S,Sarah Phillips,IFR
+R101392,F051350,2023-05-07,1.4,Dual Flight Training,Completed,Mia Foster,N6603L,Cessna,172S,Tom Reyes,IFR
+R101411,F051368,2023-05-07,1.7,Dual Flight Training,Completed,Mia Foster,N8814M,Piper,PA-28-181,Mike Anderson,IFR
+R100359,F050349,2023-05-08,2.4,Check Ride,Completed,Marcus Johnson,N8814M,Piper,PA-28-181,,COM
+R100850,F050825,2023-05-08,1.9,Dual Flight Training,Completed,Olivia Nguyen,N1175C,Piper,PA-28R-201,Jenny Park,COM
+R100865,F050838,2023-05-08,1.7,Dual Flight Training,Completed,Olivia Nguyen,N7732K,Cessna,172S,Doug Hayes,COM
+R100732,F050710,2023-05-15,1.3,Dual Flight Training,Completed,Ryan O'Brien,N7732K,Cessna,172S,Sarah Phillips,CFI
+R100443,F050431,2023-05-17,1.7,Dual Flight Training,Completed,Priya Patel,N4521P,Cessna,172N,Sarah Phillips,IFR
+R100769,F050746,2023-05-17,1.7,Dual Flight Training,Completed,Sofia Garcia,N4521P,Cessna,172N,Sarah Phillips,PPL
+R100858,F050832,2023-05-19,2.3,Dual Flight Training,Completed,Olivia Nguyen,N9923R,Cessna,182RG,Doug Hayes,COM
+R101475,F051432,2023-05-19,2.0,Dual Flight Training,Completed,Lucas Bennett,N1175C,Piper,PA-28R-201,Sarah Phillips,COM
+R100057,F050054,2023-05-20,1.2,Dual Flight Training,Completed,Alex Martinez,N8814M,Piper,PA-28-181,Jenny Park,IFR
+R100915,F050888,2023-05-20,2.3,Student Solo,Completed,Hannah Davis,N7732K,Cessna,172S,,PPL
+R100856,F050830,2023-05-23,2.2,Dual Flight Training,Completed,Olivia Nguyen,N1175C,Piper,PA-28R-201,Doug Hayes,COM
+R100254,F050246,2023-05-24,2.2,Dual Flight Training,Completed,Sarah Williams,N4521P,Cessna,172N,Sarah Phillips,IFR
+R100047,F050044,2023-05-25,2.4,Dual Flight Training,Completed,Alex Martinez,N4521P,Cessna,172N,Jenny Park,IFR
+R100180,F050173,2023-05-25,1.6,Dual Flight Training,Completed,Jamie Chen,N7732K,Cessna,172S,Mike Anderson,IFR
+R100724,F050702,2023-05-25,2.2,Dual Flight Training,Completed,Ryan O'Brien,N8814M,Piper,PA-28-181,Sarah Phillips,CFI
+R100249,F050241,2023-05-26,2.0,Dual Flight Training,Completed,Sarah Williams,N4521P,Cessna,172N,Sarah Phillips,IFR
+R101393,,2023-05-26,0,Dual Flight Training,Canceled,Mia Foster,N6603L,Cessna,172S,Jenny Park,IFR
+R100435,F050423,2023-05-27,1.8,Dual Flight Training,Completed,Priya Patel,N8814M,Piper,PA-28-181,Sarah Phillips,IFR
+R100860,F050833,2023-05-28,1.5,Dual Flight Training,Completed,Olivia Nguyen,N1175C,Piper,PA-28R-201,Doug Hayes,COM
+R101473,F051430,2023-05-29,1.5,Dual Flight Training,Completed,Lucas Bennett,N7732K,Cessna,172S,Doug Hayes,COM
+R100041,F050039,2023-05-30,1.8,Dual Flight Training,Completed,Alex Martinez,N7732K,Cessna,172S,Jenny Park,IFR
+R100161,F050156,2023-05-30,2.0,Dual Flight Training,Completed,Jamie Chen,N7732K,Cessna,172S,Mike Anderson,IFR
+R100255,F050247,2023-06-01,1.2,Dual Flight Training,Completed,Sarah Williams,N8814M,Piper,PA-28-181,Sarah Phillips,IFR
+R100179,F050172,2023-06-02,2.3,Dual Flight Training,Completed,Jamie Chen,N8814M,Piper,PA-28-181,Mike Anderson,IFR
+R100260,F050252,2023-06-02,2.0,Dual Flight Training,Completed,Sarah Williams,N7732K,Cessna,172S,Sarah Phillips,IFR
+R100734,F050712,2023-06-02,2.4,Dual Flight Training,Completed,Ryan O'Brien,N4521P,Cessna,172N,Sarah Phillips,CFI
+R100859,,2023-06-02,0,Dual Flight Training,Canceled,Olivia Nguyen,N9923R,Cessna,182RG,Sarah Phillips,COM
+R100944,F050915,2023-06-02,1.8,Student Solo,Completed,Hannah Davis,N7732K,Cessna,172S,,PPL
+R100752,F050729,2023-06-03,1.3,Dual Flight Training,Completed,Sofia Garcia,N6603L,Cessna,172S,Tom Reyes,PPL
+R101038,F051007,2023-06-07,2.3,Dual Flight Training,Completed,Isabella Rodriguez,N4521P,Cessna,172N,Doug Hayes,PPL
+R101480,F051437,2023-06-07,2.0,Dual Flight Training,Completed,Lucas Bennett,N6603L,Cessna,172S,Sarah Phillips,COM
+R100863,F050836,2023-06-08,2.2,Dual Flight Training,Completed,Olivia Nguyen,N9923R,Cessna,182RG,Doug Hayes,COM
+R100871,F050844,2023-06-08,1.5,Dual Flight Training,Completed,Olivia Nguyen,N5567W,Piper,PA-44-180,Doug Hayes,AMEL
+R100253,F050245,2023-06-09,1.4,Dual Flight Training,Completed,Sarah Williams,N4521P,Cessna,172N,Sarah Phillips,IFR
+R101024,F050993,2023-06-09,1.9,Dual Flight Training,Completed,Isabella Rodriguez,N8814M,Piper,PA-28-181,Doug Hayes,PPL
+R100735,F050713,2023-06-11,2.4,Check Ride,Completed,Ryan O'Brien,N7732K,Cessna,172S,,CFI
+R100054,F050051,2023-06-12,1.7,Dual Flight Training,Completed,Alex Martinez,N8814M,Piper,PA-28-181,Jenny Park,IFR
+R100441,F050429,2023-06-12,1.7,Dual Flight Training,Completed,Priya Patel,N4521P,Cessna,172N,Sarah Phillips,IFR
+R101042,F051011,2023-06-12,1.6,Dual Flight Training,Completed,Isabella Rodriguez,N8814M,Piper,PA-28-181,Tom Reyes,PPL
+R100184,F050177,2023-06-13,2.3,Check Ride,Completed,Jamie Chen,N7732K,Cessna,172S,,IFR
+R101023,F050992,2023-06-13,1.5,Dual Flight Training,Completed,Isabella Rodriguez,N8814M,Piper,PA-28-181,Doug Hayes,PPL
+R100360,F050350,2023-06-14,2.3,Dual Flight Training,Completed,Marcus Johnson,N5567W,Piper,PA-44-180,Doug Hayes,AMEL
+R100851,F050826,2023-06-14,1.4,Dual Flight Training,Completed,Olivia Nguyen,N7732K,Cessna,172S,Doug Hayes,COM
+R100268,F050260,2023-06-15,1.3,Dual Flight Training,Completed,Sarah Williams,N8814M,Piper,PA-28-181,Jenny Park,IFR
+R101030,F050999,2023-06-16,1.7,Dual Flight Training,Completed,Isabella Rodriguez,N4521P,Cessna,172N,Doug Hayes,PPL
+R101533,,2023-06-16,0.7,Maintenance,Completed,,N5567W,Piper,PA-44-180,,
+R100868,F050841,2023-06-17,2.1,Dual Flight Training,Completed,Olivia Nguyen,N3340T,Piper,PA-44-180,Doug Hayes,AMEL
+R100361,F050351,2023-06-18,2.2,Dual Flight Training,Completed,Marcus Johnson,N5567W,Piper,PA-44-180,Jenny Park,AMEL
+R101391,F051349,2023-06-18,2.4,Dual Flight Training,Completed,Mia Foster,N8814M,Piper,PA-28-181,Jenny Park,IFR
+R100050,F050047,2023-06-20,2.2,Dual Flight Training,Completed,Alex Martinez,N8814M,Piper,PA-28-181,Jenny Park,IFR
+R100267,F050259,2023-06-20,1.3,Dual Flight Training,Completed,Sarah Williams,N7732K,Cessna,172S,Mike Anderson,IFR
+R100362,F050352,2023-06-21,2.1,Dual Flight Training,Completed,Marcus Johnson,N5567W,Piper,PA-44-180,Sarah Phillips,AMEL
+R101481,F051438,2023-06-21,2.3,Dual Flight Training,Completed,Lucas Bennett,N9923R,Cessna,182RG,Doug Hayes,COM
+R100754,F050731,2023-06-22,1.4,Dual Flight Training,Completed,Sofia Garcia,N8814M,Piper,PA-28-181,Jenny Park,PPL
+R100855,,2023-06-22,0,Dual Flight Training,Canceled,Olivia Nguyen,N9923R,Cessna,182RG,Doug Hayes,COM
+R101479,F051436,2023-06-22,2.1,Dual Flight Training,Completed,Lucas Bennett,N1175C,Piper,PA-28R-201,Sarah Phillips,COM
+R101410,F051367,2023-06-23,1.4,Dual Flight Training,Completed,Mia Foster,N4521P,Cessna,172N,Jenny Park,IFR
+R100866,F050839,2023-06-25,1.9,Dual Flight Training,Completed,Olivia Nguyen,N1175C,Piper,PA-28R-201,Doug Hayes,COM
+R100872,F050845,2023-06-25,2.3,Dual Flight Training,Completed,Olivia Nguyen,N5567W,Piper,PA-44-180,Mike Anderson,AMEL
+R101472,F051429,2023-06-26,1.4,Dual Flight Training,Completed,Lucas Bennett,N9923R,Cessna,182RG,Sarah Phillips,COM
+R100263,F050255,2023-06-27,2.1,Dual Flight Training,Completed,Sarah Williams,N6603L,Cessna,172S,Sarah Phillips,IFR
+R100064,F050061,2023-06-28,1.7,Check Ride,Completed,Alex Martinez,N6603L,Cessna,172S,,IFR
+R100262,F050254,2023-06-29,2.3,Dual Flight Training,Completed,Sarah Williams,N7732K,Cessna,172S,Doug Hayes,IFR
+R101574,F051494,2023-06-29,2.8,Owner Flight,Completed,Robert Klein,N7732K,Cessna,172S,,
+R101292,F051255,2023-07-01,1.2,Dual Flight Training,Completed,Ava Singh,N1175C,Piper,PA-28R-201,Tom Reyes,COM
+R101474,F051431,2023-07-01,1.3,Dual Flight Training,Completed,Lucas Bennett,N9923R,Cessna,182RG,Sarah Phillips,COM
+R100265,F050257,2023-07-02,2.2,Dual Flight Training,Completed,Sarah Williams,N4521P,Cessna,172N,Sarah Phillips,IFR
+R100454,F050442,2023-07-02,2.4,Dual Flight Training,Completed,Priya Patel,N7732K,Cessna,172S,Sarah Phillips,IFR
+R100256,F050248,2023-07-03,1.4,Dual Flight Training,Completed,Sarah Williams,N7732K,Cessna,172S,Sarah Phillips,IFR
+R100434,,2023-07-03,0,Dual Flight Training,Canceled,Priya Patel,N8814M,Piper,PA-28-181,Sarah Phillips,IFR
+R100442,F050430,2023-07-03,1.9,Dual Flight Training,Completed,Priya Patel,N8814M,Piper,PA-28-181,Sarah Phillips,IFR
+R101045,F051014,2023-07-03,1.3,Dual Flight Training,Completed,Isabella Rodriguez,N8814M,Piper,PA-28-181,Doug Hayes,PPL
+R101294,F051257,2023-07-04,1.7,Dual Flight Training,Completed,Ava Singh,N9923R,Cessna,182RG,Tom Reyes,COM
+R101413,F051370,2023-07-08,2.3,Dual Flight Training,Completed,Mia Foster,N8814M,Piper,PA-28-181,Jenny Park,IFR
+R100449,F050437,2023-07-09,1.7,Dual Flight Training,Completed,Priya Patel,N8814M,Piper,PA-28-181,Sarah Phillips,IFR
+R101044,F051013,2023-07-09,2.3,Student Solo,Completed,Isabella Rodriguez,N4521P,Cessna,172N,,PPL
+R101482,F051439,2023-07-10,1.7,Check Ride,Completed,Lucas Bennett,N6603L,Cessna,172S,,COM
+R100363,F050353,2023-07-14,2.1,Dual Flight Training,Completed,Marcus Johnson,N3340T,Piper,PA-44-180,Doug Hayes,AMEL
+R101414,F051371,2023-07-14,1.3,Dual Flight Training,Completed,Mia Foster,N4521P,Cessna,172N,Jenny Park,IFR
+R100737,,2023-07-15,0,Dual Flight Training,Canceled,Ryan O'Brien,N8814M,Piper,PA-28-181,Sarah Phillips,CFII
+R101288,F051252,2023-07-15,2.0,Dual Flight Training,Completed,Ava Singh,N8814M,Piper,PA-28-181,Tom Reyes,COM
+R100753,F050730,2023-07-17,2.1,Dual Flight Training,Completed,Sofia Garcia,N8814M,Piper,PA-28-181,Sarah Phillips,PPL
+R100857,F050831,2023-07-17,1.4,Dual Flight Training,Completed,Olivia Nguyen,N1175C,Piper,PA-28R-201,Doug Hayes,COM
+R101289,,2023-07-17,0,Dual Flight Training,Canceled,Ava Singh,N9923R,Cessna,182RG,Tom Reyes,COM
+R100870,F050843,2023-07-18,1.8,Dual Flight Training,Completed,Olivia Nguyen,N3340T,Piper,PA-44-180,Sarah Phillips,AMEL
+R101295,,2023-07-19,0,Dual Flight Training,Canceled,Ava Singh,N9923R,Cessna,182RG,Sarah Phillips,COM
+R101547,,2023-07-19,1.9,Maintenance,Completed,,N4521P,Cessna,172N,,
+R101046,F051015,2023-07-21,2.0,Dual Flight Training,Completed,Isabella Rodriguez,N6603L,Cessna,172S,Doug Hayes,PPL
+R100772,F050749,2023-07-22,2.1,Dual Flight Training,Completed,Sofia Garcia,N7732K,Cessna,172S,Jenny Park,PPL
+R100739,F050716,2023-07-25,1.6,Dual Flight Training,Completed,Ryan O'Brien,N4521P,Cessna,172N,Sarah Phillips,CFII
+R101395,F051352,2023-07-25,2.3,Dual Flight Training,Completed,Mia Foster,N6603L,Cessna,172S,Jenny Park,IFR
+R101397,F051354,2023-07-25,2.0,Dual Flight Training,Completed,Mia Foster,N7732K,Cessna,172S,Jenny Park,IFR
+R100078,F050075,2023-07-26,1.4,Dual Flight Training,Completed,Alex Martinez,N1175C,Piper,PA-28R-201,Jenny Park,COM
+R101555,,2023-07-26,0.7,Maintenance,Completed,,N5567W,Piper,PA-44-180,,
+R100451,F050439,2023-07-28,1.4,Dual Flight Training,Completed,Priya Patel,N8814M,Piper,PA-28-181,Sarah Phillips,IFR
+R100456,F050444,2023-07-28,1.3,Dual Flight Training,Completed,Priya Patel,N6603L,Cessna,172S,Sarah Phillips,IFR
+R100459,F050447,2023-07-28,1.7,Dual Flight Training,Completed,Priya Patel,N4521P,Cessna,172N,Sarah Phillips,IFR
+R100741,F050718,2023-07-28,2.2,Dual Flight Training,Completed,Ryan O'Brien,N6603L,Cessna,172S,Sarah Phillips,CFII
+R101293,F051256,2023-07-28,2.1,Dual Flight Training,Completed,Ava Singh,N1175C,Piper,PA-28R-201,Tom Reyes,COM
+R101290,F051253,2023-07-29,2.3,Dual Flight Training,Completed,Ava Singh,N7732K,Cessna,172S,Mike Anderson,COM
+R100258,F050250,2023-07-31,1.7,Dual Flight Training,Completed,Sarah Williams,N7732K,Cessna,172S,Sarah Phillips,IFR
+R100199,F050192,2023-08-01,1.5,Dual Flight Training,Completed,Jamie Chen,N7732K,Cessna,172S,Mike Anderson,COM
+R100736,F050714,2023-08-01,2.4,Dual Flight Training,Completed,Ryan O'Brien,N8814M,Piper,PA-28-181,Sarah Phillips,CFII
+R100982,F050951,2023-08-01,1.8,Dual Flight Training,Completed,Christopher Wilson,N5567W,Piper,PA-44-180,Sarah Phillips,AMEL
+R100070,F050067,2023-08-02,1.3,Dual Flight Training,Completed,Alex Martinez,N9923R,Cessna,182RG,Jenny Park,COM
+R100438,F050426,2023-08-02,2.1,Dual Flight Training,Completed,Priya Patel,N7732K,Cessna,172S,Sarah Phillips,IFR
+R100869,F050842,2023-08-03,1.5,Dual Flight Training,Completed,Olivia Nguyen,N5567W,Piper,PA-44-180,Doug Hayes,AMEL
+R100864,F050837,2023-08-04,2.2,Dual Flight Training,Completed,Olivia Nguyen,N1175C,Piper,PA-28R-201,Doug Hayes,COM
+R101298,F051260,2023-08-05,1.3,Dual Flight Training,Completed,Ava Singh,N9923R,Cessna,182RG,Tom Reyes,COM
+R100197,F050190,2023-08-06,1.3,Dual Flight Training,Completed,Jamie Chen,N9923R,Cessna,182RG,Mike Anderson,COM
+R100455,F050443,2023-08-06,1.8,Dual Flight Training,Completed,Priya Patel,N7732K,Cessna,172S,Sarah Phillips,IFR
+R101485,F051442,2023-08-06,1.8,Dual Flight Training,Completed,Lucas Bennett,N8814M,Piper,PA-28-181,Sarah Phillips,CFI
+R100189,F050182,2023-08-07,1.9,Dual Flight Training,Completed,Jamie Chen,N8814M,Piper,PA-28-181,Mike Anderson,COM
+R100259,F050251,2023-08-07,2.2,Dual Flight Training,Completed,Sarah Williams,N7732K,Cessna,172S,Sarah Phillips,IFR
+R100912,F050885,2023-08-07,1.2,Dual Flight Training,Completed,Hannah Davis,N8814M,Piper,PA-28-181,Mike Anderson,PPL
+R101026,F050995,2023-08-07,1.7,Dual Flight Training,Completed,Isabella Rodriguez,N6603L,Cessna,172S,Mike Anderson,PPL
+R101523,F051478,2023-08-07,1.3,Dual Flight Training,Completed,Tyler Brooks,N6603L,Cessna,172S,Doug Hayes,PPL (incomplete)
+R100072,F050069,2023-08-09,2.0,Dual Flight Training,Completed,Alex Martinez,N1175C,Piper,PA-28R-201,Jenny Park,COM
+R100873,F050846,2023-08-09,1.9,Check Ride,Completed,Olivia Nguyen,N3340T,Piper,PA-44-180,,AMEL
+R100920,F050893,2023-08-10,2.2,Dual Flight Training,Completed,Hannah Davis,N6603L,Cessna,172S,Mike Anderson,PPL
+R100979,F050949,2023-08-10,1.4,Dual Flight Training,Completed,Christopher Wilson,N3340T,Piper,PA-44-180,Sarah Phillips,AMEL
+R101488,F051445,2023-08-11,1.6,Dual Flight Training,Completed,Lucas Bennett,N4521P,Cessna,172N,Mike Anderson,CFI
+R100077,F050074,2023-08-12,1.3,Dual Flight Training,Completed,Alex Martinez,N7732K,Cessna,172S,Jenny Park,COM
+R100191,F050184,2023-08-12,2.3,Dual Flight Training,Completed,Jamie Chen,N1175C,Piper,PA-28R-201,Mike Anderson,COM
+R100432,F050421,2023-08-13,2.1,Dual Flight Training,Completed,Priya Patel,N4521P,Cessna,172N,Mike Anderson,IFR
+R100867,F050840,2023-08-13,1.7,Check Ride,Completed,Olivia Nguyen,N9923R,Cessna,182RG,,COM
+R100065,F050062,2023-08-14,1.6,Dual Flight Training,Completed,Alex Martinez,N7732K,Cessna,172S,Jenny Park,COM
+R100251,F050243,2023-08-16,2.4,Dual Flight Training,Completed,Sarah Williams,N7732K,Cessna,172S,Sarah Phillips,IFR
+R101489,F051446,2023-08-16,1.3,Dual Flight Training,Completed,Lucas Bennett,N4521P,Cessna,172N,Sarah Phillips,CFI
+R100190,F050183,2023-08-17,2.0,Dual Flight Training,Completed,Jamie Chen,N1175C,Piper,PA-28R-201,Mike Anderson,COM
+R100202,F050195,2023-08-17,1.8,Dual Flight Training,Completed,Jamie Chen,N4521P,Cessna,172N,Mike Anderson,COM
+R100738,F050715,2023-08-17,1.8,Dual Flight Training,Completed,Ryan O'Brien,N6603L,Cessna,172S,Sarah Phillips,CFII
+R100911,F050884,2023-08-17,1.5,Dual Flight Training,Completed,Hannah Davis,N6603L,Cessna,172S,Mike Anderson,PPL
+R101399,F051356,2023-08-17,1.3,Dual Flight Training,Completed,Mia Foster,N6603L,Cessna,172S,Jenny Park,IFR
+R100922,F050895,2023-08-18,2.0,Dual Flight Training,Completed,Hannah Davis,N4521P,Cessna,172N,Mike Anderson,PPL
+R100364,F050354,2023-08-19,2.0,Check Ride,Completed,Marcus Johnson,N5567W,Piper,PA-44-180,,AMEL
+R101041,F051010,2023-08-20,1.8,Dual Flight Training,Completed,Isabella Rodriguez,N6603L,Cessna,172S,Doug Hayes,PPL
+R101286,F051250,2023-08-20,1.9,Dual Flight Training,Completed,Ava Singh,N9923R,Cessna,182RG,Sarah Phillips,COM
+R100066,F050063,2023-08-21,1.6,Dual Flight Training,Completed,Alex Martinez,N8814M,Piper,PA-28-181,Jenny Park,COM
+R100080,F050077,2023-08-21,1.5,Dual Flight Training,Completed,Alex Martinez,N9923R,Cessna,182RG,Mike Anderson,COM
+R101553,,2023-08-21,2.9,Maintenance,Completed,,N3340T,Piper,PA-44-180,,
+R101297,F051259,2023-08-22,2.4,Dual Flight Training,Completed,Ava Singh,N9923R,Cessna,182RG,Tom Reyes,COM
+R101487,F051444,2023-08-23,1.7,Dual Flight Training,Completed,Lucas Bennett,N8814M,Piper,PA-28-181,Sarah Phillips,CFI
+R100437,F050425,2023-08-24,1.5,Dual Flight Training,Completed,Priya Patel,N4521P,Cessna,172N,Sarah Phillips,IFR
+R100758,F050735,2023-08-24,1.9,Dual Flight Training,Completed,Sofia Garcia,N7732K,Cessna,172S,Jenny Park,PPL
+R101515,F051470,2023-08-24,1.4,Dual Flight Training,Completed,Tyler Brooks,N6603L,Cessna,172S,Tom Reyes,PPL (incomplete)
+R100742,F050719,2023-08-25,2.0,Dual Flight Training,Completed,Ryan O'Brien,N4521P,Cessna,172N,Sarah Phillips,CFII
+R101497,F051453,2023-08-25,1.7,Dual Flight Training,Completed,Lucas Bennett,N6603L,Cessna,172S,Sarah Phillips,CFI
+R100980,F050950,2023-08-27,1.6,Dual Flight Training,Completed,Christopher Wilson,N5567W,Piper,PA-44-180,Sarah Phillips,AMEL
+R100984,F050953,2023-08-27,1.7,Dual Flight Training,Completed,Christopher Wilson,N3340T,Piper,PA-44-180,Sarah Phillips,AMEL
+R101405,F051362,2023-08-27,1.7,Dual Flight Training,Completed,Mia Foster,N8814M,Piper,PA-28-181,Jenny Park,IFR
+R100079,F050076,2023-08-28,1.7,Dual Flight Training,Completed,Alex Martinez,N9923R,Cessna,182RG,Jenny Park,COM
+R100743,F050720,2023-08-28,2.1,Dual Flight Training,Completed,Ryan O'Brien,N4521P,Cessna,172N,Sarah Phillips,CFII
+R100200,F050193,2023-08-29,2.0,Dual Flight Training,Completed,Jamie Chen,N9923R,Cessna,182RG,Mike Anderson,COM
+R100450,F050438,2023-08-30,2.2,Dual Flight Training,Completed,Priya Patel,N7732K,Cessna,172S,Sarah Phillips,IFR
+R100921,F050894,2023-08-30,1.6,Dual Flight Training,Completed,Hannah Davis,N6603L,Cessna,172S,Tom Reyes,PPL
+R101299,,2023-08-30,0,Dual Flight Training,Canceled,Ava Singh,N4521P,Cessna,172N,Tom Reyes,COM
+R100914,F050887,2023-08-31,2.2,Dual Flight Training,Completed,Hannah Davis,N8814M,Piper,PA-28-181,Mike Anderson,PPL
+R100196,F050189,2023-09-01,2.3,Dual Flight Training,Completed,Jamie Chen,N4521P,Cessna,172N,Mike Anderson,COM
+R100928,F050901,2023-09-01,2.0,Dual Flight Training,Completed,Hannah Davis,N7732K,Cessna,172S,Mike Anderson,PPL
+R101542,,2023-09-01,2.5,Maintenance,Completed,,N1175C,Piper,PA-28R-201,,
+R100977,F050947,2023-09-03,2.0,Dual Flight Training,Completed,Christopher Wilson,N3340T,Piper,PA-44-180,Sarah Phillips,AMEL
+R101031,F051000,2023-09-03,1.8,Student Solo,Completed,Isabella Rodriguez,N7732K,Cessna,172S,,PPL
+R101396,F051353,2023-09-03,1.4,Dual Flight Training,Completed,Mia Foster,N7732K,Cessna,172S,Jenny Park,IFR
+R100192,F050185,2023-09-04,1.7,Dual Flight Training,Completed,Jamie Chen,N1175C,Piper,PA-28R-201,Mike Anderson,COM
+R100763,F050740,2023-09-04,1.8,Dual Flight Training,Completed,Sofia Garcia,N4521P,Cessna,172N,Jenny Park,PPL
+R101525,F051480,2023-09-04,1.5,Dual Flight Training,Completed,Tyler Brooks,N6603L,Cessna,172S,Doug Hayes,PPL (incomplete)
+R101015,F050984,2023-09-05,2.1,Dual Flight Training,Completed,Isabella Rodriguez,N8814M,Piper,PA-28-181,Sarah Phillips,PPL
+R101491,F051448,2023-09-05,1.4,Dual Flight Training,Completed,Lucas Bennett,N7732K,Cessna,172S,Sarah Phillips,CFI
+R101300,F051261,2023-09-06,1.6,Dual Flight Training,Completed,Ava Singh,N1175C,Piper,PA-28R-201,Mike Anderson,COM
+R101402,F051359,2023-09-06,1.9,Dual Flight Training,Completed,Mia Foster,N4521P,Cessna,172N,Jenny Park,IFR
+R101513,F051468,2023-09-06,1.6,Dual Flight Training,Completed,Tyler Brooks,N6603L,Cessna,172S,Doug Hayes,PPL (incomplete)
+R100740,F050717,2023-09-07,1.8,Dual Flight Training,Completed,Ryan O'Brien,N4521P,Cessna,172N,Sarah Phillips,CFII
+R101037,F051006,2023-09-07,1.3,Dual Flight Training,Completed,Isabella Rodriguez,N6603L,Cessna,172S,Doug Hayes,PPL
+R100378,F050368,2023-09-08,1.9,Dual Flight Training,Completed,Marcus Johnson,N8814M,Piper,PA-28-181,Sarah Phillips,CFI
+R100074,F050071,2023-09-09,2.2,Dual Flight Training,Completed,Alex Martinez,N9923R,Cessna,182RG,Jenny Park,COM
+R100261,F050253,2023-09-09,2.1,Dual Flight Training,Completed,Sarah Williams,N6603L,Cessna,172S,Sarah Phillips,IFR
+R100985,F050954,2023-09-09,2.0,Dual Flight Training,Completed,Christopher Wilson,N3340T,Piper,PA-44-180,Sarah Phillips,AMEL
+R101519,F051474,2023-09-10,1.4,Dual Flight Training,Completed,Tyler Brooks,N8814M,Piper,PA-28-181,Doug Hayes,PPL (incomplete)
+R101291,F051254,2023-09-11,1.9,Dual Flight Training,Completed,Ava Singh,N9923R,Cessna,182RG,Tom Reyes,COM
+R100068,F050065,2023-09-13,2.4,Dual Flight Training,Completed,Alex Martinez,N9923R,Cessna,182RG,Jenny Park,COM
+R100365,F050355,2023-09-13,1.4,Dual Flight Training,Completed,Marcus Johnson,N7732K,Cessna,172S,Mike Anderson,CFI
+R100460,F050448,2023-09-13,1.6,Check Ride,Completed,Priya Patel,N4521P,Cessna,172N,,IFR
+R101527,F051482,2023-09-13,1.9,Dual Flight Training,Completed,Tyler Brooks,N4521P,Cessna,172N,Doug Hayes,PPL (incomplete)
+R100273,F050265,2023-09-14,1.6,Check Ride,Completed,Sarah Williams,N6603L,Cessna,172S,,IFR
+R101287,F051251,2023-09-14,2.2,Dual Flight Training,Completed,Ava Singh,N1175C,Piper,PA-28R-201,Tom Reyes,COM
+R101493,F051449,2023-09-14,2.1,Dual Flight Training,Completed,Lucas Bennett,N6603L,Cessna,172S,Mike Anderson,CFI
+R100376,F050366,2023-09-15,2.0,Dual Flight Training,Completed,Marcus Johnson,N6603L,Cessna,172S,Sarah Phillips,CFI
+R101014,F050983,2023-09-17,1.2,Dual Flight Training,Completed,Isabella Rodriguez,N6603L,Cessna,172S,Doug Hayes,PPL
+R100978,F050948,2023-09-19,1.4,Dual Flight Training,Completed,Christopher Wilson,N5567W,Piper,PA-44-180,Sarah Phillips,AMEL
+R101524,F051479,2023-09-19,1.5,Dual Flight Training,Completed,Tyler Brooks,N4521P,Cessna,172N,Doug Hayes,PPL (incomplete)
+R100371,F050361,2023-09-20,1.7,Dual Flight Training,Completed,Marcus Johnson,N8814M,Piper,PA-28-181,Sarah Phillips,CFI
+R100744,F050721,2023-09-20,2.1,Check Ride,Completed,Ryan O'Brien,N8814M,Piper,PA-28-181,,CFII
+R100075,F050072,2023-09-22,1.6,Dual Flight Training,Completed,Alex Martinez,N9923R,Cessna,182RG,Jenny Park,COM
+R101486,F051443,2023-09-22,1.6,Dual Flight Training,Completed,Lucas Bennett,N6603L,Cessna,172S,Sarah Phillips,CFI
+R100198,F050191,2023-09-23,1.9,Dual Flight Training,Completed,Jamie Chen,N7732K,Cessna,172S,Mike Anderson,COM
+R100934,F050907,2023-09-23,1.5,Dual Flight Training,Completed,Hannah Davis,N8814M,Piper,PA-28-181,Mike Anderson,PPL
+R100071,F050068,2023-09-24,2.3,Dual Flight Training,Completed,Alex Martinez,N9923R,Cessna,182RG,Jenny Park,COM
+R100073,F050070,2023-09-24,2.3,Dual Flight Training,Completed,Alex Martinez,N9923R,Cessna,182RG,Jenny Park,COM
+R101296,F051258,2023-09-24,2.3,Dual Flight Training,Completed,Ava Singh,N1175C,Piper,PA-28R-201,Tom Reyes,COM
+R100067,F050064,2023-09-25,2.4,Dual Flight Training,Completed,Alex Martinez,N9923R,Cessna,182RG,Sarah Phillips,COM
+R100933,F050906,2023-09-25,2.4,Dual Flight Training,Completed,Hannah Davis,N6603L,Cessna,172S,Mike Anderson,PPL
+R101520,F051475,2023-09-25,1.9,Dual Flight Training,Completed,Tyler Brooks,N6603L,Cessna,172S,Doug Hayes,PPL (incomplete)
+R100983,F050952,2023-09-26,1.8,Dual Flight Training,Completed,Christopher Wilson,N3340T,Piper,PA-44-180,Sarah Phillips,AMEL
+R100919,F050892,2023-09-27,2.3,Dual Flight Training,Completed,Hannah Davis,N4521P,Cessna,172N,Mike Anderson,PPL
+R100981,,2023-09-27,0,Dual Flight Training,Canceled,Christopher Wilson,N3340T,Piper,PA-44-180,Sarah Phillips,AMEL
+R100777,F050754,2023-09-28,2.2,Dual Flight Training,Completed,Sofia Garcia,N8814M,Piper,PA-28-181,Jenny Park,PPL
+R101401,F051358,2023-09-29,1.6,Dual Flight Training,Completed,Mia Foster,N4521P,Cessna,172N,Jenny Park,IFR
+R101494,F051450,2023-09-30,2.0,Dual Flight Training,Completed,Lucas Bennett,N7732K,Cessna,172S,Sarah Phillips,CFI
+R100368,F050358,2023-10-01,1.3,Dual Flight Training,Completed,Marcus Johnson,N4521P,Cessna,172N,Sarah Phillips,CFI
+R100746,F050723,2023-10-03,1.7,Dual Flight Training,Completed,Ryan O'Brien,N3340T,Piper,PA-44-180,Sarah Phillips,MEI
+R100986,F050955,2023-10-03,1.5,Check Ride,Completed,Christopher Wilson,N5567W,Piper,PA-44-180,,AMEL
+R100366,F050356,2023-10-04,1.7,Dual Flight Training,Completed,Marcus Johnson,N6603L,Cessna,172S,Jenny Park,CFI
+R100275,F050267,2023-10-05,2.0,Dual Flight Training,Completed,Sarah Williams,N9923R,Cessna,182RG,Sarah Phillips,COM
+R100188,F050181,2023-10-07,1.9,Dual Flight Training,Completed,Jamie Chen,N8814M,Piper,PA-28-181,Mike Anderson,COM
+R100081,F050078,2023-10-08,1.7,Dual Flight Training,Completed,Alex Martinez,N1175C,Piper,PA-28R-201,Jenny Park,COM
+R100370,F050360,2023-10-08,1.6,Dual Flight Training,Completed,Marcus Johnson,N7732K,Cessna,172S,Sarah Phillips,CFI
+R100069,F050066,2023-10-09,1.6,Dual Flight Training,Completed,Alex Martinez,N9923R,Cessna,182RG,Jenny Park,COM
+R100747,F050724,2023-10-09,2.1,Dual Flight Training,Completed,Ryan O'Brien,N3340T,Piper,PA-44-180,Sarah Phillips,MEI
+R100076,F050073,2023-10-10,2.1,Dual Flight Training,Completed,Alex Martinez,N1175C,Piper,PA-28R-201,Jenny Park,COM
+R101301,F051262,2023-10-10,1.7,Check Ride,Completed,Ava Singh,N1175C,Piper,PA-28R-201,,COM
+R101403,F051360,2023-10-10,1.8,Dual Flight Training,Completed,Mia Foster,N4521P,Cessna,172N,Sarah Phillips,IFR
+R101496,F051452,2023-10-10,2.1,Dual Flight Training,Completed,Lucas Bennett,N6603L,Cessna,172S,Sarah Phillips,CFI
+R101498,F051454,2023-10-11,1.2,Dual Flight Training,Completed,Lucas Bennett,N7732K,Cessna,172S,Sarah Phillips,CFI
+R101033,F051002,2023-10-12,2.0,Dual Flight Training,Completed,Isabella Rodriguez,N8814M,Piper,PA-28-181,Doug Hayes,PPL
+R101538,,2023-10-12,2.9,Maintenance,Completed,,N6603L,Cessna,172S,,
+R101483,F051440,2023-10-13,1.4,Dual Flight Training,Completed,Lucas Bennett,N8814M,Piper,PA-28-181,Sarah Phillips,CFI
+R100082,F050079,2023-10-15,1.6,Check Ride,Completed,Alex Martinez,N6603L,Cessna,172S,,COM
+R100374,F050364,2023-10-17,1.3,Dual Flight Training,Completed,Marcus Johnson,N4521P,Cessna,172N,Sarah Phillips,CFI
+R100471,F050459,2023-10-17,1.9,Dual Flight Training,Completed,Priya Patel,N7732K,Cessna,172S,Sarah Phillips,COM
+R100942,F050913,2023-10-17,1.3,Dual Flight Training,Completed,Hannah Davis,N8814M,Piper,PA-28-181,Mike Anderson,PPL
+R100750,F050727,2023-10-18,2.1,Dual Flight Training,Completed,Ryan O'Brien,N5567W,Piper,PA-44-180,Sarah Phillips,MEI
+R100768,F050745,2023-10-18,1.5,Student Solo,Completed,Sofia Garcia,N8814M,Piper,PA-28-181,,PPL
+R100201,F050194,2023-10-22,1.2,Dual Flight Training,Completed,Jamie Chen,N9923R,Cessna,182RG,Mike Anderson,COM
+R101032,F051001,2023-10-22,1.4,Dual Flight Training,Completed,Isabella Rodriguez,N4521P,Cessna,172N,Doug Hayes,PPL
+R101398,F051355,2023-10-22,1.9,Dual Flight Training,Completed,Mia Foster,N6603L,Cessna,172S,Tom Reyes,IFR
+R101514,F051469,2023-10-24,1.9,Dual Flight Training,Completed,Tyler Brooks,N6603L,Cessna,172S,Doug Hayes,PPL (incomplete)
+R100466,F050454,2023-10-25,1.7,Dual Flight Training,Completed,Priya Patel,N1175C,Piper,PA-28R-201,Sarah Phillips,COM
+R100186,F050179,2023-10-26,2.2,Dual Flight Training,Completed,Jamie Chen,N9923R,Cessna,182RG,Doug Hayes,COM
+R101490,F051447,2023-10-26,1.6,Dual Flight Training,Completed,Lucas Bennett,N8814M,Piper,PA-28-181,Sarah Phillips,CFI
+R100464,F050452,2023-10-27,1.6,Dual Flight Training,Completed,Priya Patel,N4521P,Cessna,172N,Tom Reyes,COM
+R101500,F051456,2023-10-27,2.1,Dual Flight Training,Completed,Lucas Bennett,N8814M,Piper,PA-28-181,Sarah Phillips,CFI
+R100467,F050455,2023-10-30,1.2,Dual Flight Training,Completed,Priya Patel,N9923R,Cessna,182RG,Sarah Phillips,COM
+R100472,F050460,2023-10-30,1.5,Dual Flight Training,Completed,Priya Patel,N8814M,Piper,PA-28-181,Sarah Phillips,COM
+R100473,F050461,2023-10-30,1.6,Dual Flight Training,Completed,Priya Patel,N7732K,Cessna,172S,Sarah Phillips,COM
+R100945,F050916,2023-10-30,1.5,Check Ride,Completed,Hannah Davis,N4521P,Cessna,172N,,PPL
+R101592,F051512,2023-10-30,1.1,Introductory Flight,Completed,Michael Sanders,N8814M,Piper,PA-28-181,Tom Reyes,
+R100372,F050362,2023-10-31,2.1,Dual Flight Training,Completed,Marcus Johnson,N7732K,Cessna,172S,Sarah Phillips,CFI
+R100274,F050266,2023-11-01,1.3,Dual Flight Training,Completed,Sarah Williams,N1175C,Piper,PA-28R-201,Doug Hayes,COM
+R101495,F051451,2023-11-01,2.1,Dual Flight Training,Completed,Lucas Bennett,N6603L,Cessna,172S,Sarah Phillips,CFI
+R100187,F050180,2023-11-02,1.3,Dual Flight Training,Completed,Jamie Chen,N1175C,Piper,PA-28R-201,Mike Anderson,COM
+R101039,F051008,2023-11-02,2.1,Dual Flight Training,Completed,Isabella Rodriguez,N6603L,Cessna,172S,Doug Hayes,PPL
+R100194,F050187,2023-11-03,1.5,Dual Flight Training,Completed,Jamie Chen,N9923R,Cessna,182RG,Mike Anderson,COM
+R100195,F050188,2023-11-03,1.9,Dual Flight Training,Completed,Jamie Chen,N8814M,Piper,PA-28-181,Mike Anderson,COM
+R100745,F050722,2023-11-03,1.7,Dual Flight Training,Completed,Ryan O'Brien,N5567W,Piper,PA-44-180,Sarah Phillips,MEI
+R101492,,2023-11-03,0,Dual Flight Training,Canceled,Lucas Bennett,N8814M,Piper,PA-28-181,Sarah Phillips,CFI
+R101499,F051455,2023-11-03,1.2,Dual Flight Training,Completed,Lucas Bennett,N8814M,Piper,PA-28-181,Sarah Phillips,CFI
+R101521,F051476,2023-11-03,1.3,Dual Flight Training,Completed,Tyler Brooks,N4521P,Cessna,172N,Doug Hayes,PPL (incomplete)
+R100375,F050365,2023-11-04,1.4,Dual Flight Training,Completed,Marcus Johnson,N7732K,Cessna,172S,Doug Hayes,CFI
+R100999,F050968,2023-11-04,1.8,Dual Flight Training,Completed,Christopher Wilson,N4521P,Cessna,172N,Sarah Phillips,CFI
+R101567,F051487,2023-11-04,1.5,Owner Flight,Completed,Robert Klein,N7732K,Cessna,172S,,
+R100089,F050086,2023-11-05,1.7,Dual Flight Training,Completed,Alex Martinez,N5567W,Piper,PA-44-180,Jenny Park,AMEL
+R101484,F051441,2023-11-05,1.3,Dual Flight Training,Completed,Lucas Bennett,N6603L,Cessna,172S,Sarah Phillips,CFI
+R100760,F050737,2023-11-06,1.4,Student Solo,Completed,Sofia Garcia,N8814M,Piper,PA-28-181,,PPL
+R101308,F051269,2023-11-06,1.7,Dual Flight Training,Completed,Ava Singh,N5567W,Piper,PA-44-180,Tom Reyes,AMEL
+R101406,F051363,2023-11-07,2.3,Dual Flight Training,Completed,Mia Foster,N8814M,Piper,PA-28-181,Jenny Park,IFR
+R101407,F051364,2023-11-07,1.8,Dual Flight Training,Completed,Mia Foster,N6603L,Cessna,172S,Jenny Park,IFR
+R100956,F050926,2023-11-08,2.1,Dual Flight Training,Completed,Hannah Davis,N6603L,Cessna,172S,Mike Anderson,IFR
+R101400,F051357,2023-11-08,1.4,Dual Flight Training,Completed,Mia Foster,N4521P,Cessna,172N,Jenny Park,IFR
+R100088,F050085,2023-11-09,1.4,Dual Flight Training,Completed,Alex Martinez,N5567W,Piper,PA-44-180,Jenny Park,AMEL
+R100962,F050932,2023-11-09,1.7,Dual Flight Training,Completed,Hannah Davis,N4521P,Cessna,172N,Tom Reyes,IFR
+R101501,F051457,2023-11-09,1.2,Dual Flight Training,Completed,Lucas Bennett,N7732K,Cessna,172S,Jenny Park,CFI
+R101516,F051471,2023-11-09,1.7,Dual Flight Training,Completed,Tyler Brooks,N7732K,Cessna,172S,Doug Hayes,PPL (incomplete)
+R101029,F050998,2023-11-12,1.5,Dual Flight Training,Completed,Isabella Rodriguez,N8814M,Piper,PA-28-181,Doug Hayes,PPL
+R101416,F051373,2023-11-12,1.8,Check Ride,Completed,Mia Foster,N7732K,Cessna,172S,,IFR
+R100969,F050939,2023-11-13,1.4,Dual Flight Training,Completed,Hannah Davis,N6603L,Cessna,172S,Mike Anderson,IFR
+R101502,F051458,2023-11-13,2.5,Check Ride,Completed,Lucas Bennett,N6603L,Cessna,172S,,CFI
+R101522,F051477,2023-11-13,1.6,Dual Flight Training,Completed,Tyler Brooks,N8814M,Piper,PA-28-181,Doug Hayes,PPL (incomplete)
+R100367,F050357,2023-11-14,2.1,Dual Flight Training,Completed,Marcus Johnson,N4521P,Cessna,172N,Sarah Phillips,CFI
+R100971,F050941,2023-11-14,2.0,Dual Flight Training,Completed,Hannah Davis,N7732K,Cessna,172S,Mike Anderson,IFR
+R100988,F050957,2023-11-14,1.7,Dual Flight Training,Completed,Christopher Wilson,N7732K,Cessna,172S,Sarah Phillips,CFI
+R101034,F051003,2023-11-14,1.5,Dual Flight Training,Completed,Isabella Rodriguez,N7732K,Cessna,172S,Doug Hayes,PPL
+R100193,F050186,2023-11-15,2.0,Dual Flight Training,Completed,Jamie Chen,N6603L,Cessna,172S,Mike Anderson,COM
+R101022,F050991,2023-11-15,1.9,Student Solo,Completed,Isabella Rodriguez,N4521P,Cessna,172N,,PPL
+R100281,,2023-11-16,0,Dual Flight Training,Canceled,Sarah Williams,N1175C,Piper,PA-28R-201,Sarah Phillips,COM
+R100373,F050363,2023-11-16,2.2,Dual Flight Training,Completed,Marcus Johnson,N4521P,Cessna,172N,Sarah Phillips,CFI
+R100087,F050084,2023-11-19,1.5,Dual Flight Training,Completed,Alex Martinez,N5567W,Piper,PA-44-180,Jenny Park,AMEL
+R101309,F051270,2023-11-19,1.3,Dual Flight Training,Completed,Ava Singh,N3340T,Piper,PA-44-180,Tom Reyes,AMEL
+R100470,F050458,2023-11-20,1.7,Dual Flight Training,Completed,Priya Patel,N9923R,Cessna,182RG,Sarah Phillips,COM
+R100282,F050273,2023-11-21,2.3,Dual Flight Training,Completed,Sarah Williams,N1175C,Piper,PA-28R-201,Doug Hayes,COM
+R100950,F050920,2023-11-23,2.1,Dual Flight Training,Completed,Hannah Davis,N7732K,Cessna,172S,Mike Anderson,IFR
+R100972,F050942,2023-11-24,2.1,Dual Flight Training,Completed,Hannah Davis,N4521P,Cessna,172N,Mike Anderson,IFR
+R100463,F050451,2023-11-26,1.7,Dual Flight Training,Completed,Priya Patel,N9923R,Cessna,182RG,Sarah Phillips,COM
+R100749,F050726,2023-11-26,1.7,Dual Flight Training,Completed,Ryan O'Brien,N3340T,Piper,PA-44-180,Sarah Phillips,MEI
+R100369,F050359,2023-11-27,1.8,Dual Flight Training,Completed,Marcus Johnson,N8814M,Piper,PA-28-181,Sarah Phillips,CFI
+R100993,F050962,2023-11-27,2.0,Dual Flight Training,Completed,Christopher Wilson,N4521P,Cessna,172N,Sarah Phillips,CFI
+R100085,F050082,2023-12-01,1.7,Dual Flight Training,Completed,Alex Martinez,N3340T,Piper,PA-44-180,Jenny Park,AMEL
+R100279,F050271,2023-12-01,2.1,Dual Flight Training,Completed,Sarah Williams,N1175C,Piper,PA-28R-201,Sarah Phillips,COM
+R100468,F050456,2023-12-02,1.8,Dual Flight Training,Completed,Priya Patel,N1175C,Piper,PA-28R-201,Tom Reyes,COM
+R101426,F051383,2023-12-02,2.0,Dual Flight Training,Completed,Mia Foster,N1175C,Piper,PA-28R-201,Jenny Park,COM
+R100084,F050081,2023-12-03,1.7,Dual Flight Training,Completed,Alex Martinez,N5567W,Piper,PA-44-180,Jenny Park,AMEL
+R101002,F050971,2023-12-03,2.1,Dual Flight Training,Completed,Christopher Wilson,N8814M,Piper,PA-28-181,Sarah Phillips,CFI
+R101425,F051382,2023-12-03,2.3,Dual Flight Training,Completed,Mia Foster,N9923R,Cessna,182RG,Jenny Park,COM
+R100086,F050083,2023-12-04,1.8,Dual Flight Training,Completed,Alex Martinez,N3340T,Piper,PA-44-180,Jenny Park,AMEL
+R100283,F050274,2023-12-04,1.2,Dual Flight Training,Completed,Sarah Williams,N1175C,Piper,PA-28R-201,Sarah Phillips,COM
+R100748,F050725,2023-12-04,1.3,Dual Flight Training,Completed,Ryan O'Brien,N5567W,Piper,PA-44-180,Sarah Phillips,MEI
+R100958,F050928,2023-12-04,1.4,Dual Flight Training,Completed,Hannah Davis,N8814M,Piper,PA-28-181,Mike Anderson,IFR
+R101303,F051264,2023-12-04,1.3,Dual Flight Training,Completed,Ava Singh,N3340T,Piper,PA-44-180,Tom Reyes,AMEL
+R100083,F050080,2023-12-06,1.9,Dual Flight Training,Completed,Alex Martinez,N5567W,Piper,PA-44-180,Jenny Park,AMEL
+R101304,F051265,2023-12-06,2.1,Dual Flight Training,Completed,Ava Singh,N5567W,Piper,PA-44-180,Jenny Park,AMEL
+R101421,F051378,2023-12-06,1.4,Dual Flight Training,Completed,Mia Foster,N9923R,Cessna,182RG,Jenny Park,COM
+R100185,F050178,2023-12-07,2.3,Dual Flight Training,Completed,Jamie Chen,N8814M,Piper,PA-28-181,Jenny Park,COM
+R101512,F051467,2023-12-07,1.8,Dual Flight Training,Completed,Tyler Brooks,N6603L,Cessna,172S,Doug Hayes,PPL (incomplete)
+R100286,F050277,2023-12-08,2.2,Dual Flight Training,Completed,Sarah Williams,N4521P,Cessna,172N,Tom Reyes,COM
+R100751,F050728,2023-12-08,2.5,Check Ride,Completed,Ryan O'Brien,N5567W,Piper,PA-44-180,,MEI
+R101503,F051459,2023-12-09,1.8,Dual Flight Training,Completed,Lucas Bennett,N7732K,Cessna,172S,Sarah Phillips,CFII
+R101509,F051464,2023-12-09,1.7,Dual Flight Training,Completed,Lucas Bennett,N7732K,Cessna,172S,Sarah Phillips,CFII
+R101021,F050990,2023-12-10,1.3,Dual Flight Training,Completed,Isabella Rodriguez,N7732K,Cessna,172S,Doug Hayes,PPL
+R100203,F050196,2023-12-12,2.0,Check Ride,Completed,Jamie Chen,N1175C,Piper,PA-28R-201,,COM
+R100377,F050367,2023-12-13,1.3,Dual Flight Training,Completed,Marcus Johnson,N7732K,Cessna,172S,Sarah Phillips,CFI
+R100778,F050755,2023-12-13,2.3,Student Solo,Completed,Sofia Garcia,N6603L,Cessna,172S,,PPL
+R100379,F050369,2023-12-14,1.2,Dual Flight Training,Completed,Marcus Johnson,N7732K,Cessna,172S,Sarah Phillips,CFI
+R100287,F050278,2023-12-15,1.6,Dual Flight Training,Completed,Sarah Williams,N1175C,Piper,PA-28R-201,Sarah Phillips,COM
+R100474,F050462,2023-12-16,2.3,Dual Flight Training,Completed,Priya Patel,N9923R,Cessna,182RG,Sarah Phillips,COM
+R100974,F050944,2023-12-16,1.7,Dual Flight Training,Completed,Hannah Davis,N7732K,Cessna,172S,Mike Anderson,IFR
+R101422,F051379,2023-12-16,2.2,Dual Flight Training,Completed,Mia Foster,N8814M,Piper,PA-28-181,Jenny Park,COM
+R100090,F050087,2023-12-17,2.3,Check Ride,Completed,Alex Martinez,N3340T,Piper,PA-44-180,,AMEL
+R100990,F050959,2023-12-17,2.3,Dual Flight Training,Completed,Christopher Wilson,N4521P,Cessna,172N,Sarah Phillips,CFI
+R100991,F050960,2023-12-19,2.2,Dual Flight Training,Completed,Christopher Wilson,N6603L,Cessna,172S,Sarah Phillips,CFI
+R101526,F051481,2023-12-19,1.7,Dual Flight Training,Completed,Tyler Brooks,N6603L,Cessna,172S,Sarah Phillips,PPL (incomplete)
+R100380,F050370,2023-12-22,2.2,Check Ride,Completed,Marcus Johnson,N8814M,Piper,PA-28-181,,CFI
+R101035,F051004,2023-12-22,1.9,Dual Flight Training,Completed,Isabella Rodriguez,N6603L,Cessna,172S,Doug Hayes,PPL
+R101036,F051005,2023-12-22,1.5,Dual Flight Training,Completed,Isabella Rodriguez,N4521P,Cessna,172N,Doug Hayes,PPL
+R101429,F051386,2023-12-23,2.2,Dual Flight Training,Completed,Mia Foster,N4521P,Cessna,172N,Jenny Park,COM
+R100284,F050275,2023-12-24,1.5,Dual Flight Training,Completed,Sarah Williams,N6603L,Cessna,172S,Sarah Phillips,COM
+R100280,F050272,2023-12-26,2.2,Dual Flight Training,Completed,Sarah Williams,N1175C,Piper,PA-28R-201,Sarah Phillips,COM
+R101306,F051267,2023-12-27,1.3,Dual Flight Training,Completed,Ava Singh,N3340T,Piper,PA-44-180,Tom Reyes,AMEL
+R100465,F050453,2023-12-29,1.6,Dual Flight Training,Completed,Priya Patel,N9923R,Cessna,182RG,Sarah Phillips,COM
+R100276,F050268,2023-12-30,1.5,Dual Flight Training,Completed,Sarah Williams,N9923R,Cessna,182RG,Sarah Phillips,COM
+R100461,F050449,2023-12-30,1.4,Dual Flight Training,Completed,Priya Patel,N1175C,Piper,PA-28R-201,Sarah Phillips,COM
+R101302,F051263,2023-12-30,1.4,Dual Flight Training,Completed,Ava Singh,N5567W,Piper,PA-44-180,Tom Reyes,AMEL
+R100992,F050961,2023-12-31,1.4,Dual Flight Training,Completed,Christopher Wilson,N8814M,Piper,PA-28-181,Sarah Phillips,CFI
+R101307,F051268,2023-12-31,1.5,Dual Flight Training,Completed,Ava Singh,N5567W,Piper,PA-44-180,Doug Hayes,AMEL
+R100997,F050966,2024-01-03,1.8,Dual Flight Training,Completed,Christopher Wilson,N6603L,Cessna,172S,Sarah Phillips,CFI
+R100101,F050097,2024-01-04,2.3,Dual Flight Training,Completed,Alex Martinez,N7732K,Cessna,172S,Jenny Park,CFI
+R101424,F051381,2024-01-04,1.5,Dual Flight Training,Completed,Mia Foster,N8814M,Piper,PA-28-181,Tom Reyes,COM
+R100385,F050374,2024-01-06,2.4,Dual Flight Training,Completed,Marcus Johnson,N6603L,Cessna,172S,Sarah Phillips,CFII
+R101305,F051266,2024-01-06,1.6,Dual Flight Training,Completed,Ava Singh,N3340T,Piper,PA-44-180,Sarah Phillips,AMEL
+R101517,F051472,2024-01-06,1.8,Dual Flight Training,Completed,Tyler Brooks,N6603L,Cessna,172S,Doug Hayes,PPL (incomplete)
+R101530,,2024-01-06,1.3,Maintenance,Completed,,N8814M,Piper,PA-28-181,,
+R100285,F050276,2024-01-07,1.6,Dual Flight Training,Completed,Sarah Williams,N1175C,Piper,PA-28R-201,Sarah Phillips,COM
+R100996,F050965,2024-01-07,1.9,Dual Flight Training,Completed,Christopher Wilson,N8814M,Piper,PA-28-181,Sarah Phillips,CFI
+R100278,F050270,2024-01-08,2.4,Dual Flight Training,Completed,Sarah Williams,N9923R,Cessna,182RG,Sarah Phillips,COM
+R100386,F050375,2024-01-08,2.2,Dual Flight Training,Completed,Marcus Johnson,N4521P,Cessna,172N,Sarah Phillips,CFII
+R101310,F051271,2024-01-11,2.2,Check Ride,Completed,Ava Singh,N3340T,Piper,PA-44-180,,AMEL
+R100469,F050457,2024-01-12,2.0,Dual Flight Training,Completed,Priya Patel,N1175C,Piper,PA-28R-201,Sarah Phillips,COM
+R100987,F050956,2024-01-13,2.2,Dual Flight Training,Completed,Christopher Wilson,N8814M,Piper,PA-28-181,Sarah Phillips,CFI
+R100771,F050748,2024-01-15,2.0,Dual Flight Training,Completed,Sofia Garcia,N7732K,Cessna,172S,Jenny Park,PPL
+R100107,F050103,2024-01-16,2.2,Dual Flight Training,Completed,Alex Martinez,N4521P,Cessna,172N,Jenny Park,CFI
+R101019,F050988,2024-01-17,1.6,Dual Flight Training,Completed,Isabella Rodriguez,N8814M,Piper,PA-28-181,Doug Hayes,PPL
+R100998,F050967,2024-01-18,1.5,Dual Flight Training,Completed,Christopher Wilson,N8814M,Piper,PA-28-181,Sarah Phillips,CFI
+R101000,F050969,2024-01-18,2.4,Dual Flight Training,Completed,Christopher Wilson,N6603L,Cessna,172S,Sarah Phillips,CFI
+R101004,F050973,2024-01-18,2.4,Dual Flight Training,Completed,Christopher Wilson,N7732K,Cessna,172S,Doug Hayes,CFI
+R100462,F050450,2024-01-19,1.3,Dual Flight Training,Completed,Priya Patel,N9923R,Cessna,182RG,Sarah Phillips,COM
+R101317,F051278,2024-01-19,1.9,Dual Flight Training,Completed,Ethan Murphy,N9923R,Cessna,182RG,Jenny Park,COM
+R101506,F051461,2024-01-19,1.5,Dual Flight Training,Completed,Lucas Bennett,N7732K,Cessna,172S,Sarah Phillips,CFII
+R100994,F050963,2024-01-20,1.8,Dual Flight Training,Completed,Christopher Wilson,N4521P,Cessna,172N,Sarah Phillips,CFI
+R101508,F051463,2024-01-20,1.4,Dual Flight Training,Completed,Lucas Bennett,N4521P,Cessna,172N,Sarah Phillips,CFII
+R100104,F050100,2024-01-21,2.4,Dual Flight Training,Completed,Alex Martinez,N4521P,Cessna,172N,Doug Hayes,CFI
+R101314,F051275,2024-01-21,1.8,Dual Flight Training,Completed,Ethan Murphy,N6603L,Cessna,172S,Mike Anderson,COM
+R100095,F050092,2024-01-22,2.2,Dual Flight Training,Completed,Alex Martinez,N7732K,Cessna,172S,Jenny Park,CFI
+R100384,F050373,2024-01-22,2.2,Dual Flight Training,Completed,Marcus Johnson,N7732K,Cessna,172S,Sarah Phillips,CFII
+R100975,F050945,2024-01-22,2.0,Dual Flight Training,Completed,Hannah Davis,N7732K,Cessna,172S,Mike Anderson,IFR
+R101027,F050996,2024-01-22,2.1,Dual Flight Training,Completed,Isabella Rodriguez,N7732K,Cessna,172S,Jenny Park,PPL
+R100757,F050734,2024-01-23,1.8,Dual Flight Training,Completed,Sofia Garcia,N8814M,Piper,PA-28-181,Jenny Park,PPL
+R100387,F050376,2024-01-24,1.9,Dual Flight Training,Completed,Marcus Johnson,N6603L,Cessna,172S,Sarah Phillips,CFII
+R100989,F050958,2024-01-24,2.0,Dual Flight Training,Completed,Christopher Wilson,N7732K,Cessna,172S,Sarah Phillips,CFI
+R100382,F050371,2024-01-25,1.4,Dual Flight Training,Completed,Marcus Johnson,N6603L,Cessna,172S,Doug Hayes,CFII
+R100946,,2024-01-25,0,Dual Flight Training,Canceled,Hannah Davis,N7732K,Cessna,172S,Mike Anderson,IFR
+R101510,F051465,2024-01-25,2.2,Dual Flight Training,Completed,Lucas Bennett,N6603L,Cessna,172S,Sarah Phillips,CFII
+R100776,F050753,2024-01-26,2.0,Dual Flight Training,Completed,Sofia Garcia,N4521P,Cessna,172N,Doug Hayes,PPL
+R101518,F051473,2024-01-26,1.7,Dual Flight Training,Completed,Tyler Brooks,N6603L,Cessna,172S,Doug Hayes,PPL (incomplete)
+R101504,F051460,2024-01-27,2.0,Dual Flight Training,Completed,Lucas Bennett,N8814M,Piper,PA-28-181,Sarah Phillips,CFII
+R100383,F050372,2024-01-28,2.3,Dual Flight Training,Completed,Marcus Johnson,N6603L,Cessna,172S,Sarah Phillips,CFII
+R101507,F051462,2024-01-28,1.3,Dual Flight Training,Completed,Lucas Bennett,N4521P,Cessna,172N,Doug Hayes,CFII
+R100381,,2024-01-30,0,Dual Flight Training,Canceled,Marcus Johnson,N6603L,Cessna,172S,Sarah Phillips,CFII
+R100947,F050917,2024-01-30,2.0,Dual Flight Training,Completed,Hannah Davis,N7732K,Cessna,172S,Jenny Park,IFR
+R100102,F050098,2024-01-31,1.4,Dual Flight Training,Completed,Alex Martinez,N4521P,Cessna,172N,Jenny Park,CFI
+R100099,,2024-02-02,0,Dual Flight Training,Canceled,Alex Martinez,N6603L,Cessna,172S,Jenny Park,CFI
+R100103,F050099,2024-02-02,2.1,Dual Flight Training,Completed,Alex Martinez,N7732K,Cessna,172S,Mike Anderson,CFI
+R100388,F050377,2024-02-02,1.7,Check Ride,Completed,Marcus Johnson,N8814M,Piper,PA-28-181,,CFII
+R101316,F051277,2024-02-03,1.5,Dual Flight Training,Completed,Ethan Murphy,N1175C,Piper,PA-28R-201,Jenny Park,COM
+R101423,F051380,2024-02-03,2.3,Dual Flight Training,Completed,Mia Foster,N1175C,Piper,PA-28R-201,Doug Hayes,COM
+R101585,F051505,2024-02-05,1.3,Introductory Flight,Completed,Michael Sanders,N7732K,Cessna,172S,Mike Anderson,
+R100881,F050854,2024-02-06,1.9,Dual Flight Training,Completed,Brandon Lee,N6603L,Cessna,172S,Jenny Park,CFI
+R100277,F050269,2024-02-07,2.1,Dual Flight Training,Completed,Sarah Williams,N9923R,Cessna,182RG,Sarah Phillips,COM
+R101003,F050972,2024-02-07,1.2,Dual Flight Training,Completed,Christopher Wilson,N8814M,Piper,PA-28-181,Sarah Phillips,CFI
+R101418,F051375,2024-02-07,2.3,Dual Flight Training,Completed,Mia Foster,N6603L,Cessna,172S,Tom Reyes,COM
+R100206,F050199,2024-02-09,1.5,Dual Flight Training,Completed,Jamie Chen,N5567W,Piper,PA-44-180,Mike Anderson,AMEL
+R100966,F050936,2024-02-09,1.9,Dual Flight Training,Completed,Hannah Davis,N4521P,Cessna,172N,Mike Anderson,IFR
+R100995,F050964,2024-02-09,2.4,Dual Flight Training,Completed,Christopher Wilson,N8814M,Piper,PA-28-181,Jenny Park,CFI
+R101319,F051280,2024-02-09,1.3,Dual Flight Training,Completed,Ethan Murphy,N1175C,Piper,PA-28R-201,Sarah Phillips,COM
+R101323,F051284,2024-02-09,2.3,Dual Flight Training,Completed,Ethan Murphy,N9923R,Cessna,182RG,Jenny Park,COM
+R101505,,2024-02-09,0,Dual Flight Training,Canceled,Lucas Bennett,N6603L,Cessna,172S,Sarah Phillips,CFII
+R100288,F050279,2024-02-10,1.9,Check Ride,Completed,Sarah Williams,N1175C,Piper,PA-28R-201,,COM
+R100759,F050736,2024-02-10,2.0,Dual Flight Training,Completed,Sofia Garcia,N7732K,Cessna,172S,Jenny Park,PPL
+R101047,F051016,2024-02-10,2.0,Check Ride,Completed,Isabella Rodriguez,N7732K,Cessna,172S,,PPL
+R100098,F050095,2024-02-11,1.6,Dual Flight Training,Completed,Alex Martinez,N6603L,Cessna,172S,Doug Hayes,CFI
+R101001,F050970,2024-02-12,2.0,Dual Flight Training,Completed,Christopher Wilson,N4521P,Cessna,172N,Sarah Phillips,CFI
+R101511,F051466,2024-02-13,2.1,Check Ride,Completed,Lucas Bennett,N8814M,Piper,PA-28-181,,CFII
+R100100,F050096,2024-02-14,1.5,Dual Flight Training,Completed,Alex Martinez,N4521P,Cessna,172N,Jenny Park,CFI
+R100879,F050852,2024-02-15,1.5,Dual Flight Training,Completed,Brandon Lee,N6603L,Cessna,172S,Jenny Park,CFI
+R100092,F050089,2024-02-18,1.8,Dual Flight Training,Completed,Alex Martinez,N8814M,Piper,PA-28-181,Jenny Park,CFI
+R100951,F050921,2024-02-18,2.4,Dual Flight Training,Completed,Hannah Davis,N8814M,Piper,PA-28-181,Mike Anderson,IFR
+R100965,F050935,2024-02-18,1.7,Dual Flight Training,Completed,Hannah Davis,N4521P,Cessna,172N,Jenny Park,IFR
+R100207,F050200,2024-02-19,1.7,Dual Flight Training,Completed,Jamie Chen,N5567W,Piper,PA-44-180,Mike Anderson,AMEL
+R100096,F050093,2024-02-20,1.9,Dual Flight Training,Completed,Alex Martinez,N4521P,Cessna,172N,Jenny Park,CFI
+R100105,F050101,2024-02-20,2.3,Dual Flight Training,Completed,Alex Martinez,N7732K,Cessna,172S,Jenny Park,CFI
+R100964,F050934,2024-02-21,2.2,Dual Flight Training,Completed,Hannah Davis,N6603L,Cessna,172S,Tom Reyes,IFR
+R100209,F050202,2024-02-22,2.2,Dual Flight Training,Completed,Jamie Chen,N5567W,Piper,PA-44-180,Mike Anderson,AMEL
+R100475,F050463,2024-02-22,2.2,Check Ride,Completed,Priya Patel,N1175C,Piper,PA-28R-201,,COM
+R101005,F050974,2024-02-22,2.3,Check Ride,Completed,Christopher Wilson,N6603L,Cessna,172S,,CFI
+R101419,F051376,2024-02-22,2.4,Dual Flight Training,Completed,Mia Foster,N1175C,Piper,PA-28R-201,Jenny Park,COM
+R100093,F050090,2024-02-23,1.8,Dual Flight Training,Completed,Alex Martinez,N7732K,Cessna,172S,Jenny Park,CFI
+R100779,F050756,2024-02-24,1.5,Student Solo,Completed,Sofia Garcia,N7732K,Cessna,172S,,PPL
+R101311,F051272,2024-02-24,1.9,Dual Flight Training,Completed,Ethan Murphy,N7732K,Cessna,172S,Jenny Park,COM
+R100756,F050733,2024-02-25,1.9,Dual Flight Training,Completed,Sofia Garcia,N8814M,Piper,PA-28-181,Jenny Park,PPL
+R100886,F050859,2024-02-25,1.2,Dual Flight Training,Completed,Brandon Lee,N6603L,Cessna,172S,Jenny Park,CFI
+R101428,F051385,2024-02-25,1.3,Dual Flight Training,Completed,Mia Foster,N6603L,Cessna,172S,Jenny Park,COM
+R100878,F050851,2024-02-26,1.6,Dual Flight Training,Completed,Brandon Lee,N4521P,Cessna,172N,Jenny Park,CFI
+R101420,F051377,2024-02-26,1.7,Dual Flight Training,Completed,Mia Foster,N9923R,Cessna,182RG,Jenny Park,COM
+R100210,F050203,2024-02-28,1.6,Dual Flight Training,Completed,Jamie Chen,N5567W,Piper,PA-44-180,Mike Anderson,AMEL
+R100097,F050094,2024-02-29,1.4,Dual Flight Training,Completed,Alex Martinez,N8814M,Piper,PA-28-181,Jenny Park,CFI
+R100204,F050197,2024-03-02,2.2,Dual Flight Training,Completed,Jamie Chen,N5567W,Piper,PA-44-180,Mike Anderson,AMEL
+R100211,F050204,2024-03-02,1.3,Dual Flight Training,Completed,Jamie Chen,N3340T,Piper,PA-44-180,Mike Anderson,AMEL
+R100960,F050930,2024-03-02,1.4,Dual Flight Training,Completed,Hannah Davis,N6603L,Cessna,172S,Mike Anderson,IFR
+R101009,F050978,2024-03-02,1.6,Dual Flight Training,Completed,Christopher Wilson,N5567W,Piper,PA-44-180,Doug Hayes,MEI
+R100094,F050091,2024-03-03,1.2,Dual Flight Training,Completed,Alex Martinez,N8814M,Piper,PA-28-181,Jenny Park,CFI
+R101011,F050980,2024-03-03,1.5,Dual Flight Training,Completed,Christopher Wilson,N3340T,Piper,PA-44-180,Sarah Phillips,MEI
+R100291,,2024-03-04,0,Dual Flight Training,Canceled,Sarah Williams,N5567W,Piper,PA-44-180,Sarah Phillips,AMEL
+R100880,F050853,2024-03-07,1.9,Dual Flight Training,Completed,Brandon Lee,N6603L,Cessna,172S,Jenny Park,CFI
+R100890,F050863,2024-03-09,2.2,Dual Flight Training,Completed,Brandon Lee,N8814M,Piper,PA-28-181,Jenny Park,CFI
+R101321,F051282,2024-03-09,1.9,Dual Flight Training,Completed,Ethan Murphy,N1175C,Piper,PA-28R-201,Jenny Park,COM
+R100290,F050281,2024-03-10,2.0,Dual Flight Training,Completed,Sarah Williams,N5567W,Piper,PA-44-180,Tom Reyes,AMEL
+R101006,F050975,2024-03-10,2.0,Dual Flight Training,Completed,Christopher Wilson,N5567W,Piper,PA-44-180,Mike Anderson,MEI
+R101427,F051384,2024-03-10,2.3,Dual Flight Training,Completed,Mia Foster,N9923R,Cessna,182RG,Doug Hayes,COM
+R100876,F050849,2024-03-11,2.3,Dual Flight Training,Completed,Brandon Lee,N7732K,Cessna,172S,Jenny Park,CFI
+R101010,F050979,2024-03-12,1.9,Dual Flight Training,Completed,Christopher Wilson,N5567W,Piper,PA-44-180,Sarah Phillips,MEI
+R100091,F050088,2024-03-15,2.3,Dual Flight Training,Completed,Alex Martinez,N4521P,Cessna,172N,Jenny Park,CFI
+R100389,F050378,2024-03-15,1.2,Dual Flight Training,Completed,Marcus Johnson,N5567W,Piper,PA-44-180,Mike Anderson,MEI
+R100883,F050856,2024-03-15,2.3,Dual Flight Training,Completed,Brandon Lee,N4521P,Cessna,172N,Jenny Park,CFI
+R101325,F051286,2024-03-16,1.9,Dual Flight Training,Completed,Ethan Murphy,N9923R,Cessna,182RG,Jenny Park,COM
+R100393,F050382,2024-03-18,1.8,Dual Flight Training,Completed,Marcus Johnson,N5567W,Piper,PA-44-180,Jenny Park,MEI
+R100476,F050464,2024-03-18,1.9,Dual Flight Training,Completed,Priya Patel,N5567W,Piper,PA-44-180,Sarah Phillips,AMEL
+R100892,F050865,2024-03-18,2.1,Dual Flight Training,Completed,Brandon Lee,N7732K,Cessna,172S,Jenny Park,CFI
+R101417,F051374,2024-03-18,2.0,Dual Flight Training,Completed,Mia Foster,N9923R,Cessna,182RG,Sarah Phillips,COM
+R100212,F050205,2024-03-19,1.6,Dual Flight Training,Completed,Jamie Chen,N3340T,Piper,PA-44-180,Mike Anderson,AMEL
+R100293,F050283,2024-03-20,2.0,Dual Flight Training,Completed,Sarah Williams,N5567W,Piper,PA-44-180,Sarah Phillips,AMEL
+R100106,F050102,2024-03-21,1.5,Dual Flight Training,Completed,Alex Martinez,N8814M,Piper,PA-28-181,Jenny Park,CFI
+R100949,F050919,2024-03-22,2.3,Dual Flight Training,Completed,Hannah Davis,N7732K,Cessna,172S,Tom Reyes,IFR
+R100477,F050465,2024-03-23,1.9,Dual Flight Training,Completed,Priya Patel,N5567W,Piper,PA-44-180,Sarah Phillips,AMEL
+R100108,F050104,2024-03-25,1.6,Check Ride,Completed,Alex Martinez,N8814M,Piper,PA-28-181,,CFI
+R100479,F050467,2024-03-25,2.2,Dual Flight Training,Completed,Priya Patel,N5567W,Piper,PA-44-180,Sarah Phillips,AMEL
+R101315,F051276,2024-03-25,2.4,Dual Flight Training,Completed,Ethan Murphy,N1175C,Piper,PA-28R-201,Jenny Park,COM
+R100208,F050201,2024-03-26,2.0,Dual Flight Training,Completed,Jamie Chen,N3340T,Piper,PA-44-180,Doug Hayes,AMEL
+R101148,F051116,2024-03-27,1.3,Dual Flight Training,Completed,Noah J. Carter,N8814M,Piper,PA-28-181,Jenny Park,PPL
+R101153,F051121,2024-03-28,1.3,Dual Flight Training,Completed,Noah J. Carter,N8814M,Piper,PA-28-181,Jenny Park,PPL
+R100481,F050469,2024-03-29,1.6,Dual Flight Training,Completed,Priya Patel,N5567W,Piper,PA-44-180,Sarah Phillips,AMEL
+R101055,F051024,2024-03-29,1.9,Dual Flight Training,Completed,Isabella Rodriguez,N4521P,Cessna,172N,Doug Hayes,IFR
+R100205,F050198,2024-03-30,1.7,Dual Flight Training,Completed,Jamie Chen,N3340T,Piper,PA-44-180,Mike Anderson,AMEL
+R100390,F050379,2024-03-31,1.4,Dual Flight Training,Completed,Marcus Johnson,N3340T,Piper,PA-44-180,Sarah Phillips,MEI
+R100889,F050862,2024-03-31,1.5,Dual Flight Training,Completed,Brandon Lee,N7732K,Cessna,172S,Jenny Park,CFI
+R100959,F050929,2024-04-01,1.5,Dual Flight Training,Completed,Hannah Davis,N4521P,Cessna,172N,Mike Anderson,IFR
+R101320,F051281,2024-04-01,2.0,Dual Flight Training,Completed,Ethan Murphy,N7732K,Cessna,172S,Doug Hayes,COM
+R100213,F050206,2024-04-02,2.2,Check Ride,Completed,Jamie Chen,N5567W,Piper,PA-44-180,,AMEL
+R100780,F050757,2024-04-02,2.2,Dual Flight Training,Completed,Sofia Garcia,N7732K,Cessna,172S,Jenny Park,PPL
+R100509,F050497,2024-04-03,2.0,Dual Flight Training,Completed,David Kim,N4521P,Cessna,172N,Doug Hayes,IFR
+R100888,F050861,2024-04-03,1.4,Dual Flight Training,Completed,Brandon Lee,N7732K,Cessna,172S,Jenny Park,CFI
+R101007,F050976,2024-04-03,1.6,Dual Flight Training,Completed,Christopher Wilson,N5567W,Piper,PA-44-180,Sarah Phillips,MEI
+R101430,F051387,2024-04-03,1.7,Check Ride,Completed,Mia Foster,N9923R,Cessna,182RG,,COM
+R101049,F051018,2024-04-04,1.2,Dual Flight Training,Completed,Isabella Rodriguez,N4521P,Cessna,172N,Jenny Park,IFR
+R101050,F051019,2024-04-04,1.3,Dual Flight Training,Completed,Isabella Rodriguez,N6603L,Cessna,172S,Jenny Park,IFR
+R100891,F050864,2024-04-05,1.7,Dual Flight Training,Completed,Brandon Lee,N7732K,Cessna,172S,Jenny Park,CFI
+R101008,F050977,2024-04-06,2.0,Dual Flight Training,Completed,Christopher Wilson,N5567W,Piper,PA-44-180,Sarah Phillips,MEI
+R100875,F050848,2024-04-07,2.0,Dual Flight Training,Completed,Brandon Lee,N7732K,Cessna,172S,Jenny Park,CFI
+R101068,F051037,2024-04-07,1.9,Dual Flight Training,Completed,Isabella Rodriguez,N7732K,Cessna,172S,Doug Hayes,IFR
+R100115,F050111,2024-04-09,2.3,Dual Flight Training,Completed,Alex Martinez,N8814M,Piper,PA-28-181,Jenny Park,CFII
+R100762,F050739,2024-04-10,1.6,Dual Flight Training,Completed,Sofia Garcia,N6603L,Cessna,172S,Jenny Park,PPL
+R100765,F050742,2024-04-10,2.3,Dual Flight Training,Completed,Sofia Garcia,N4521P,Cessna,172N,Mike Anderson,PPL
+R101313,F051274,2024-04-10,1.6,Dual Flight Training,Completed,Ethan Murphy,N4521P,Cessna,172N,Jenny Park,COM
+R101328,F051289,2024-04-10,1.3,Dual Flight Training,Completed,Ethan Murphy,N1175C,Piper,PA-28R-201,Jenny Park,COM
+R100112,F050108,2024-04-11,2.2,Dual Flight Training,Completed,Alex Martinez,N4521P,Cessna,172N,Jenny Park,CFII
+R100114,F050110,2024-04-11,1.4,Dual Flight Training,Completed,Alex Martinez,N7732K,Cessna,172S,Jenny Park,CFII
+R101156,F051124,2024-04-11,1.7,Dual Flight Training,Completed,Noah J. Carter,N7732K,Cessna,172S,Mike Anderson,PPL
+R101569,F051489,2024-04-11,1.8,Owner Flight,Completed,Patricia O'Donnell,N9923R,Cessna,182RG,,
+R101070,F051039,2024-04-12,1.5,Dual Flight Training,Completed,Isabella Rodriguez,N8814M,Piper,PA-28-181,Doug Hayes,IFR
+R101318,F051279,2024-04-12,1.3,Dual Flight Training,Completed,Ethan Murphy,N7732K,Cessna,172S,Jenny Park,COM
+R100761,F050738,2024-04-13,2.0,Dual Flight Training,Completed,Sofia Garcia,N8814M,Piper,PA-28-181,Jenny Park,PPL
+R101062,F051031,2024-04-13,1.9,Dual Flight Training,Completed,Isabella Rodriguez,N8814M,Piper,PA-28-181,Doug Hayes,IFR
+R100289,F050280,2024-04-15,1.9,Dual Flight Training,Completed,Sarah Williams,N5567W,Piper,PA-44-180,Mike Anderson,AMEL
+R101326,F051287,2024-04-15,1.3,Dual Flight Training,Completed,Ethan Murphy,N1175C,Piper,PA-28R-201,Jenny Park,COM
+R100952,F050922,2024-04-16,1.4,Dual Flight Training,Completed,Hannah Davis,N7732K,Cessna,172S,Mike Anderson,IFR
+R100954,F050924,2024-04-16,2.3,Dual Flight Training,Completed,Hannah Davis,N7732K,Cessna,172S,Mike Anderson,IFR
+R101012,F050981,2024-04-16,2.3,Check Ride,Completed,Christopher Wilson,N5567W,Piper,PA-44-180,,MEI
+R100513,F050501,2024-04-18,1.8,Dual Flight Training,Completed,David Kim,N4521P,Cessna,172N,Doug Hayes,IFR
+R100111,F050107,2024-04-20,2.2,Dual Flight Training,Completed,Alex Martinez,N6603L,Cessna,172S,Tom Reyes,CFII
+R101322,F051283,2024-04-21,2.0,Dual Flight Training,Completed,Ethan Murphy,N1175C,Piper,PA-28R-201,Jenny Park,COM
+R100770,F050747,2024-04-22,1.8,Dual Flight Training,Completed,Sofia Garcia,N6603L,Cessna,172S,Jenny Park,PPL
+R100110,F050106,2024-04-23,1.4,Dual Flight Training,Completed,Alex Martinez,N7732K,Cessna,172S,Tom Reyes,CFII
+R100113,F050109,2024-04-25,1.8,Dual Flight Training,Completed,Alex Martinez,N6603L,Cessna,172S,Jenny Park,CFII
+R100392,F050381,2024-04-26,1.5,Dual Flight Training,Completed,Marcus Johnson,N3340T,Piper,PA-44-180,Sarah Phillips,MEI
+R100480,F050468,2024-04-26,1.8,Dual Flight Training,Completed,Priya Patel,N3340T,Piper,PA-44-180,Sarah Phillips,AMEL
+R100478,F050466,2024-04-27,1.9,Dual Flight Training,Completed,Priya Patel,N5567W,Piper,PA-44-180,Sarah Phillips,AMEL
+R100511,F050499,2024-04-27,1.3,Dual Flight Training,Completed,David Kim,N8814M,Piper,PA-28-181,Doug Hayes,IFR
+R100973,F050943,2024-04-27,1.9,Dual Flight Training,Completed,Hannah Davis,N6603L,Cessna,172S,Mike Anderson,IFR
+R100109,F050105,2024-04-28,1.7,Dual Flight Training,Completed,Alex Martinez,N6603L,Cessna,172S,Doug Hayes,CFII
+R100482,F050470,2024-04-28,1.9,Dual Flight Training,Completed,Priya Patel,N5567W,Piper,PA-44-180,Sarah Phillips,AMEL
+R100953,F050923,2024-04-29,2.3,Dual Flight Training,Completed,Hannah Davis,N7732K,Cessna,172S,Tom Reyes,IFR
+R100884,F050857,2024-04-30,1.8,Dual Flight Training,Completed,Brandon Lee,N4521P,Cessna,172N,Jenny Park,CFI
+R100116,F050112,2024-05-01,1.6,Check Ride,Completed,Alex Martinez,N7732K,Cessna,172S,,CFII
+R101433,F051390,2024-05-01,1.4,Dual Flight Training,Completed,Mia Foster,N5567W,Piper,PA-44-180,Jenny Park,AMEL
+R100516,F050504,2024-05-02,1.9,Dual Flight Training,Completed,David Kim,N6603L,Cessna,172S,Doug Hayes,IFR
+R101154,F051122,2024-05-02,1.8,Dual Flight Training,Completed,Noah J. Carter,N8814M,Piper,PA-28-181,Jenny Park,PPL
+R101324,F051285,2024-05-02,1.6,Dual Flight Training,Completed,Ethan Murphy,N8814M,Piper,PA-28-181,Jenny Park,COM
+R100955,F050925,2024-05-03,1.3,Dual Flight Training,Completed,Hannah Davis,N8814M,Piper,PA-28-181,Mike Anderson,IFR
+R100510,F050498,2024-05-04,1.8,Dual Flight Training,Completed,David Kim,N7732K,Cessna,172S,Doug Hayes,IFR
+R101064,F051033,2024-05-04,1.4,Dual Flight Training,Completed,Isabella Rodriguez,N8814M,Piper,PA-28-181,Doug Hayes,IFR
+R100874,F050847,2024-05-05,2.4,Dual Flight Training,Completed,Brandon Lee,N7732K,Cessna,172S,Jenny Park,CFI
+R100968,F050938,2024-05-07,1.2,Dual Flight Training,Completed,Hannah Davis,N6603L,Cessna,172S,Mike Anderson,IFR
+R101312,F051273,2024-05-07,2.0,Dual Flight Training,Completed,Ethan Murphy,N4521P,Cessna,172N,Mike Anderson,COM
+R101327,F051288,2024-05-08,1.2,Dual Flight Training,Completed,Ethan Murphy,N6603L,Cessna,172S,Jenny Park,COM
+R100882,F050855,2024-05-09,1.3,Dual Flight Training,Completed,Brandon Lee,N7732K,Cessna,172S,Jenny Park,CFI
+R100894,F050867,2024-05-09,1.9,Dual Flight Training,Completed,Brandon Lee,N8814M,Piper,PA-28-181,Jenny Park,CFI
+R100957,F050927,2024-05-09,2.3,Dual Flight Training,Completed,Hannah Davis,N8814M,Piper,PA-28-181,Mike Anderson,IFR
+R100963,F050933,2024-05-09,2.0,Dual Flight Training,Completed,Hannah Davis,N7732K,Cessna,172S,Mike Anderson,IFR
+R101144,F051112,2024-05-10,2.2,Dual Flight Training,Completed,Noah J. Carter,N6603L,Cessna,172S,Doug Hayes,PPL
+R100223,F050216,2024-05-13,2.0,Dual Flight Training,Completed,Jamie Chen,N8814M,Piper,PA-28-181,Mike Anderson,CFI
+R100294,F050284,2024-05-13,1.4,Dual Flight Training,Completed,Sarah Williams,N5567W,Piper,PA-44-180,Sarah Phillips,AMEL
+R101063,F051032,2024-05-13,1.8,Dual Flight Training,Completed,Isabella Rodriguez,N7732K,Cessna,172S,Tom Reyes,IFR
+R100483,F050471,2024-05-14,1.8,Check Ride,Completed,Priya Patel,N3340T,Piper,PA-44-180,,AMEL
+R100755,F050732,2024-05-14,1.9,Dual Flight Training,Completed,Sofia Garcia,N4521P,Cessna,172N,Doug Hayes,PPL
+R100520,F050508,2024-05-19,2.1,Dual Flight Training,Completed,David Kim,N8814M,Piper,PA-28-181,Doug Hayes,IFR
+R101329,F051290,2024-05-19,2.1,Check Ride,Completed,Ethan Murphy,N6603L,Cessna,172S,,COM
+R101528,,2024-05-19,0.8,Maintenance,Completed,,N8814M,Piper,PA-28-181,,
+R101591,F051511,2024-05-20,1.0,Introductory Flight,Completed,Karen Yoshida,N7732K,Cessna,172S,Mike Anderson,
+R100766,F050743,2024-05-21,1.9,Dual Flight Training,Completed,Sofia Garcia,N6603L,Cessna,172S,Jenny Park,PPL
+R101593,F051513,2024-05-21,0.8,Introductory Flight,Completed,Michael Sanders,N7732K,Cessna,172S,Jenny Park,
+R100292,F050282,2024-05-22,1.6,Dual Flight Training,Completed,Sarah Williams,N5567W,Piper,PA-44-180,Sarah Phillips,AMEL
+R101143,F051111,2024-05-22,2.0,Dual Flight Training,Completed,Noah J. Carter,N4521P,Cessna,172N,Jenny Park,PPL
+R101168,F051136,2024-05-23,1.8,Dual Flight Training,Completed,Noah J. Carter,N4521P,Cessna,172N,Jenny Park,PPL
+R101435,F051392,2024-05-23,1.3,Dual Flight Training,Completed,Mia Foster,N3340T,Piper,PA-44-180,Jenny Park,AMEL
+R101157,F051125,2024-05-24,1.5,Dual Flight Training,Completed,Noah J. Carter,N7732K,Cessna,172S,Mike Anderson,PPL
+R100391,F050380,2024-05-26,2.0,Dual Flight Training,Completed,Marcus Johnson,N3340T,Piper,PA-44-180,Sarah Phillips,MEI
+R100887,F050860,2024-05-26,1.2,Dual Flight Training,Completed,Brandon Lee,N6603L,Cessna,172S,Jenny Park,CFI
+R100948,F050918,2024-05-26,1.3,Dual Flight Training,Completed,Hannah Davis,N8814M,Piper,PA-28-181,Sarah Phillips,IFR
+R101136,F051104,2024-05-27,1.9,Dual Flight Training,Completed,Noah J. Carter,N7732K,Cessna,172S,Doug Hayes,PPL
+R100216,F050209,2024-05-28,1.6,Dual Flight Training,Completed,Jamie Chen,N8814M,Piper,PA-28-181,Mike Anderson,CFI
+R100295,F050285,2024-05-28,2.5,Check Ride,Completed,Sarah Williams,N3340T,Piper,PA-44-180,,AMEL
+R100394,F050383,2024-05-29,1.7,Check Ride,Completed,Marcus Johnson,N5567W,Piper,PA-44-180,,MEI
+R100877,F050850,2024-05-30,1.9,Dual Flight Training,Completed,Brandon Lee,N4521P,Cessna,172N,Jenny Park,CFI
+R100967,F050937,2024-05-30,2.3,Dual Flight Training,Completed,Hannah Davis,N7732K,Cessna,172S,Mike Anderson,IFR
+R100970,F050940,2024-05-30,1.5,Dual Flight Training,Completed,Hannah Davis,N7732K,Cessna,172S,Mike Anderson,IFR
+R101052,F051021,2024-05-30,1.5,Dual Flight Training,Completed,Isabella Rodriguez,N6603L,Cessna,172S,Doug Hayes,IFR
+R101060,F051029,2024-05-30,2.4,Dual Flight Training,Completed,Isabella Rodriguez,N8814M,Piper,PA-28-181,Doug Hayes,IFR
+R101436,F051393,2024-05-30,2.3,Dual Flight Training,Completed,Mia Foster,N5567W,Piper,PA-44-180,Jenny Park,AMEL
+R100775,F050752,2024-06-01,2.1,Dual Flight Training,Completed,Sofia Garcia,N7732K,Cessna,172S,Jenny Park,PPL
+R100118,F050114,2024-06-02,1.3,Dual Flight Training,Completed,Alex Martinez,N3340T,Piper,PA-44-180,Jenny Park,MEI
+R101054,F051023,2024-06-02,1.2,Dual Flight Training,Completed,Isabella Rodriguez,N4521P,Cessna,172N,Doug Hayes,IFR
+R101165,F051133,2024-06-02,2.4,Dual Flight Training,Completed,Noah J. Carter,N7732K,Cessna,172S,Jenny Park,PPL
+R100893,F050866,2024-06-03,1.8,Dual Flight Training,Completed,Brandon Lee,N6603L,Cessna,172S,Jenny Park,CFI
+R101344,F051305,2024-06-03,1.7,Dual Flight Training,Completed,Ethan Murphy,N8814M,Piper,PA-28-181,Jenny Park,CFI
+R100764,F050741,2024-06-04,1.5,Dual Flight Training,Completed,Sofia Garcia,N7732K,Cessna,172S,Jenny Park,PPL
+R100885,F050858,2024-06-05,1.9,Dual Flight Training,Completed,Brandon Lee,N8814M,Piper,PA-28-181,Jenny Park,CFI
+R101342,F051303,2024-06-05,1.8,Dual Flight Training,Completed,Ethan Murphy,N6603L,Cessna,172S,Jenny Park,CFI
+R100961,F050931,2024-06-06,1.7,Dual Flight Training,Completed,Hannah Davis,N6603L,Cessna,172S,Mike Anderson,IFR
+R101544,,2024-06-06,0.9,Maintenance,Completed,,N3340T,Piper,PA-44-180,,
+R100525,F050512,2024-06-07,1.5,Dual Flight Training,Completed,David Kim,N4521P,Cessna,172N,Doug Hayes,IFR
+R100121,F050117,2024-06-08,2.1,Dual Flight Training,Completed,Alex Martinez,N5567W,Piper,PA-44-180,Jenny Park,MEI
+R100493,F050481,2024-06-08,2.4,Dual Flight Training,Completed,Priya Patel,N7732K,Cessna,172S,Sarah Phillips,CFI
+R100895,F050868,2024-06-08,1.6,Check Ride,Completed,Brandon Lee,N4521P,Cessna,172N,,CFI
+R100496,F050484,2024-06-10,2.0,Dual Flight Training,Completed,Priya Patel,N4521P,Cessna,172N,Sarah Phillips,CFI
+R100505,F050493,2024-06-10,1.3,Dual Flight Training,Completed,David Kim,N8814M,Piper,PA-28-181,Doug Hayes,IFR
+R100976,F050946,2024-06-10,2.2,Check Ride,Completed,Hannah Davis,N4521P,Cessna,172N,,IFR
+R101583,F051503,2024-06-10,1.0,Introductory Flight,Completed,Karen Yoshida,N6603L,Cessna,172S,Tom Reyes,
+R100122,F050118,2024-06-12,1.4,Dual Flight Training,Completed,Alex Martinez,N5567W,Piper,PA-44-180,Jenny Park,MEI
+R100299,F050289,2024-06-12,2.2,Dual Flight Training,Completed,Sarah Williams,N8814M,Piper,PA-28-181,Sarah Phillips,CFI
+R100487,F050475,2024-06-12,1.7,Dual Flight Training,Completed,Priya Patel,N4521P,Cessna,172N,Sarah Phillips,CFI
+R100526,F050513,2024-06-13,2.0,Dual Flight Training,Completed,David Kim,N6603L,Cessna,172S,Doug Hayes,IFR
+R101069,F051038,2024-06-14,2.1,Dual Flight Training,Completed,Isabella Rodriguez,N7732K,Cessna,172S,Doug Hayes,IFR
+R101431,F051388,2024-06-15,1.4,Dual Flight Training,Completed,Mia Foster,N5567W,Piper,PA-44-180,Jenny Park,AMEL
+R100298,F050288,2024-06-16,1.4,Dual Flight Training,Completed,Sarah Williams,N4521P,Cessna,172N,Doug Hayes,CFI
+R100302,F050292,2024-06-16,2.4,Dual Flight Training,Completed,Sarah Williams,N7732K,Cessna,172S,Sarah Phillips,CFI
+R101335,F051296,2024-06-18,1.2,Dual Flight Training,Completed,Ethan Murphy,N4521P,Cessna,172N,Jenny Park,CFI
+R100494,F050482,2024-06-19,2.1,Dual Flight Training,Completed,Priya Patel,N7732K,Cessna,172S,Sarah Phillips,CFI
+R101137,F051105,2024-06-19,1.9,Dual Flight Training,Completed,Noah J. Carter,N6603L,Cessna,172S,Jenny Park,PPL
+R101338,F051299,2024-06-19,1.8,Dual Flight Training,Completed,Ethan Murphy,N4521P,Cessna,172N,Doug Hayes,CFI
+R101578,F051498,2024-06-19,1.4,Owner Flight,Completed,Patricia O'Donnell,N6603L,Cessna,172S,,
+R100227,F050219,2024-06-24,2.1,Dual Flight Training,Completed,Jamie Chen,N8814M,Piper,PA-28-181,Mike Anderson,CFI
+R101163,F051131,2024-06-25,1.8,Dual Flight Training,Completed,Noah J. Carter,N8814M,Piper,PA-28-181,Jenny Park,PPL
+R101336,F051297,2024-06-25,2.2,Dual Flight Training,Completed,Ethan Murphy,N7732K,Cessna,172S,Jenny Park,CFI
+R100226,,2024-06-26,0,Dual Flight Training,Canceled,Jamie Chen,N4521P,Cessna,172N,Mike Anderson,CFI
+R100217,F050210,2024-06-27,2.2,Dual Flight Training,Completed,Jamie Chen,N4521P,Cessna,172N,Mike Anderson,CFI
+R100229,F050221,2024-06-28,1.8,Dual Flight Training,Completed,Jamie Chen,N8814M,Piper,PA-28-181,Sarah Phillips,CFI
+R100485,F050473,2024-06-28,2.4,Dual Flight Training,Completed,Priya Patel,N4521P,Cessna,172N,Sarah Phillips,CFI
+R100514,F050502,2024-06-29,2.1,Dual Flight Training,Completed,David Kim,N7732K,Cessna,172S,Doug Hayes,IFR
+R101059,F051028,2024-06-29,1.7,Dual Flight Training,Completed,Isabella Rodriguez,N6603L,Cessna,172S,Doug Hayes,IFR
+R101072,F051041,2024-06-30,2.1,Dual Flight Training,Completed,Isabella Rodriguez,N7732K,Cessna,172S,Doug Hayes,IFR
+R101337,F051298,2024-07-01,1.7,Dual Flight Training,Completed,Ethan Murphy,N7732K,Cessna,172S,Jenny Park,CFI
+R100486,F050474,2024-07-02,1.6,Dual Flight Training,Completed,Priya Patel,N4521P,Cessna,172N,Sarah Phillips,CFI
+R101067,F051036,2024-07-03,1.4,Dual Flight Training,Completed,Isabella Rodriguez,N4521P,Cessna,172N,Doug Hayes,IFR
+R101432,F051389,2024-07-03,2.4,Dual Flight Training,Completed,Mia Foster,N3340T,Piper,PA-44-180,Sarah Phillips,AMEL
+R100123,F050119,2024-07-04,1.9,Dual Flight Training,Completed,Alex Martinez,N3340T,Piper,PA-44-180,Jenny Park,MEI
+R101434,F051391,2024-07-04,1.8,Dual Flight Training,Completed,Mia Foster,N3340T,Piper,PA-44-180,Jenny Park,AMEL
+R100781,F050758,2024-07-05,2.0,Check Ride,Completed,Sofia Garcia,N4521P,Cessna,172N,,PPL
+R100117,F050113,2024-07-06,2.1,Dual Flight Training,Completed,Alex Martinez,N5567W,Piper,PA-44-180,Jenny Park,MEI
+R100120,F050116,2024-07-06,1.6,Dual Flight Training,Completed,Alex Martinez,N5567W,Piper,PA-44-180,Jenny Park,MEI
+R100218,F050211,2024-07-08,1.2,Dual Flight Training,Completed,Jamie Chen,N8814M,Piper,PA-28-181,Mike Anderson,CFI
+R100523,F050511,2024-07-09,2.2,Dual Flight Training,Completed,David Kim,N6603L,Cessna,172S,Doug Hayes,IFR
+R101437,F051394,2024-07-09,2.2,Check Ride,Completed,Mia Foster,N5567W,Piper,PA-44-180,,AMEL
+R100119,F050115,2024-07-13,1.9,Dual Flight Training,Completed,Alex Martinez,N5567W,Piper,PA-44-180,Jenny Park,MEI
+R100307,F050297,2024-07-15,1.4,Dual Flight Training,Completed,Sarah Williams,N7732K,Cessna,172S,Sarah Phillips,CFI
+R100124,F050120,2024-07-16,1.7,Check Ride,Completed,Alex Martinez,N5567W,Piper,PA-44-180,,MEI
+R100303,F050293,2024-07-17,1.9,Dual Flight Training,Completed,Sarah Williams,N8814M,Piper,PA-28-181,Tom Reyes,CFI
+R100504,F050492,2024-07-19,1.4,Dual Flight Training,Completed,David Kim,N7732K,Cessna,172S,Doug Hayes,IFR
+R101332,F051293,2024-07-21,1.3,Dual Flight Training,Completed,Ethan Murphy,N7732K,Cessna,172S,Jenny Park,CFI
+R101333,F051294,2024-07-22,2.2,Dual Flight Training,Completed,Ethan Murphy,N6603L,Cessna,172S,Tom Reyes,CFI
+R100222,F050215,2024-07-23,2.1,Dual Flight Training,Completed,Jamie Chen,N4521P,Cessna,172N,Mike Anderson,CFI
+R100515,F050503,2024-07-23,2.2,Dual Flight Training,Completed,David Kim,N4521P,Cessna,172N,Doug Hayes,IFR
+R100489,F050477,2024-07-25,1.4,Dual Flight Training,Completed,Priya Patel,N7732K,Cessna,172S,Mike Anderson,CFI
+R100500,F050488,2024-07-25,2.2,Dual Flight Training,Completed,Priya Patel,N6603L,Cessna,172S,Jenny Park,CFI
+R100219,F050212,2024-07-26,1.6,Dual Flight Training,Completed,Jamie Chen,N7732K,Cessna,172S,Mike Anderson,CFI
+R100503,F050491,2024-07-27,1.2,Dual Flight Training,Completed,David Kim,N7732K,Cessna,172S,Doug Hayes,IFR
+R100297,F050287,2024-07-28,1.5,Dual Flight Training,Completed,Sarah Williams,N8814M,Piper,PA-28-181,Tom Reyes,CFI
+R101158,F051126,2024-07-29,1.7,Dual Flight Training,Completed,Noah J. Carter,N7732K,Cessna,172S,Jenny Park,PPL
+R100215,F050208,2024-07-30,1.3,Dual Flight Training,Completed,Jamie Chen,N7732K,Cessna,172S,Mike Anderson,CFI
+R100900,F050873,2024-07-30,2.2,Dual Flight Training,Completed,Brandon Lee,N4521P,Cessna,172N,Jenny Park,CFII
+R101061,F051030,2024-07-31,2.1,Dual Flight Training,Completed,Isabella Rodriguez,N8814M,Piper,PA-28-181,Doug Hayes,IFR
+R100508,F050496,2024-08-01,1.3,Dual Flight Training,Completed,David Kim,N7732K,Cessna,172S,Doug Hayes,IFR
+R100897,F050870,2024-08-01,1.4,Dual Flight Training,Completed,Brandon Lee,N4521P,Cessna,172N,Doug Hayes,CFII
+R100495,F050483,2024-08-02,1.4,Dual Flight Training,Completed,Priya Patel,N8814M,Piper,PA-28-181,Sarah Phillips,CFI
+R101339,F051300,2024-08-02,1.8,Dual Flight Training,Completed,Ethan Murphy,N6603L,Cessna,172S,Jenny Park,CFI
+R100296,F050286,2024-08-03,1.8,Dual Flight Training,Completed,Sarah Williams,N4521P,Cessna,172N,Sarah Phillips,CFI
+R100898,F050871,2024-08-03,1.9,Dual Flight Training,Completed,Brandon Lee,N8814M,Piper,PA-28-181,Jenny Park,CFII
+R100308,F050298,2024-08-04,2.3,Dual Flight Training,Completed,Sarah Williams,N4521P,Cessna,172N,Sarah Phillips,CFI
+R101057,F051026,2024-08-04,1.3,Dual Flight Training,Completed,Isabella Rodriguez,N6603L,Cessna,172S,Doug Hayes,IFR
+R100221,F050214,2024-08-05,1.7,Dual Flight Training,Completed,Jamie Chen,N8814M,Piper,PA-28-181,Mike Anderson,CFI
+R100305,F050295,2024-08-07,1.7,Dual Flight Training,Completed,Sarah Williams,N6603L,Cessna,172S,Sarah Phillips,CFI
+R101051,F051020,2024-08-07,1.4,Dual Flight Training,Completed,Isabella Rodriguez,N6603L,Cessna,172S,Doug Hayes,IFR
+R100484,F050472,2024-08-09,2.2,Dual Flight Training,Completed,Priya Patel,N4521P,Cessna,172N,Sarah Phillips,CFI
+R100528,F050515,2024-08-09,2.3,Dual Flight Training,Completed,David Kim,N7732K,Cessna,172S,Doug Hayes,IFR
+R100902,F050875,2024-08-09,1.5,Dual Flight Training,Completed,Brandon Lee,N4521P,Cessna,172N,Mike Anderson,CFII
+R100300,F050290,2024-08-10,1.9,Dual Flight Training,Completed,Sarah Williams,N8814M,Piper,PA-28-181,Sarah Phillips,CFI
+R101166,F051134,2024-08-10,1.9,Dual Flight Training,Completed,Noah J. Carter,N6603L,Cessna,172S,Jenny Park,PPL
+R100220,F050213,2024-08-11,1.3,Dual Flight Training,Completed,Jamie Chen,N4521P,Cessna,172N,Mike Anderson,CFI
+R100490,F050478,2024-08-12,1.6,Dual Flight Training,Completed,Priya Patel,N8814M,Piper,PA-28-181,Sarah Phillips,CFI
+R101152,F051120,2024-08-12,1.6,Dual Flight Training,Completed,Noah J. Carter,N8814M,Piper,PA-28-181,Jenny Park,PPL
+R101340,F051301,2024-08-12,2.2,Dual Flight Training,Completed,Ethan Murphy,N6603L,Cessna,172S,Jenny Park,CFI
+R100498,F050486,2024-08-14,1.2,Dual Flight Training,Completed,Priya Patel,N4521P,Cessna,172N,Sarah Phillips,CFI
+R100899,F050872,2024-08-15,1.3,Dual Flight Training,Completed,Brandon Lee,N7732K,Cessna,172S,Mike Anderson,CFII
+R101066,F051035,2024-08-16,1.7,Dual Flight Training,Completed,Isabella Rodriguez,N7732K,Cessna,172S,Doug Hayes,IFR
+R100214,F050207,2024-08-17,2.2,Dual Flight Training,Completed,Jamie Chen,N4521P,Cessna,172N,Mike Anderson,CFI
+R101331,F051292,2024-08-17,1.5,Dual Flight Training,Completed,Ethan Murphy,N4521P,Cessna,172N,Jenny Park,CFI
+R100304,F050294,2024-08-18,2.3,Dual Flight Training,Completed,Sarah Williams,N4521P,Cessna,172N,Doug Hayes,CFI
+R100225,F050218,2024-08-19,1.3,Dual Flight Training,Completed,Jamie Chen,N6603L,Cessna,172S,Mike Anderson,CFI
+R101058,F051027,2024-08-19,1.3,Dual Flight Training,Completed,Isabella Rodriguez,N8814M,Piper,PA-28-181,Mike Anderson,IFR
+R101150,F051118,2024-08-19,1.5,Dual Flight Training,Completed,Noah J. Carter,N4521P,Cessna,172N,Jenny Park,PPL
+R100230,F050222,2024-08-20,1.2,Dual Flight Training,Completed,Jamie Chen,N4521P,Cessna,172N,Mike Anderson,CFI
+R101341,F051302,2024-08-20,2.2,Dual Flight Training,Completed,Ethan Murphy,N6603L,Cessna,172S,Tom Reyes,CFI
+R100224,F050217,2024-08-22,1.7,Dual Flight Training,Completed,Jamie Chen,N7732K,Cessna,172S,Mike Anderson,CFI
+R100896,F050869,2024-08-23,2.3,Dual Flight Training,Completed,Brandon Lee,N7732K,Cessna,172S,Jenny Park,CFII
+R100499,F050487,2024-08-25,2.0,Dual Flight Training,Completed,Priya Patel,N4521P,Cessna,172N,Sarah Phillips,CFI
+R100492,F050480,2024-08-26,2.2,Dual Flight Training,Completed,Priya Patel,N7732K,Cessna,172S,Sarah Phillips,CFI
+R100901,F050874,2024-08-26,1.7,Dual Flight Training,Completed,Brandon Lee,N8814M,Piper,PA-28-181,Jenny Park,CFII
+R101343,F051304,2024-08-26,2.3,Dual Flight Training,Completed,Ethan Murphy,N6603L,Cessna,172S,Jenny Park,CFI
+R100497,F050485,2024-08-28,2.3,Dual Flight Training,Completed,Priya Patel,N8814M,Piper,PA-28-181,Sarah Phillips,CFI
+R101164,F051132,2024-08-28,1.5,Dual Flight Training,Completed,Noah J. Carter,N7732K,Cessna,172S,Jenny Park,PPL
+R101334,F051295,2024-08-28,2.0,Dual Flight Training,Completed,Ethan Murphy,N6603L,Cessna,172S,Jenny Park,CFI
+R100491,F050479,2024-08-30,1.6,Dual Flight Training,Completed,Priya Patel,N8814M,Piper,PA-28-181,Sarah Phillips,CFI
+R100903,F050876,2024-08-30,1.5,Dual Flight Training,Completed,Brandon Lee,N4521P,Cessna,172N,Jenny Park,CFII
+R101142,F051110,2024-08-31,1.6,Student Solo,Completed,Noah J. Carter,N4521P,Cessna,172N,,PPL
+R100518,F050506,2024-09-01,1.9,Dual Flight Training,Completed,David Kim,N8814M,Piper,PA-28-181,Doug Hayes,IFR
+R100904,F050877,2024-09-02,1.7,Check Ride,Completed,Brandon Lee,N6603L,Cessna,172S,,CFII
+R100488,F050476,2024-09-03,1.9,Dual Flight Training,Completed,Priya Patel,N8814M,Piper,PA-28-181,Sarah Phillips,CFI
+R101149,F051117,2024-09-04,1.4,Dual Flight Training,Completed,Noah J. Carter,N4521P,Cessna,172N,Jenny Park,PPL
+R100228,F050220,2024-09-05,2.1,Dual Flight Training,Completed,Jamie Chen,N7732K,Cessna,172S,Mike Anderson,CFI
+R101065,F051034,2024-09-06,1.3,Dual Flight Training,Completed,Isabella Rodriguez,N7732K,Cessna,172S,Doug Hayes,IFR
+R100522,F050510,2024-09-11,1.9,Dual Flight Training,Completed,David Kim,N4521P,Cessna,172N,Sarah Phillips,IFR
+R100527,F050514,2024-09-11,1.8,Dual Flight Training,Completed,David Kim,N7732K,Cessna,172S,Doug Hayes,IFR
+R100501,F050489,2024-09-12,2.1,Check Ride,Completed,Priya Patel,N7732K,Cessna,172S,,CFI
+R100506,F050494,2024-09-14,1.4,Dual Flight Training,Completed,David Kim,N6603L,Cessna,172S,Doug Hayes,IFR
+R101330,F051291,2024-09-20,2.2,Dual Flight Training,Completed,Ethan Murphy,N7732K,Cessna,172S,Jenny Park,CFI
+R100502,F050490,2024-09-22,2.1,Dual Flight Training,Completed,David Kim,N4521P,Cessna,172N,Doug Hayes,IFR
+R101537,,2024-09-23,4.0,Maintenance,Completed,,N4521P,Cessna,172N,,
+R100231,F050223,2024-09-24,1.7,Dual Flight Training,Completed,Jamie Chen,N6603L,Cessna,172S,Mike Anderson,CFI
+R101071,F051040,2024-09-26,1.3,Dual Flight Training,Completed,Isabella Rodriguez,N7732K,Cessna,172S,Doug Hayes,IFR
+R100301,F050291,2024-09-27,2.0,Dual Flight Training,Completed,Sarah Williams,N7732K,Cessna,172S,Sarah Phillips,CFI
+R101579,F051499,2024-09-27,2.5,Owner Flight,Completed,Patricia O'Donnell,N9923R,Cessna,182RG,,
+R100232,F050224,2024-09-28,1.7,Check Ride,Completed,Jamie Chen,N8814M,Piper,PA-28-181,,CFI
+R101345,F051306,2024-09-30,2.4,Check Ride,Completed,Ethan Murphy,N6603L,Cessna,172S,,CFI
+R101048,F051017,2024-10-02,2.3,Dual Flight Training,Completed,Isabella Rodriguez,N6603L,Cessna,172S,Sarah Phillips,IFR
+R101575,F051495,2024-10-02,2.5,Owner Flight,Completed,Patricia O'Donnell,N7732K,Cessna,172S,,
+R100306,F050296,2024-10-03,1.6,Dual Flight Training,Completed,Sarah Williams,N4521P,Cessna,172N,Sarah Phillips,CFI
+R101053,F051022,2024-10-03,2.1,Dual Flight Training,Completed,Isabella Rodriguez,N8814M,Piper,PA-28-181,Doug Hayes,IFR
+R101140,F051108,2024-10-04,1.8,Dual Flight Training,Completed,Noah J. Carter,N6603L,Cessna,172S,Jenny Park,PPL
+R100309,F050299,2024-10-06,1.7,Check Ride,Completed,Sarah Williams,N8814M,Piper,PA-28-181,,CFI
+R101056,F051025,2024-10-06,2.4,Dual Flight Training,Completed,Isabella Rodriguez,N8814M,Piper,PA-28-181,Doug Hayes,IFR
+R100507,F050495,2024-10-11,1.5,Dual Flight Training,Completed,David Kim,N4521P,Cessna,172N,Doug Hayes,IFR
+R100524,,2024-10-13,0,Dual Flight Training,Canceled,David Kim,N4521P,Cessna,172N,Doug Hayes,IFR
+R101073,F051042,2024-10-13,1.8,Check Ride,Completed,Isabella Rodriguez,N6603L,Cessna,172S,,IFR
+R100512,F050500,2024-10-16,2.2,Dual Flight Training,Completed,David Kim,N7732K,Cessna,172S,Doug Hayes,IFR
+R101581,F051501,2024-10-16,2.9,Owner Flight,Completed,Patricia O'Donnell,N4521P,Cessna,172N,,
+R100240,F050232,2024-10-20,1.7,Dual Flight Training,Completed,Jamie Chen,N6603L,Cessna,172S,Mike Anderson,CFII
+R100517,F050505,2024-10-20,1.4,Dual Flight Training,Completed,David Kim,N8814M,Piper,PA-28-181,Doug Hayes,IFR
+R100521,F050509,2024-10-21,2.3,Dual Flight Training,Completed,David Kim,N6603L,Cessna,172S,Doug Hayes,IFR
+R101162,F051130,2024-10-21,1.6,Dual Flight Training,Completed,Noah J. Carter,N7732K,Cessna,172S,Jenny Park,PPL
+R101350,F051310,2024-10-21,1.9,Dual Flight Training,Completed,Ethan Murphy,N8814M,Piper,PA-28-181,Jenny Park,CFII
+R101559,,2024-10-21,2.7,Maintenance,Completed,,N6603L,Cessna,172S,,
+R100235,F050227,2024-10-22,1.3,Dual Flight Training,Completed,Jamie Chen,N4521P,Cessna,172N,Mike Anderson,CFII
+R100238,F050230,2024-10-23,2.3,Dual Flight Training,Completed,Jamie Chen,N6603L,Cessna,172S,Mike Anderson,CFII
+R100905,F050878,2024-10-23,1.9,Dual Flight Training,Completed,Brandon Lee,N5567W,Piper,PA-44-180,Jenny Park,MEI
+R100907,F050880,2024-10-24,1.9,Dual Flight Training,Completed,Brandon Lee,N5567W,Piper,PA-44-180,Jenny Park,MEI
+R101347,F051307,2024-10-25,1.8,Dual Flight Training,Completed,Ethan Murphy,N6603L,Cessna,172S,Jenny Park,CFII
+R100237,F050229,2024-10-26,1.4,Dual Flight Training,Completed,Jamie Chen,N7732K,Cessna,172S,Mike Anderson,CFII
+R101074,F051043,2024-11-02,1.5,Dual Flight Training,Completed,Isabella Rodriguez,N6603L,Cessna,172S,Mike Anderson,COM
+R100519,F050507,2024-11-04,2.2,Dual Flight Training,Completed,David Kim,N8814M,Piper,PA-28-181,Doug Hayes,IFR
+R100241,F050233,2024-11-05,1.9,Dual Flight Training,Completed,Jamie Chen,N8814M,Piper,PA-28-181,Mike Anderson,CFII
+R100314,F050304,2024-11-06,2.3,Dual Flight Training,Completed,Sarah Williams,N8814M,Piper,PA-28-181,Sarah Phillips,CFII
+R101141,F051109,2024-11-09,1.5,Dual Flight Training,Completed,Noah J. Carter,N4521P,Cessna,172N,Jenny Park,PPL
+R101680,F051598,2024-11-10,1.9,Dual Flight Training,Completed,Daniel Park,N7732K,Cessna,172S,Doug Hayes,current student
+R100529,F050516,2024-11-11,1.8,Check Ride,Completed,David Kim,N4521P,Cessna,172N,,IFR
+R101169,F051137,2024-11-11,2.1,Dual Flight Training,Completed,Noah J. Carter,N6603L,Cessna,172S,Tom Reyes,PPL
+R101075,F051044,2024-11-13,2.3,Dual Flight Training,Completed,Isabella Rodriguez,N1175C,Piper,PA-28R-201,Doug Hayes,COM
+R101079,F051048,2024-11-13,1.8,Dual Flight Training,Completed,Isabella Rodriguez,N1175C,Piper,PA-28R-201,Doug Hayes,COM
+R101348,F051308,2024-11-13,2.3,Dual Flight Training,Completed,Ethan Murphy,N6603L,Cessna,172S,Jenny Park,CFII
+R100236,F050228,2024-11-14,1.6,Dual Flight Training,Completed,Jamie Chen,N7732K,Cessna,172S,Mike Anderson,CFII
+R101346,,2024-11-14,0,Dual Flight Training,Canceled,Ethan Murphy,N6603L,Cessna,172S,Jenny Park,CFII
+R100906,F050879,2024-11-15,2.0,Dual Flight Training,Completed,Brandon Lee,N5567W,Piper,PA-44-180,Jenny Park,MEI
+R100233,F050225,2024-11-16,1.3,Dual Flight Training,Completed,Jamie Chen,N4521P,Cessna,172N,Mike Anderson,CFII
+R101349,F051309,2024-11-19,2.4,Dual Flight Training,Completed,Ethan Murphy,N8814M,Piper,PA-28-181,Jenny Park,CFII
+R100312,F050302,2024-11-22,1.9,Dual Flight Training,Completed,Sarah Williams,N7732K,Cessna,172S,Sarah Phillips,CFII
+R100909,F050882,2024-11-22,2.1,Dual Flight Training,Completed,Brandon Lee,N5567W,Piper,PA-44-180,Jenny Park,MEI
+R101078,F051047,2024-11-24,1.6,Dual Flight Training,Completed,Isabella Rodriguez,N9923R,Cessna,182RG,Doug Hayes,COM
+R101080,F051049,2024-11-25,1.2,Dual Flight Training,Completed,Isabella Rodriguez,N9923R,Cessna,182RG,Doug Hayes,COM
+R100908,F050881,2024-11-26,2.3,Dual Flight Training,Completed,Brandon Lee,N5567W,Piper,PA-44-180,Tom Reyes,MEI
+R100239,F050231,2024-11-27,2.0,Dual Flight Training,Completed,Jamie Chen,N8814M,Piper,PA-28-181,Mike Anderson,CFII
+R101146,F051114,2024-11-27,1.2,Dual Flight Training,Completed,Noah J. Carter,N6603L,Cessna,172S,Jenny Park,PPL
+R101081,F051050,2024-11-28,2.3,Dual Flight Training,Completed,Isabella Rodriguez,N9923R,Cessna,182RG,Doug Hayes,COM
+R100310,F050300,2024-11-29,1.6,Dual Flight Training,Completed,Sarah Williams,N8814M,Piper,PA-28-181,Sarah Phillips,CFII
+R101351,F051311,2024-12-01,1.4,Dual Flight Training,Completed,Ethan Murphy,N7732K,Cessna,172S,Jenny Park,CFII
+R101083,F051052,2024-12-03,1.6,Dual Flight Training,Completed,Isabella Rodriguez,N9923R,Cessna,182RG,Tom Reyes,COM
+R101086,F051055,2024-12-04,1.4,Dual Flight Training,Completed,Isabella Rodriguez,N9923R,Cessna,182RG,Doug Hayes,COM
+R101076,F051045,2024-12-05,1.6,Dual Flight Training,Completed,Isabella Rodriguez,N9923R,Cessna,182RG,Doug Hayes,COM
+R100537,F050524,2024-12-06,2.2,Dual Flight Training,Completed,David Kim,N9923R,Cessna,182RG,Doug Hayes,COM
+R101085,F051054,2024-12-06,2.1,Dual Flight Training,Completed,Isabella Rodriguez,N1175C,Piper,PA-28R-201,Doug Hayes,COM
+R101661,F051579,2024-12-06,1.3,Dual Flight Training,Completed,Daniel Park,N4521P,Cessna,172N,Doug Hayes,current student
+R100234,F050226,2024-12-07,1.3,Dual Flight Training,Completed,Jamie Chen,N8814M,Piper,PA-28-181,Mike Anderson,CFII
+R100531,F050518,2024-12-08,1.6,Dual Flight Training,Completed,David Kim,N7732K,Cessna,172S,Doug Hayes,COM
+R100910,F050883,2024-12-08,2.1,Check Ride,Completed,Brandon Lee,N3340T,Piper,PA-44-180,,MEI
+R100542,F050529,2024-12-12,1.9,Dual Flight Training,Completed,David Kim,N9923R,Cessna,182RG,Doug Hayes,COM
+R101167,F051135,2024-12-13,2.0,Dual Flight Training,Completed,Noah J. Carter,N8814M,Piper,PA-28-181,Jenny Park,PPL
+R100242,F050234,2024-12-15,1.5,Check Ride,Completed,Jamie Chen,N6603L,Cessna,172S,,CFII
+R101082,F051051,2024-12-19,2.0,Dual Flight Training,Completed,Isabella Rodriguez,N7732K,Cessna,172S,Doug Hayes,COM
+R100538,F050525,2024-12-20,1.4,Dual Flight Training,Completed,David Kim,N4521P,Cessna,172N,Jenny Park,COM
+R101147,F051115,2024-12-20,2.2,Dual Flight Training,Completed,Noah J. Carter,N4521P,Cessna,172N,Tom Reyes,PPL
+R101352,F051312,2024-12-20,2.4,Check Ride,Completed,Ethan Murphy,N6603L,Cessna,172S,,CFII
+R101563,F051483,2024-12-22,3.2,Owner Flight,Completed,Robert Klein,N1175C,Piper,PA-28R-201,,
+R100315,F050305,2024-12-24,1.9,Dual Flight Training,Completed,Sarah Williams,N4521P,Cessna,172N,Sarah Phillips,CFII
+R101088,F051057,2024-12-27,2.1,Dual Flight Training,Completed,Isabella Rodriguez,N9923R,Cessna,182RG,Doug Hayes,COM
+R101139,F051107,2024-12-28,2.3,Dual Flight Training,Completed,Noah J. Carter,N4521P,Cessna,172N,Mike Anderson,PPL
+R100539,F050526,2024-12-29,1.6,Dual Flight Training,Completed,David Kim,N1175C,Piper,PA-28R-201,Doug Hayes,COM
+R100545,F050532,2024-12-30,1.8,Dual Flight Training,Completed,David Kim,N9923R,Cessna,182RG,Doug Hayes,COM
+R101077,F051046,2024-12-30,2.1,Dual Flight Training,Completed,Isabella Rodriguez,N7732K,Cessna,172S,Doug Hayes,COM
+R101087,F051056,2025-01-02,1.3,Dual Flight Training,Completed,Isabella Rodriguez,N1175C,Piper,PA-28R-201,Doug Hayes,COM
+R100243,F050235,2025-01-10,2.0,Dual Flight Training,Completed,Jamie Chen,N3340T,Piper,PA-44-180,Mike Anderson,MEI
+R100311,F050301,2025-01-10,1.5,Dual Flight Training,Completed,Sarah Williams,N8814M,Piper,PA-28-181,Sarah Phillips,CFII
+R101668,F051586,2025-01-16,1.7,Dual Flight Training,Completed,Daniel Park,N8814M,Piper,PA-28-181,Jenny Park,current student
+R100313,F050303,2025-01-17,1.6,Dual Flight Training,Completed,Sarah Williams,N4521P,Cessna,172N,Sarah Phillips,CFII
+R100536,F050523,2025-01-17,1.4,Dual Flight Training,Completed,David Kim,N4521P,Cessna,172N,Doug Hayes,COM
+R100540,F050527,2025-01-17,1.3,Dual Flight Training,Completed,David Kim,N9923R,Cessna,182RG,Mike Anderson,COM
+R100541,F050528,2025-01-21,1.3,Dual Flight Training,Completed,David Kim,N1175C,Piper,PA-28R-201,Doug Hayes,COM
+R100316,F050306,2025-01-23,2.1,Check Ride,Completed,Sarah Williams,N8814M,Piper,PA-28-181,,CFII
+R101161,F051129,2025-01-25,2.1,Dual Flight Training,Completed,Noah J. Carter,N6603L,Cessna,172S,Doug Hayes,PPL
+R101170,F051138,2025-01-26,2.0,Dual Flight Training,Completed,Noah J. Carter,N6603L,Cessna,172S,Jenny Park,PPL
+R100247,F050239,2025-02-01,2.0,Dual Flight Training,Completed,Jamie Chen,N5567W,Piper,PA-44-180,Mike Anderson,MEI
+R101587,F051507,2025-02-03,1.0,Introductory Flight,Completed,Michael Sanders,N6603L,Cessna,172S,Jenny Park,
+R101686,F051604,2025-02-04,1.4,Dual Flight Training,Completed,Daniel Park,N4521P,Cessna,172N,Doug Hayes,current student
+R101084,F051053,2025-02-07,1.7,Dual Flight Training,Completed,Isabella Rodriguez,N8814M,Piper,PA-28-181,Doug Hayes,COM
+R101584,F051504,2025-02-07,0.8,Introductory Flight,Completed,Michael Sanders,N6603L,Cessna,172S,Jenny Park,
+R101155,F051123,2025-02-08,2.3,Dual Flight Training,Completed,Noah J. Carter,N4521P,Cessna,172N,Mike Anderson,PPL
+R101665,F051583,2025-02-10,1.9,Dual Flight Training,Completed,Daniel Park,N4521P,Cessna,172N,Doug Hayes,current student
+R100245,F050237,2025-02-11,1.9,Dual Flight Training,Completed,Jamie Chen,N3340T,Piper,PA-44-180,Mike Anderson,MEI
+R100535,F050522,2025-02-12,2.0,Dual Flight Training,Completed,David Kim,N1175C,Piper,PA-28R-201,Sarah Phillips,COM
+R100246,F050238,2025-02-13,2.4,Dual Flight Training,Completed,Jamie Chen,N3340T,Piper,PA-44-180,Mike Anderson,MEI
+R101089,F051058,2025-02-14,2.4,Check Ride,Completed,Isabella Rodriguez,N4521P,Cessna,172N,,COM
+R101676,F051594,2025-02-16,2.0,Dual Flight Training,Completed,Daniel Park,N4521P,Cessna,172N,Doug Hayes,current student
+R101673,F051591,2025-02-21,1.9,Dual Flight Training,Completed,Daniel Park,N6603L,Cessna,172S,Doug Hayes,current student
+R101548,,2025-02-22,0.7,Maintenance,Completed,,N6603L,Cessna,172S,,
+R101145,F051113,2025-02-24,2.0,Dual Flight Training,Completed,Noah J. Carter,N4521P,Cessna,172N,Jenny Park,PPL
+R100532,F050519,2025-02-28,1.2,Dual Flight Training,Completed,David Kim,N1175C,Piper,PA-28R-201,Doug Hayes,COM
+R100244,F050236,2025-03-01,1.9,Dual Flight Training,Completed,Jamie Chen,N3340T,Piper,PA-44-180,Tom Reyes,MEI
+R101090,F051059,2025-03-01,2.3,Dual Flight Training,Completed,Isabella Rodriguez,N5567W,Piper,PA-44-180,Doug Hayes,AMEL
+R100533,F050520,2025-03-03,1.5,Dual Flight Training,Completed,David Kim,N1175C,Piper,PA-28R-201,Doug Hayes,COM
+R100544,F050531,2025-03-04,2.3,Dual Flight Training,Completed,David Kim,N7732K,Cessna,172S,Mike Anderson,COM
+R100543,F050530,2025-03-05,1.9,Dual Flight Training,Completed,David Kim,N1175C,Piper,PA-28R-201,Doug Hayes,COM
+R100321,F050311,2025-03-07,1.7,Dual Flight Training,Completed,Sarah Williams,N3340T,Piper,PA-44-180,Sarah Phillips,MEI
+R100248,F050240,2025-03-10,1.9,Check Ride,Completed,Jamie Chen,N5567W,Piper,PA-44-180,,MEI
+R101138,F051106,2025-03-12,2.2,Dual Flight Training,Completed,Noah J. Carter,N7732K,Cessna,172S,Jenny Park,PPL
+R101660,F051578,2025-03-12,1.8,Dual Flight Training,Completed,Daniel Park,N7732K,Cessna,172S,Doug Hayes,current student
+R100319,F050309,2025-03-13,2.1,Dual Flight Training,Completed,Sarah Williams,N5567W,Piper,PA-44-180,Sarah Phillips,MEI
+R101159,F051127,2025-03-13,2.0,Dual Flight Training,Completed,Noah J. Carter,N8814M,Piper,PA-28-181,Jenny Park,PPL
+R100530,F050517,2025-03-19,1.5,Dual Flight Training,Completed,David Kim,N1175C,Piper,PA-28R-201,Doug Hayes,COM
+R100320,F050310,2025-03-20,1.8,Dual Flight Training,Completed,Sarah Williams,N3340T,Piper,PA-44-180,Sarah Phillips,MEI
+R101151,F051119,2025-03-21,1.9,Dual Flight Training,Completed,Noah J. Carter,N7732K,Cessna,172S,Jenny Park,PPL
+R101094,F051063,2025-03-23,1.6,Dual Flight Training,Completed,Isabella Rodriguez,N5567W,Piper,PA-44-180,Doug Hayes,AMEL
+R100317,F050307,2025-03-24,1.6,Dual Flight Training,Completed,Sarah Williams,N3340T,Piper,PA-44-180,Sarah Phillips,MEI
+R101594,F051514,2025-03-25,1.1,Introductory Flight,Completed,Michael Sanders,N4521P,Cessna,172N,Jenny Park,
+R100318,F050308,2025-03-26,1.8,Dual Flight Training,Completed,Sarah Williams,N3340T,Piper,PA-44-180,Sarah Phillips,MEI
+R100534,F050521,2025-03-26,1.2,Dual Flight Training,Completed,David Kim,N8814M,Piper,PA-28-181,Doug Hayes,COM
+R101091,F051060,2025-03-26,1.9,Dual Flight Training,Completed,Isabella Rodriguez,N5567W,Piper,PA-44-180,Doug Hayes,AMEL
+R100546,F050533,2025-03-31,1.6,Check Ride,Completed,David Kim,N1175C,Piper,PA-28R-201,,COM
+R100322,F050312,2025-04-08,2.4,Check Ride,Completed,Sarah Williams,N5567W,Piper,PA-44-180,,MEI
+R101093,F051062,2025-04-14,2.2,Dual Flight Training,Completed,Isabella Rodriguez,N5567W,Piper,PA-44-180,Doug Hayes,AMEL
+R101160,F051128,2025-04-15,1.5,Dual Flight Training,Completed,Noah J. Carter,N8814M,Piper,PA-28-181,Jenny Park,PPL
+R101092,F051061,2025-04-16,2.1,Dual Flight Training,Completed,Isabella Rodriguez,N3340T,Piper,PA-44-180,Doug Hayes,AMEL
+R101095,F051064,2025-04-21,1.9,Check Ride,Completed,Isabella Rodriguez,N3340T,Piper,PA-44-180,,AMEL
+R101171,F051139,2025-04-29,2.3,Check Ride,Completed,Noah J. Carter,N7732K,Cessna,172S,,PPL
+R101692,F051609,2025-04-29,1.3,Dual Flight Training,Completed,Daniel Park,N7732K,Cessna,172S,Jenny Park,current student
+R101106,F051074,2025-05-02,1.4,Dual Flight Training,Completed,Isabella Rodriguez,N4521P,Cessna,172N,Mike Anderson,CFI
+R101612,F051532,2025-05-02,1.7,Dual Flight Training,Completed,Henry Walsh,N6603L,Cessna,172S,Tom Reyes,current student
+R101615,,2025-05-02,0,Dual Flight Training,Canceled,Henry Walsh,N8814M,Piper,PA-28-181,,current student
+R101659,F051577,2025-05-04,1.2,Dual Flight Training,Completed,Daniel Park,N6603L,Cessna,172S,Doug Hayes,current student
+R101193,F051159,2025-05-05,2.2,Dual Flight Training,Completed,Noah J. Carter,N7732K,Cessna,172S,Jenny Park,IFR
+R101655,F051573,2025-05-05,1.6,Dual Flight Training,Completed,Daniel Park,N6603L,Cessna,172S,Doug Hayes,current student
+R101097,F051066,2025-05-06,2.4,Dual Flight Training,Completed,Isabella Rodriguez,N7732K,Cessna,172S,Doug Hayes,CFI
+R101190,F051156,2025-05-08,1.3,Dual Flight Training,Completed,Noah J. Carter,N8814M,Piper,PA-28-181,Tom Reyes,IFR
+R101096,F051065,2025-05-11,2.2,Dual Flight Training,Completed,Isabella Rodriguez,N8814M,Piper,PA-28-181,Doug Hayes,CFI
+R101098,F051067,2025-05-14,2.0,Dual Flight Training,Completed,Isabella Rodriguez,N8814M,Piper,PA-28-181,Jenny Park,CFI
+R101613,F051533,2025-05-14,1.8,Dual Flight Training,Completed,Henry Walsh,N8814M,Piper,PA-28-181,Sarah Phillips,current student
+R101690,F051607,2025-05-14,2.1,Dual Flight Training,Completed,Daniel Park,N4521P,Cessna,172N,Doug Hayes,current student
+R101671,F051589,2025-05-17,1.9,Dual Flight Training,Completed,Daniel Park,N7732K,Cessna,172S,Doug Hayes,current student
+R101113,F051081,2025-05-18,1.3,Dual Flight Training,Completed,Isabella Rodriguez,N6603L,Cessna,172S,Doug Hayes,CFI
+R101608,F051528,2025-05-22,1.3,Dual Flight Training,Completed,Henry Walsh,N4521P,Cessna,172N,Sarah Phillips,current student
+R101184,F051151,2025-05-23,1.2,Dual Flight Training,Completed,Noah J. Carter,N8814M,Piper,PA-28-181,Jenny Park,IFR
+R101197,F051163,2025-05-25,1.9,Dual Flight Training,Completed,Noah J. Carter,N7732K,Cessna,172S,Tom Reyes,IFR
+R101607,F051527,2025-06-01,1.5,Dual Flight Training,Completed,Henry Walsh,N4521P,Cessna,172N,Sarah Phillips,current student
+R101658,F051576,2025-06-01,2.2,Dual Flight Training,Completed,Daniel Park,N4521P,Cessna,172N,Doug Hayes,current student
+R101600,F051520,2025-06-05,2.0,Dual Flight Training,Completed,Henry Walsh,N6603L,Cessna,172S,Sarah Phillips,current student
+R101178,F051145,2025-06-07,2.1,Dual Flight Training,Completed,Noah J. Carter,N6603L,Cessna,172S,Jenny Park,IFR
+R101101,F051070,2025-06-09,1.8,Dual Flight Training,Completed,Isabella Rodriguez,N6603L,Cessna,172S,Doug Hayes,CFI
+R101667,F051585,2025-06-10,1.8,Dual Flight Training,Completed,Daniel Park,N8814M,Piper,PA-28-181,Doug Hayes,current student
+R101110,F051078,2025-06-11,2.2,Dual Flight Training,Completed,Isabella Rodriguez,N7732K,Cessna,172S,Doug Hayes,CFI
+R101111,F051079,2025-06-12,1.3,Dual Flight Training,Completed,Isabella Rodriguez,N8814M,Piper,PA-28-181,Doug Hayes,CFI
+R101589,F051509,2025-06-12,1.2,Introductory Flight,Completed,Karen Yoshida,N8814M,Piper,PA-28-181,Doug Hayes,
+R101102,F051071,2025-06-13,1.3,Dual Flight Training,Completed,Isabella Rodriguez,N4521P,Cessna,172N,Doug Hayes,CFI
+R101109,F051077,2025-06-13,2.2,Dual Flight Training,Completed,Isabella Rodriguez,N6603L,Cessna,172S,Sarah Phillips,CFI
+R101175,F051142,2025-06-19,1.9,Dual Flight Training,Completed,Noah J. Carter,N7732K,Cessna,172S,Jenny Park,IFR
+R101177,F051144,2025-06-19,1.8,Dual Flight Training,Completed,Noah J. Carter,N4521P,Cessna,172N,Jenny Park,IFR
+R101176,F051143,2025-06-20,1.2,Dual Flight Training,Completed,Noah J. Carter,N6603L,Cessna,172S,Doug Hayes,IFR
+R101117,F051085,2025-06-22,1.5,Dual Flight Training,Completed,Isabella Rodriguez,N7732K,Cessna,172S,Doug Hayes,CFI
+R101684,F051602,2025-06-23,1.5,Dual Flight Training,Completed,Daniel Park,N4521P,Cessna,172N,Doug Hayes,current student
+R101180,F051147,2025-06-25,2.1,Dual Flight Training,Completed,Noah J. Carter,N6603L,Cessna,172S,Jenny Park,IFR
+R101174,F051141,2025-06-26,1.7,Dual Flight Training,Completed,Noah J. Carter,N4521P,Cessna,172N,Jenny Park,IFR
+R101201,F051167,2025-06-26,2.2,Dual Flight Training,Completed,Noah J. Carter,N4521P,Cessna,172N,Mike Anderson,IFR
+R101629,F051548,2025-06-27,1.3,Dual Flight Training,Completed,Henry Walsh,N7732K,Cessna,172S,Sarah Phillips,current student
+R101107,F051075,2025-06-28,1.9,Dual Flight Training,Completed,Isabella Rodriguez,N4521P,Cessna,172N,Doug Hayes,CFI
+R101621,F051540,2025-06-29,1.7,Dual Flight Training,Completed,Henry Walsh,N7732K,Cessna,172S,Sarah Phillips,current student
+R101114,F051082,2025-07-02,1.3,Dual Flight Training,Completed,Isabella Rodriguez,N4521P,Cessna,172N,Doug Hayes,CFI
+R101108,F051076,2025-07-03,1.9,Dual Flight Training,Completed,Isabella Rodriguez,N7732K,Cessna,172S,Doug Hayes,CFI
+R101188,F051154,2025-07-07,1.6,Dual Flight Training,Completed,Noah J. Carter,N6603L,Cessna,172S,Jenny Park,IFR
+R101198,F051164,2025-07-09,2.0,Dual Flight Training,Completed,Noah J. Carter,N8814M,Piper,PA-28-181,Jenny Park,IFR
+R101179,F051146,2025-07-12,1.6,Dual Flight Training,Completed,Noah J. Carter,N8814M,Piper,PA-28-181,Mike Anderson,IFR
+R101189,F051155,2025-07-13,1.7,Dual Flight Training,Completed,Noah J. Carter,N6603L,Cessna,172S,Jenny Park,IFR
+R101694,F051611,2025-07-14,2.0,Dual Flight Training,Completed,Daniel Park,N4521P,Cessna,172N,Doug Hayes,current student
+R101100,F051069,2025-07-15,1.5,Dual Flight Training,Completed,Isabella Rodriguez,N6603L,Cessna,172S,Doug Hayes,CFI
+R101623,F051542,2025-07-22,2.1,Dual Flight Training,Completed,Henry Walsh,N8814M,Piper,PA-28-181,Sarah Phillips,current student
+R101103,F051072,2025-07-23,2.0,Dual Flight Training,Completed,Isabella Rodriguez,N6603L,Cessna,172S,Sarah Phillips,CFI
+R101105,F051073,2025-07-23,1.2,Dual Flight Training,Completed,Isabella Rodriguez,N4521P,Cessna,172N,Doug Hayes,CFI
+R101115,F051083,2025-07-23,1.9,Dual Flight Training,Completed,Isabella Rodriguez,N8814M,Piper,PA-28-181,Jenny Park,CFI
+R101595,F051515,2025-07-24,2.0,Dual Flight Training,Completed,Henry Walsh,N8814M,Piper,PA-28-181,Sarah Phillips,current student
+R101116,F051084,2025-07-28,1.4,Dual Flight Training,Completed,Isabella Rodriguez,N7732K,Cessna,172S,Doug Hayes,CFI
+R101112,F051080,2025-07-29,1.6,Dual Flight Training,Completed,Isabella Rodriguez,N7732K,Cessna,172S,Mike Anderson,CFI
+R101695,F051612,2025-07-30,1.4,Dual Flight Training,Completed,Daniel Park,N6603L,Cessna,172S,Doug Hayes,current student
+R101195,F051161,2025-08-01,1.7,Dual Flight Training,Completed,Noah J. Carter,N8814M,Piper,PA-28-181,Jenny Park,IFR
+R101681,F051599,2025-08-01,1.3,Dual Flight Training,Completed,Daniel Park,N8814M,Piper,PA-28-181,Doug Hayes,current student
+R101099,F051068,2025-08-03,1.4,Dual Flight Training,Completed,Isabella Rodriguez,N4521P,Cessna,172N,Doug Hayes,CFI
+R101104,,2025-08-03,0,Dual Flight Training,Canceled,Isabella Rodriguez,N4521P,Cessna,172N,Doug Hayes,CFI
+R101551,,2025-08-08,3.0,Maintenance,Completed,,N7732K,Cessna,172S,,
+R101619,F051538,2025-08-08,1.9,Dual Flight Training,Completed,Henry Walsh,N4521P,Cessna,172N,Sarah Phillips,current student
+R101675,F051593,2025-08-08,1.2,Dual Flight Training,Completed,Daniel Park,N6603L,Cessna,172S,Doug Hayes,current student
+R101602,F051522,2025-08-10,1.7,Dual Flight Training,Completed,Henry Walsh,N4521P,Cessna,172N,Tom Reyes,current student
+R101118,F051086,2025-08-11,2.2,Check Ride,Completed,Isabella Rodriguez,N7732K,Cessna,172S,,CFI
+R101603,F051523,2025-08-11,1.3,Dual Flight Training,Completed,Henry Walsh,N7732K,Cessna,172S,Sarah Phillips,current student
+R101678,F051596,2025-08-16,1.8,Dual Flight Training,Completed,Daniel Park,N4521P,Cessna,172N,Doug Hayes,current student
+R101624,F051543,2025-08-21,1.9,Dual Flight Training,Completed,Henry Walsh,N6603L,Cessna,172S,Sarah Phillips,current student
+R101172,F051140,2025-08-22,1.6,Dual Flight Training,Completed,Noah J. Carter,N4521P,Cessna,172N,Sarah Phillips,IFR
+R101181,F051148,2025-08-22,1.5,Dual Flight Training,Completed,Noah J. Carter,N6603L,Cessna,172S,Jenny Park,IFR
+R101626,F051545,2025-08-23,2.1,Dual Flight Training,Completed,Henry Walsh,N4521P,Cessna,172N,Sarah Phillips,current student
+R101194,F051160,2025-08-27,2.3,Dual Flight Training,Completed,Noah J. Carter,N7732K,Cessna,172S,Jenny Park,IFR
+R101192,F051158,2025-08-30,2.4,Dual Flight Training,Completed,Noah J. Carter,N4521P,Cessna,172N,Jenny Park,IFR
+R101631,F051550,2025-09-01,1.5,Dual Flight Training,Completed,Grace Liu,N7732K,Cessna,172S,Jenny Park,current student
+R101200,F051166,2025-09-02,1.7,Dual Flight Training,Completed,Noah J. Carter,N7732K,Cessna,172S,Jenny Park,IFR
+R101666,F051584,2025-09-03,2.1,Dual Flight Training,Completed,Daniel Park,N7732K,Cessna,172S,Doug Hayes,current student
+R101126,F051094,2025-09-04,1.3,Dual Flight Training,Completed,Isabella Rodriguez,N7732K,Cessna,172S,Doug Hayes,CFII
+R101614,F051534,2025-09-05,1.6,Dual Flight Training,Completed,Henry Walsh,N6603L,Cessna,172S,Sarah Phillips,current student
+R101120,F051088,2025-09-08,1.4,Dual Flight Training,Completed,Isabella Rodriguez,N4521P,Cessna,172N,Sarah Phillips,CFII
+R101677,F051595,2025-09-10,1.8,Dual Flight Training,Completed,Daniel Park,N6603L,Cessna,172S,Doug Hayes,current student
+R101124,F051092,2025-09-11,1.9,Dual Flight Training,Completed,Isabella Rodriguez,N6603L,Cessna,172S,Doug Hayes,CFII
+R101609,F051529,2025-09-14,2.1,Dual Flight Training,Completed,Henry Walsh,N6603L,Cessna,172S,Sarah Phillips,current student
+R101121,F051089,2025-09-15,2.1,Dual Flight Training,Completed,Isabella Rodriguez,N7732K,Cessna,172S,Doug Hayes,CFII
+R101685,F051603,2025-09-17,2.0,Dual Flight Training,Completed,Daniel Park,N4521P,Cessna,172N,Doug Hayes,current student
+R101636,F051555,2025-09-18,1.8,Dual Flight Training,Completed,Grace Liu,N8814M,Piper,PA-28-181,Tom Reyes,current student
+R101650,F051568,2025-09-18,1.3,Dual Flight Training,Completed,Grace Liu,N6603L,Cessna,172S,Tom Reyes,current student
+R101186,F051153,2025-09-19,1.8,Dual Flight Training,Completed,Noah J. Carter,N8814M,Piper,PA-28-181,Jenny Park,IFR
+R101119,F051087,2025-09-21,2.2,Dual Flight Training,Completed,Isabella Rodriguez,N8814M,Piper,PA-28-181,Doug Hayes,CFII
+R101187,,2025-09-21,0,Dual Flight Training,Canceled,Noah J. Carter,N7732K,Cessna,172S,Jenny Park,IFR
+R101122,F051090,2025-09-26,1.4,Dual Flight Training,Completed,Isabella Rodriguez,N6603L,Cessna,172S,Doug Hayes,CFII
+R101191,F051157,2025-09-26,1.8,Dual Flight Training,Completed,Noah J. Carter,N6603L,Cessna,172S,Jenny Park,IFR
+R101590,F051510,2025-09-27,1.1,Introductory Flight,Completed,Karen Yoshida,N8814M,Piper,PA-28-181,Jenny Park,
+R101640,F051558,2025-09-27,2.1,Dual Flight Training,Completed,Grace Liu,N7732K,Cessna,172S,Tom Reyes,current student
+R101605,F051525,2025-09-28,1.3,Dual Flight Training,Completed,Henry Walsh,N4521P,Cessna,172N,Sarah Phillips,current student
+R101648,F051566,2025-09-29,1.3,Dual Flight Training,Completed,Grace Liu,N6603L,Cessna,172S,Tom Reyes,current student
+R101123,F051091,2025-09-30,1.3,Dual Flight Training,Completed,Isabella Rodriguez,N8814M,Piper,PA-28-181,Doug Hayes,CFII
+R101125,F051093,2025-09-30,1.8,Dual Flight Training,Completed,Isabella Rodriguez,N7732K,Cessna,172S,Doug Hayes,CFII
+R101656,F051574,2025-09-30,1.3,Dual Flight Training,Completed,Daniel Park,N7732K,Cessna,172S,Doug Hayes,current student
+R101620,F051539,2025-10-02,2.0,Dual Flight Training,Completed,Henry Walsh,N6603L,Cessna,172S,Sarah Phillips,current student
+R101127,F051095,2025-10-03,1.9,Check Ride,Completed,Isabella Rodriguez,N8814M,Piper,PA-28-181,,CFII
+R101196,F051162,2025-10-11,2.3,Dual Flight Training,Completed,Noah J. Carter,N7732K,Cessna,172S,Jenny Park,IFR
+R101610,F051530,2025-10-20,1.6,Dual Flight Training,Completed,Henry Walsh,N8814M,Piper,PA-28-181,Jenny Park,current student
+R101644,F051562,2025-10-20,1.3,Dual Flight Training,Completed,Grace Liu,N4521P,Cessna,172N,Tom Reyes,current student
+R101691,F051608,2025-10-20,1.4,Dual Flight Training,Completed,Daniel Park,N4521P,Cessna,172N,Sarah Phillips,current student
+R101173,,2025-10-21,0,Dual Flight Training,Canceled,Noah J. Carter,N8814M,Piper,PA-28-181,Jenny Park,IFR
+R101586,F051506,2025-10-22,1.0,Introductory Flight,Completed,Karen Yoshida,N8814M,Piper,PA-28-181,Jenny Park,
+R101647,F051565,2025-10-23,1.9,Dual Flight Training,Completed,Grace Liu,N7732K,Cessna,172S,Sarah Phillips,current student
+R101598,F051518,2025-10-24,2.0,Dual Flight Training,Completed,Henry Walsh,N8814M,Piper,PA-28-181,Doug Hayes,current student
+R101185,F051152,2025-10-29,1.9,Dual Flight Training,Completed,Noah J. Carter,N7732K,Cessna,172S,Tom Reyes,IFR
+R101616,F051535,2025-11-01,2.1,Dual Flight Training,Completed,Henry Walsh,N8814M,Piper,PA-28-181,Sarah Phillips,current student
+R101565,F051485,2025-11-03,2.6,Owner Flight,Completed,Patricia O'Donnell,N6603L,Cessna,172S,,
+R101674,F051592,2025-11-07,2.1,Dual Flight Training,Completed,Daniel Park,N8814M,Piper,PA-28-181,Doug Hayes,current student
+R101653,F051571,2025-11-12,1.2,Dual Flight Training,Completed,Daniel Park,N4521P,Cessna,172N,Doug Hayes,current student
+R101132,F051100,2025-11-13,2.0,Dual Flight Training,Completed,Isabella Rodriguez,N5567W,Piper,PA-44-180,Doug Hayes,MEI
+R101634,F051553,2025-11-14,2.0,Dual Flight Training,Completed,Grace Liu,N8814M,Piper,PA-28-181,Tom Reyes,current student
+R101646,F051564,2025-11-14,1.4,Dual Flight Training,Completed,Grace Liu,N7732K,Cessna,172S,Tom Reyes,current student
+R101128,F051096,2025-11-21,1.5,Dual Flight Training,Completed,Isabella Rodriguez,N3340T,Piper,PA-44-180,Doug Hayes,MEI
+R101604,F051524,2025-11-26,1.6,Dual Flight Training,Completed,Henry Walsh,N4521P,Cessna,172N,Sarah Phillips,current student
+R101134,F051102,2025-11-27,1.4,Dual Flight Training,Completed,Isabella Rodriguez,N5567W,Piper,PA-44-180,Doug Hayes,MEI
+R101199,F051165,2025-11-27,1.4,Dual Flight Training,Completed,Noah J. Carter,N7732K,Cessna,172S,Jenny Park,IFR
+R101651,F051569,2025-11-28,1.9,Dual Flight Training,Completed,Grace Liu,N6603L,Cessna,172S,Mike Anderson,current student
+R101182,F051149,2025-11-30,1.9,Dual Flight Training,Completed,Noah J. Carter,N4521P,Cessna,172N,Jenny Park,IFR
+R101130,F051098,2025-12-01,1.9,Dual Flight Training,Completed,Isabella Rodriguez,N3340T,Piper,PA-44-180,Doug Hayes,MEI
+R101679,F051597,2025-12-04,1.4,Dual Flight Training,Completed,Daniel Park,N6603L,Cessna,172S,Doug Hayes,current student
+R101183,F051150,2025-12-09,1.8,Dual Flight Training,Completed,Noah J. Carter,N8814M,Piper,PA-28-181,Doug Hayes,IFR
+R101657,F051575,2025-12-09,1.8,Dual Flight Training,Completed,Daniel Park,N6603L,Cessna,172S,Mike Anderson,current student
+R101131,F051099,2025-12-10,1.7,Dual Flight Training,Completed,Isabella Rodriguez,N5567W,Piper,PA-44-180,Doug Hayes,MEI
+R101628,F051547,2025-12-10,2.0,Dual Flight Training,Completed,Henry Walsh,N7732K,Cessna,172S,Sarah Phillips,current student
+R101133,F051101,2025-12-15,1.9,Dual Flight Training,Completed,Isabella Rodriguez,N5567W,Piper,PA-44-180,Jenny Park,MEI
+R101129,F051097,2025-12-18,1.7,Dual Flight Training,Completed,Isabella Rodriguez,N3340T,Piper,PA-44-180,Doug Hayes,MEI
+R101633,F051552,2025-12-23,1.3,Dual Flight Training,Completed,Grace Liu,N4521P,Cessna,172N,Tom Reyes,current student
+R101135,F051103,2025-12-29,2.3,Check Ride,Completed,Isabella Rodriguez,N3340T,Piper,PA-44-180,,MEI
+R101202,F051168,2025-12-30,2.4,Check Ride,Completed,Noah J. Carter,N7732K,Cessna,172S,,IFR
+R101682,F051600,2026-01-03,1.9,Dual Flight Training,Completed,Daniel Park,N7732K,Cessna,172S,Doug Hayes,current student
+R101617,F051536,2026-01-04,1.6,Dual Flight Training,Completed,Henry Walsh,N4521P,Cessna,172N,Doug Hayes,current student
+R101216,F051182,2026-01-06,1.3,Dual Flight Training,Completed,Noah J. Carter,N1175C,Piper,PA-28R-201,Jenny Park,COM
+R101207,F051173,2026-01-08,1.8,Dual Flight Training,Completed,Noah J. Carter,N4521P,Cessna,172N,Jenny Park,COM
+R101582,F051502,2026-01-09,2.4,Owner Flight,Completed,Robert Klein,N7732K,Cessna,172S,,
+R101637,F051556,2026-01-19,2.2,Dual Flight Training,Completed,Grace Liu,N6603L,Cessna,172S,Tom Reyes,current student
+R101672,F051590,2026-01-19,1.6,Dual Flight Training,Completed,Daniel Park,N7732K,Cessna,172S,Doug Hayes,current student
+R101210,F051176,2026-01-21,2.2,Dual Flight Training,Completed,Noah J. Carter,N7732K,Cessna,172S,Jenny Park,COM
+R101205,F051171,2026-01-27,1.4,Dual Flight Training,Completed,Noah J. Carter,N9923R,Cessna,182RG,Jenny Park,COM
+R101596,F051516,2026-01-28,1.9,Dual Flight Training,Completed,Henry Walsh,N6603L,Cessna,172S,Sarah Phillips,current student
+R101638,,2026-01-28,0,Dual Flight Training,Canceled,Grace Liu,N6603L,Cessna,172S,,current student
+R101641,F051559,2026-02-01,2.2,Dual Flight Training,Completed,Grace Liu,N7732K,Cessna,172S,Tom Reyes,current student
+R101217,F051183,2026-02-09,2.0,Dual Flight Training,Completed,Noah J. Carter,N7732K,Cessna,172S,Jenny Park,COM
+R101669,F051587,2026-02-11,1.3,Dual Flight Training,Completed,Daniel Park,N8814M,Piper,PA-28-181,Sarah Phillips,current student
+R101213,F051179,2026-02-16,2.0,Dual Flight Training,Completed,Noah J. Carter,N9923R,Cessna,182RG,Jenny Park,COM
+R101214,F051180,2026-02-18,1.7,Dual Flight Training,Completed,Noah J. Carter,N1175C,Piper,PA-28R-201,Mike Anderson,COM
+R101639,F051557,2026-02-18,1.4,Dual Flight Training,Completed,Grace Liu,N7732K,Cessna,172S,Sarah Phillips,current student
+R101652,F051570,2026-02-18,2.1,Dual Flight Training,Completed,Daniel Park,N6603L,Cessna,172S,Doug Hayes,current student
+R101642,F051560,2026-02-20,1.6,Dual Flight Training,Completed,Grace Liu,N6603L,Cessna,172S,Tom Reyes,current student
+R101649,F051567,2026-02-21,1.8,Dual Flight Training,Completed,Grace Liu,N7732K,Cessna,172S,Tom Reyes,current student
+R101683,F051601,2026-02-23,1.7,Dual Flight Training,Completed,Daniel Park,N8814M,Piper,PA-28-181,Doug Hayes,current student
+R101606,F051526,2026-02-24,1.4,Dual Flight Training,Completed,Henry Walsh,N6603L,Cessna,172S,Sarah Phillips,current student
+R101215,F051181,2026-03-01,1.3,Dual Flight Training,Completed,Noah J. Carter,N1175C,Piper,PA-28R-201,Jenny Park,COM
+R101632,F051551,2026-03-06,2.0,Dual Flight Training,Completed,Grace Liu,N7732K,Cessna,172S,Tom Reyes,current student
+R101630,F051549,2026-03-08,1.3,Dual Flight Training,Completed,Grace Liu,N8814M,Piper,PA-28-181,Tom Reyes,current student
+R101211,F051177,2026-03-16,2.1,Dual Flight Training,Completed,Noah J. Carter,N9923R,Cessna,182RG,Jenny Park,COM
+R101664,F051582,2026-03-18,1.9,Dual Flight Training,Completed,Daniel Park,N8814M,Piper,PA-28-181,Doug Hayes,current student
+R101643,F051561,2026-03-20,1.3,Dual Flight Training,Completed,Grace Liu,N8814M,Piper,PA-28-181,Doug Hayes,current student
+R101687,F051605,2026-03-20,2.0,Dual Flight Training,Completed,Daniel Park,N4521P,Cessna,172N,Doug Hayes,current student
+R101693,F051610,2026-03-23,1.6,Dual Flight Training,Completed,Daniel Park,N8814M,Piper,PA-28-181,Doug Hayes,current student
+R101209,F051175,2026-03-27,1.6,Dual Flight Training,Completed,Noah J. Carter,N1175C,Piper,PA-28R-201,Jenny Park,COM
+R101203,F051169,2026-03-30,1.6,Dual Flight Training,Completed,Noah J. Carter,N8814M,Piper,PA-28-181,Jenny Park,COM
+R101618,F051537,2026-04-03,2.1,Dual Flight Training,Completed,Henry Walsh,N4521P,Cessna,172N,Sarah Phillips,current student
+R101622,F051541,2026-04-03,1.9,Dual Flight Training,Completed,Henry Walsh,N4521P,Cessna,172N,Sarah Phillips,current student
+R101688,F051606,2026-04-05,2.1,Dual Flight Training,Completed,Daniel Park,N7732K,Cessna,172S,Doug Hayes,current student
+R101204,F051170,2026-04-06,2.2,Dual Flight Training,Completed,Noah J. Carter,N9923R,Cessna,182RG,Jenny Park,COM
+R101611,F051531,2026-04-06,1.6,Dual Flight Training,Completed,Henry Walsh,N4521P,Cessna,172N,Mike Anderson,current student
+R101625,F051544,2026-04-06,1.3,Dual Flight Training,Completed,Henry Walsh,N6603L,Cessna,172S,Sarah Phillips,current student
+R101654,F051572,2026-04-06,1.4,Dual Flight Training,Completed,Daniel Park,N6603L,Cessna,172S,Doug Hayes,current student
+R101206,F051172,2026-04-07,1.7,Dual Flight Training,Completed,Noah J. Carter,N9923R,Cessna,182RG,Jenny Park,COM
+R101208,F051174,2026-04-07,1.3,Dual Flight Training,Completed,Noah J. Carter,N9923R,Cessna,182RG,Jenny Park,COM
+R101212,F051178,2026-04-07,1.8,Dual Flight Training,Completed,Noah J. Carter,N4521P,Cessna,172N,Doug Hayes,COM
+R101218,F051184,2026-04-10,2.4,Check Ride,Completed,Noah J. Carter,N7732K,Cessna,172S,,COM
+R101696,F051613,2026-04-12,2.0,Dual Flight Training,Completed,Daniel Park,N4521P,Cessna,172N,Jenny Park,current student
+R101663,F051581,2026-04-16,2.1,Dual Flight Training,Completed,Daniel Park,N8814M,Piper,PA-28-181,Doug Hayes,current student
+R101635,F051554,2026-04-22,1.3,Dual Flight Training,Completed,Grace Liu,N8814M,Piper,PA-28-181,Tom Reyes,current student
+R101599,F051519,2026-04-23,1.5,Dual Flight Training,Completed,Henry Walsh,N7732K,Cessna,172S,Sarah Phillips,current student
+R101645,F051563,2026-04-23,1.9,Dual Flight Training,Completed,Grace Liu,N7732K,Cessna,172S,Tom Reyes,current student
+R101689,,2026-04-30,0,Dual Flight Training,Canceled,Daniel Park,N6603L,Cessna,172S,,current student
+R101627,F051546,2026-05-03,1.9,Dual Flight Training,Completed,Henry Walsh,N6603L,Cessna,172S,Sarah Phillips,current student
+R101670,F051588,2026-05-03,1.4,Dual Flight Training,Completed,Daniel Park,N8814M,Piper,PA-28-181,Doug Hayes,current student
+R101597,F051517,2026-05-08,2.1,Dual Flight Training,Completed,Henry Walsh,N4521P,Cessna,172N,Sarah Phillips,current student
+R101601,F051521,2026-05-11,1.6,Dual Flight Training,Completed,Henry Walsh,N7732K,Cessna,172S,Sarah Phillips,current student
+R101662,F051580,2026-05-12,1.4,Dual Flight Training,Completed,Daniel Park,N4521P,Cessna,172N,Doug Hayes,current student

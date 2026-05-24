@@ -1,0 +1,29 @@
+# Python
+__pycache__/
+*.py[cod]
+*$py.class
+*.egg-info/
+.pytest_cache/
+.coverage
+.venv/
+venv/
+build/
+dist/
+
+# Editor / OS
+.DS_Store
+*.swp
+.vscode/
+.idea/
+
+# LibreOffice / Excel lock files
+.~lock.*#
+~$*
+
+# Local SQLite databases
+*.db
+*.sqlite
+*.sqlite3
+
+# Local analysis outputs (regenerable)
+output/

@@ -1,0 +1,31 @@
+[build-system]
+requires = ["setuptools>=64"]
+build-backend = "setuptools.build_meta"
+
+[project]
+name = "provectus-analytics"
+version = "0.1.0"
+description = "Analytics pipeline for Provectus flight training data (FSP + alumni survey)"
+requires-python = ">=3.10"
+dependencies = [
+    "pandas>=2.0",
+]
+
+[project.optional-dependencies]
+dev = [
+    "pytest>=7.0",
+]
+dashboard = [
+    "streamlit>=1.30",
+    "plotly>=5.18",
+]
+
+[project.scripts]
+provectus-analytics = "provectus_analytics.cli:main"
+
+[tool.setuptools.packages.find]
+where = ["src"]
+
+[tool.pytest.ini_options]
+testpaths = ["tests"]
+addopts = "-ra"
