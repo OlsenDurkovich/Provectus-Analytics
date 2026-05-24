@@ -11,6 +11,7 @@
 - **Phase 5 (data model) — done.** SQLite via `src/provectus_analytics/{schema,db}.py`. Tables: students, ratings, enrollments, milestones, flights, invoices, surveys.
 - **Phase 6 (cleaning + norms) — done.** `src/provectus_analytics/norms.py`. Tukey-fence outlier filter, median + P25/P75, low-sample flag at n<10.
 - **Phase 7 (MVP dashboard) — done for PPL.** Streamlit + Plotly; see `PHASE7_FRAMEWORK_DECISION.md`. Launch: `streamlit run app.py`. Cohort overview + box plot distributions + selected-student trajectory vs cohort median.
+- **Phase 8 (full web app) — done.** All 7 ratings. Pages: All Ratings overview, Rating Detail (with date-range filter + student overlay), Student drill-down (all ratings + vs-cohort delta), Instructor view (student list + efficiency vs cohort norms). No auth (boss-only access; add later if needed). Still on synthetic data.
 - All subsequent phases below.
 
 ## Data path decision (locked)
@@ -104,9 +105,9 @@ Build smallest useful view: PPL cost/hours/duration distribution + a single stud
 
 ---
 
-### Phase 8 — Full web app
+### Phase 8 — Full web app ✓
 
-Expand MVP to all 7 ratings. Per-student drill-down, instructor view, comparison filters. Simple auth if anyone beyond the boss will see it.
+Expanded to all 7 ratings. Four pages: All Ratings overview, Rating Detail (date filter + student overlay), Student drill-down, Instructor view (student list + efficiency vs cohort). Auth deferred — not needed yet.
 
 ---
 
