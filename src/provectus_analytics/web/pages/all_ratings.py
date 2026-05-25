@@ -39,10 +39,17 @@ def _bar(metric_name: str, color: str, value_fmt: str, prefix: str = "") -> go.F
             "<extra></extra>"
         ),
     ))
-    layout = base_layout(height=260, yaxis=dict(rangemode="tozero"))
+    layout = base_layout(
+        height=260,
+        margin=dict(l=56, r=12, t=8, b=28),
+        yaxis=dict(rangemode="tozero", showgrid=True,
+                   gridcolor=COLORS["divider"],
+                   tickfont=dict(size=11, color=COLORS["text_muted"])),
+    )
     if prefix == "$":
         layout["yaxis"] = dict(rangemode="tozero", tickprefix="$", showgrid=True,
-                               gridcolor=COLORS["divider"])
+                               gridcolor=COLORS["divider"],
+                               tickfont=dict(size=11, color=COLORS["text_muted"]))
     fig.update_layout(**layout)
     return fig
 
