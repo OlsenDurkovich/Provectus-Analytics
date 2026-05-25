@@ -37,8 +37,8 @@ def _sidebar() -> html.Div:
         className="sidebar",
         children=[
             html.Div(className="brand", children=[
-                html.Div(className="brand-mark"),
-                html.Div("Provectus", className="brand-name"),
+                html.Img(src="/assets/Provectus.jpg", className="brand-logo",
+                         alt="Provectus Aviation Unlimited"),
             ]),
             html.Div(className="nav", children=[
                 html.Div("Analytics", className="nav-section"),

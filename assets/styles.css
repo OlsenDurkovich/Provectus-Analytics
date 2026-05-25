@@ -119,22 +119,19 @@ a:hover { text-decoration: underline; }
 }
 
 .brand {
-  display: flex;
-  align-items: center;
-  gap: 10px;
-  padding: 4px 10px 12px;
-  border-bottom: 1px solid rgba(255,255,255,0.06);
+  display: block;
+  background: #ffffff;
+  border-radius: 8px;
+  padding: 12px 14px;
+  margin: 0 2px 8px;
+  box-shadow: 0 1px 2px rgba(0,0,0,0.25);
 }
-.brand-mark {
-  width: 22px; height: 22px;
-  border-radius: 6px;
-  background: linear-gradient(135deg, #5e6ad2, #8b5cf6);
-}
-.brand-name {
-  font-size: 15px;
-  font-weight: 800;
-  letter-spacing: -0.01em;
-  color: #fff;
+.brand-logo {
+  display: block;
+  width: 100%;
+  height: auto;
+  max-height: 80px;
+  object-fit: contain;
 }
 
 .nav {
@@ -270,17 +267,57 @@ a:hover { text-decoration: underline; }
   color: var(--text-muted);
   text-transform: uppercase;
 }
-.Select-control,
+
+/* Dash Dropdown uses react-select v5 with hashed class names.
+   Target both the legacy .Select-* names AND the v5 wrappers via attribute
+   selectors so we cover every Dash + react-select combo. */
+.dash-dropdown,
+.dash-dropdown div[class$="-control"],
+.dash-dropdown div[class*="-control "],
 .dash-dropdown .Select-control {
-  border: 1px solid var(--border) !important;
+  border-color: var(--border) !important;
   border-radius: 6px !important;
-  background: var(--bg-card) !important;
+  background-color: var(--bg-card) !important;
+  color: var(--text) !important;
   min-height: 32px !important;
   box-shadow: none !important;
 }
-.Select-value-label,
-.Select-placeholder { color: var(--text) !important; font-size: 13px !important; }
-.Select-menu-outer { border-color: var(--border) !important; border-radius: 6px !important; box-shadow: var(--shadow-sm) !important; }
+.dash-dropdown div[class$="-singleValue"],
+.dash-dropdown div[class$="-placeholder"],
+.dash-dropdown div[class$="-input"],
+.dash-dropdown div[class*="-singleValue "],
+.dash-dropdown div[class*="-placeholder "],
+.dash-dropdown div[class*="-input "],
+.dash-dropdown .Select-value-label,
+.dash-dropdown .Select-placeholder,
+.dash-dropdown input {
+  color: var(--text) !important;
+  font-size: 13px !important;
+}
+.dash-dropdown div[class$="-menu"],
+.dash-dropdown div[class*="-menu "],
+.dash-dropdown .Select-menu-outer {
+  background-color: var(--bg-card) !important;
+  border: 1px solid var(--border) !important;
+  border-radius: 6px !important;
+  box-shadow: var(--shadow-sm) !important;
+  color: var(--text) !important;
+}
+.dash-dropdown div[class$="-option"],
+.dash-dropdown div[class*="-option "],
+.dash-dropdown .Select-option {
+  background-color: var(--bg-card) !important;
+  color: var(--text) !important;
+}
+.dash-dropdown div[class$="-option"]:hover,
+.dash-dropdown div[class*="-option "]:hover {
+  background-color: var(--bg-hover) !important;
+}
+.dash-dropdown div[class$="-indicatorSeparator"],
+.dash-dropdown div[class*="-indicatorSeparator "] {
+  background-color: var(--border) !important;
+}
+.dash-dropdown svg { color: var(--text-muted) !important; fill: var(--text-muted) !important; }
 
 /* slider */
 .rc-slider-rail { background: var(--border) !important; height: 3px !important; }
