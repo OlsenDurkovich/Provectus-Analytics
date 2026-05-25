@@ -24,7 +24,7 @@ COLORS = {
 }
 
 FONT_FAMILY = (
-    "'Plus Jakarta Sans', -apple-system, BlinkMacSystemFont, 'Segoe UI', "
+    "-apple-system, BlinkMacSystemFont, 'Segoe UI', "
     "Roboto, Oxygen, Ubuntu, sans-serif"
 )
 

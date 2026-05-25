@@ -87,6 +87,7 @@ def create_app() -> dash.Dash:
         title="Provectus Analytics",
         update_title=None,
         suppress_callback_exceptions=True,
+        external_stylesheets=[],
         meta_tags=[
             {"name": "viewport", "content": "width=device-width, initial-scale=1"},
         ],
