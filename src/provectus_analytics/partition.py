@@ -1,16 +1,15 @@
 """Build enrollments from survey responses, then assign flights to enrollments.
 
-Approach:
-    1. Parse each survey response → one enrollment per completed rating.
-       Dates are month+year strings ("March 2022") → start = day 1 of month,
-       checkride = last day of month.
-    2. For each completed flight with a known student, find enrollments whose
-       [start, checkride] window contains the flight date.
-    3. Single window: assign. Multiple windows: resolve by aircraft class first
-       (ME → AMEL/MEI; SE → other), then by Check Ride month match, then by
-       earliest-started rating (with a partition note explaining the choice).
-    4. Excluded types (Maintenance, Owner Flight, Introductory Flight) and
-       Canceled flights are never attributed.
+Attribution hierarchy (applied in order):
+    1. billing_category (real FSP data only — null for synthetic):
+         AMEL/MEI/CFI/CFII  → direct match to that rating's enrollment
+         PRIMARY             → filter candidates to PPL/IFR/COM, then fall through
+         MISC                → flag as misc, skip (no rating attribution)
+         NONE                → Check Rides and Student Solos: infer from preceding
+                               flights, then fall through to date-window logic
+    2. Check Ride month match (checkride_date month == flight month)
+    3. Aircraft class (ME → AMEL/MEI; SE → other)
+    4. Fallback: earliest-started rating in window
 
 Reads:  students, surveys, flights
 Writes: enrollments, flights.enrollment_id, flights.partition_notes
@@ -24,13 +23,11 @@ from datetime import date, datetime
 
 from .db import rating_id_by_code
 
-# Survey form rating → DB rating code
 SURVEY_TO_RATING = {
     "PPL": "PPL", "IFR": "IFR", "ASEL COM": "COM", "AMEL": "AMEL",
     "CFI": "CFI", "CFII": "CFII", "MEI": "MEI",
 }
 
-# Survey column layout per rating
 SURVEY_COLUMNS = {
     "PPL":      {"completed": "Completed PPL", "start": "PPL training start",
                  "checkride": "PPL checkride", "first_solo": "First solo",
@@ -50,12 +47,21 @@ SURVEY_COLUMNS = {
 }
 
 EXCLUDED_RES_TYPES = {"Maintenance", "Owner Flight", "Introductory Flight"}
-ME_RATINGS = {"AMEL", "MEI"}
-SE_RATINGS = {"PPL", "IFR", "COM", "CFI", "CFII"}
+ME_RATINGS  = {"AMEL", "MEI"}
+SE_RATINGS  = {"PPL", "IFR", "COM", "CFI", "CFII"}
+
+# Billing category → rating code (unambiguous mappings only)
+BILLING_TO_RATING = {
+    "AMEL": "AMEL",
+    "MEI":  "MEI",
+    "CFI":  "CFI",
+    "CFII": "CFII",
+}
+# PRIMARY maps to PPL/IFR/COM — ambiguous, resolved by date window
+PRIMARY_RATINGS = {"PPL", "IFR", "COM"}
 
 
 def parse_month_year(s: str | None, end_of_month: bool = False) -> date | None:
-    """Parse 'March 2022' → date. end_of_month=True returns last day of that month."""
     if not s or not s.strip():
         return None
     dt = datetime.strptime(s.strip(), "%B %Y").date()
@@ -65,7 +71,6 @@ def parse_month_year(s: str | None, end_of_month: bool = False) -> date | None:
 
 
 def build_enrollments(conn: sqlite3.Connection) -> int:
-    """Create one enrollment row per (student, completed rating) from survey responses."""
     n = 0
     surveys = list(conn.execute(
         "SELECT survey_id, student_id, raw_response FROM surveys WHERE student_id IS NOT NULL"
@@ -75,19 +80,18 @@ def build_enrollments(conn: sqlite3.Connection) -> int:
         for survey_rating, cols in SURVEY_COLUMNS.items():
             if raw.get(cols["completed"], "").strip().lower() != "yes":
                 continue
-            start = parse_month_year(raw.get(cols["start"]))
+            start     = parse_month_year(raw.get(cols["start"]))
             checkride = parse_month_year(raw.get(cols["checkride"]), end_of_month=True)
             if start is None or checkride is None:
                 continue
             rating_code = SURVEY_TO_RATING[survey_rating]
-            rating_id = rating_id_by_code(conn, rating_code)
-            first_solo = parse_month_year(raw.get(cols.get("first_solo"))) \
-                         if "first_solo" in cols else None
-            xc_solos = parse_month_year(raw.get(cols.get("xc_solos")), end_of_month=True) \
-                       if "xc_solos" in cols else None
-            xc_pic = parse_month_year(raw.get(cols.get("xc_pic")), end_of_month=True) \
-                     if "xc_pic" in cols else None
-
+            rating_id   = rating_id_by_code(conn, rating_code)
+            first_solo  = parse_month_year(raw.get(cols.get("first_solo"))) \
+                          if "first_solo" in cols else None
+            xc_solos    = parse_month_year(raw.get(cols.get("xc_solos")), end_of_month=True) \
+                          if "xc_solos" in cols else None
+            xc_pic      = parse_month_year(raw.get(cols.get("xc_pic")), end_of_month=True) \
+                          if "xc_pic" in cols else None
             conn.execute(
                 """INSERT OR IGNORE INTO enrollments
                        (student_id, rating_id, start_date, checkride_date,
@@ -103,66 +107,125 @@ def build_enrollments(conn: sqlite3.Connection) -> int:
     return n
 
 
-def _resolve_overlap(flight: sqlite3.Row, candidates: list[sqlite3.Row]) -> tuple[int, str]:
-    """Pick one enrollment from multiple overlapping ones. Returns (enrollment_id, note)."""
-    # 1. Check Ride flights: prefer the rating whose checkride month matches the flight
+def _infer_billing_from_preceding(
+    flight_date: str,
+    student_id: int,
+    flights_by_student: dict[int, list[dict]],
+) -> str:
+    """For Check Rides and NONE-billing flights: look at the 3 most recent
+    completed non-checkride flights before this date and return the most
+    common billing_category among them. Returns 'NONE' if nothing found.
+    """
+    student_flights = flights_by_student.get(student_id, [])
+    preceding = [
+        f for f in student_flights
+        if f["flight_date"] < flight_date
+        and f["reservation_type"] != "Check Ride"
+        and f["status"] == "Completed"
+        and f["billing_category"] not in (None, "NONE", "MISC")
+    ]
+    preceding.sort(key=lambda f: f["flight_date"], reverse=True)
+    recent = preceding[:3]
+    if not recent:
+        return "NONE"
+    # Most common billing_category among recent flights
+    from collections import Counter
+    counts = Counter(f["billing_category"] for f in recent)
+    return counts.most_common(1)[0][0]
+
+
+def _resolve_overlap(
+    flight: sqlite3.Row,
+    candidates: list[sqlite3.Row],
+    effective_billing: str | None,
+) -> tuple[int, str]:
+    """Pick one enrollment from multiple overlapping ones.
+
+    effective_billing: the billing_category to use (may be inferred from
+    preceding flights for Check Rides / NONE-billing events).
+    Returns (enrollment_id, note).
+    """
+    bc = effective_billing or ""
+
+    # 1. Unambiguous billing category → direct match
+    if bc in BILLING_TO_RATING:
+        target = BILLING_TO_RATING[bc]
+        bc_matches = [e for e in candidates if e["rating_code"] == target]
+        if len(bc_matches) == 1:
+            return bc_matches[0]["enrollment_id"], f"billing category: {bc}"
+        if len(bc_matches) > 1:
+            bc_matches.sort(key=lambda e: e["start_date"])
+            return bc_matches[0]["enrollment_id"], f"billing category {bc}; overlap → earliest"
+
+    # 2. PRIMARY → restrict candidates to PPL/IFR/COM, then fall through
+    if bc == "PRIMARY":
+        primary_candidates = [e for e in candidates if e["rating_code"] in PRIMARY_RATINGS]
+        if primary_candidates:
+            candidates = primary_candidates
+
+    # 3. Check Ride month match
     if flight["reservation_type"] == "Check Ride":
         flight_ym = flight["flight_date"][:7]
         cr_matches = [e for e in candidates if e["checkride_date"][:7] == flight_ym]
         if len(cr_matches) == 1:
             return cr_matches[0]["enrollment_id"], "checkride month match"
 
-    # 2. Aircraft-class tiebreaker
+    # 4. Aircraft class tiebreaker
     ac = flight["aircraft_class"]
     if ac == "ME":
-        me_candidates = [e for e in candidates if e["rating_code"] in ME_RATINGS]
-        if len(me_candidates) == 1:
-            return me_candidates[0]["enrollment_id"], "ME aircraft → AMEL/MEI"
-        if len(me_candidates) > 1:
-            # AMEL+MEI overlap — pick earliest-started
-            me_candidates.sort(key=lambda e: e["start_date"])
-            return me_candidates[0]["enrollment_id"], "ME aircraft; AMEL/MEI overlap → earliest"
+        me_c = [e for e in candidates if e["rating_code"] in ME_RATINGS]
+        if len(me_c) == 1:
+            return me_c[0]["enrollment_id"], "ME aircraft → AMEL/MEI"
+        if len(me_c) > 1:
+            me_c.sort(key=lambda e: e["start_date"])
+            return me_c[0]["enrollment_id"], "ME aircraft; AMEL/MEI overlap → earliest"
     elif ac in ("SE_BASIC", "SE_COMPLEX"):
-        se_candidates = [e for e in candidates if e["rating_code"] in SE_RATINGS]
-        if len(se_candidates) == 1:
-            return se_candidates[0]["enrollment_id"], "SE aircraft → single SE rating in window"
-        if len(se_candidates) > 1:
-            # SE_COMPLEX prefers COM if available
+        se_c = [e for e in candidates if e["rating_code"] in SE_RATINGS]
+        if len(se_c) == 1:
+            return se_c[0]["enrollment_id"], "SE aircraft → single SE rating in window"
+        if len(se_c) > 1:
             if ac == "SE_COMPLEX":
-                com = [e for e in se_candidates if e["rating_code"] == "COM"]
+                com = [e for e in se_c if e["rating_code"] == "COM"]
                 if com:
-                    return com[0]["enrollment_id"], "SE complex aircraft → COM"
-            se_candidates.sort(key=lambda e: e["start_date"])
-            return se_candidates[0]["enrollment_id"], "SE aircraft; overlap → earliest"
+                    return com[0]["enrollment_id"], "SE complex → COM"
+            se_c.sort(key=lambda e: e["start_date"])
+            return se_c[0]["enrollment_id"], "SE aircraft; overlap → earliest"
 
-    # 3. Fallback: earliest-started
+    # 5. Fallback: earliest-started
     candidates.sort(key=lambda e: e["start_date"])
     return candidates[0]["enrollment_id"], "fallback: earliest-started rating"
 
 
 def partition_flights(conn: sqlite3.Connection) -> dict[str, int]:
-    """Assign enrollment_id to each completed, non-excluded flight.
-
-    Returns stats dict with counts of: attributed, unattributed, excluded, canceled.
-    """
-    stats = {"attributed": 0, "unattributed": 0, "excluded": 0, "canceled": 0,
-             "overlap_resolved": 0}
+    """Assign enrollment_id to each completed, non-excluded flight."""
+    stats = {"attributed": 0, "unattributed": 0, "excluded": 0,
+             "canceled": 0, "overlap_resolved": 0, "misc_skipped": 0}
 
     flights = list(conn.execute(
         """SELECT flight_id, student_id, flight_date, reservation_type, status,
-                  aircraft_class
+                  aircraft_class, billing_category
            FROM flights"""
     ))
 
-    # Pre-load enrollments per student with rating code
+    # Pre-load enrollments per student
     enroll_by_student: dict[int, list[sqlite3.Row]] = {}
     for row in conn.execute(
         """SELECT e.enrollment_id, e.student_id, e.start_date, e.checkride_date,
                   r.code AS rating_code
-           FROM enrollments e
-           JOIN ratings r USING (rating_id)"""
+           FROM enrollments e JOIN ratings r USING (rating_id)"""
     ):
         enroll_by_student.setdefault(row["student_id"], []).append(row)
+
+    # Pre-load all flights per student for checkride lookback (real data only)
+    flights_by_student: dict[int, list[dict]] = {}
+    for fl in flights:
+        if fl["student_id"] is not None:
+            flights_by_student.setdefault(fl["student_id"], []).append({
+                "flight_date": fl["flight_date"],
+                "reservation_type": fl["reservation_type"],
+                "status": fl["status"],
+                "billing_category": fl["billing_category"],
+            })
 
     for fl in flights:
         if fl["status"] != "Completed":
@@ -179,9 +242,29 @@ def partition_flights(conn: sqlite3.Connection) -> dict[str, int]:
             )
             continue
 
+        bc = fl["billing_category"]
+
+        # MISC events: track cost but don't attribute to a rating
+        if bc == "MISC":
+            stats["misc_skipped"] += 1
+            conn.execute(
+                "UPDATE flights SET partition_notes = ? WHERE flight_id = ?",
+                ("misc/specialty billing — not attributed to a rating", fl["flight_id"]),
+            )
+            continue
+
+        # For Check Rides and NONE-billing real-data flights, infer from preceding
+        effective_billing = bc
+        if bc in (None, "NONE") and fl["reservation_type"] == "Check Ride":
+            effective_billing = _infer_billing_from_preceding(
+                fl["flight_date"], fl["student_id"], flights_by_student,
+            )
+
         student_enrolls = enroll_by_student.get(fl["student_id"], [])
-        candidates = [e for e in student_enrolls
-                      if e["start_date"] <= fl["flight_date"] <= e["checkride_date"]]
+        candidates = [
+            e for e in student_enrolls
+            if e["start_date"] <= fl["flight_date"] <= e["checkride_date"]
+        ]
 
         if not candidates:
             stats["unattributed"] += 1
@@ -192,10 +275,19 @@ def partition_flights(conn: sqlite3.Connection) -> dict[str, int]:
             continue
 
         if len(candidates) == 1:
-            enr_id = candidates[0]["enrollment_id"]
-            note = "single window"
+            # Still apply billing filter: skip if billing says a different rating
+            enr = candidates[0]
+            if bc in BILLING_TO_RATING and BILLING_TO_RATING[bc] != enr["rating_code"]:
+                stats["unattributed"] += 1
+                conn.execute(
+                    "UPDATE flights SET partition_notes = ? WHERE flight_id = ?",
+                    (f"billing={bc} conflicts with sole window rating={enr['rating_code']}",
+                     fl["flight_id"]),
+                )
+                continue
+            enr_id, note = enr["enrollment_id"], "single window"
         else:
-            enr_id, note = _resolve_overlap(fl, candidates)
+            enr_id, note = _resolve_overlap(fl, list(candidates), effective_billing)
             stats["overlap_resolved"] += 1
 
         conn.execute(
