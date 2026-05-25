@@ -33,6 +33,19 @@
   --danger:        #ef4444;
   --danger-bg:     #fdecec;
   --warning:       #f59e0b;
+
+  /* type — native system font stack (San Francisco / Segoe UI / Roboto).
+     No network dependency; works under Brave Shields, corporate firewalls,
+     and offline. Same stack Linear / Stripe / Vercel use.
+     Defined on the default :root block so both themes inherit it. */
+  --font:          -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto,
+                   Oxygen, Ubuntu, Cantarell, sans-serif;
+  --font-mono:     ui-monospace, SFMono-Regular, 'SF Mono', Menlo, monospace;
+
+  /* spacing */
+  --radius:        8px;
+  --radius-sm:     6px;
+  --shadow-sm:     0 1px 2px rgba(0,0,0,0.04);
 }
 
 :root[data-theme="dark"] {
@@ -59,18 +72,6 @@
   --danger:        #f87171;
   --danger-bg:     #2a1313;
   --warning:       #fbbf24;
-
-  /* type — native system font stack (San Francisco / Segoe UI / Roboto).
-     No network dependency; works under Brave Shields, corporate firewalls,
-     and offline. Same stack Linear / Stripe / Vercel use. */
-  --font:          -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto,
-                   Oxygen, Ubuntu, Cantarell, sans-serif;
-  --font-mono:     ui-monospace, SFMono-Regular, 'SF Mono', Menlo, monospace;
-
-  /* spacing */
-  --radius:        8px;
-  --radius-sm:     6px;
-  --shadow-sm:     0 1px 2px rgba(0,0,0,0.04);
 }
 
 * { box-sizing: border-box; }
