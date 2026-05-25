@@ -13,6 +13,7 @@ from dash import Input, Output, State, dcc, html, no_update
 from . import data
 # Force-import theme so the Plotly template is registered before pages build figs
 from . import theme  # noqa: F401
+from .. import import_exports
 
 REPO_ROOT = Path(__file__).resolve().parents[3]
 ASSETS_DIR = REPO_ROOT / "assets"
@@ -66,11 +67,16 @@ def _sidebar() -> html.Div:
                                                    className="indicator")],
                     id="theme-toggle", className="theme-toggle", n_clicks=0,
                 ),
+                html.Button("Import latest FSP exports", id="import-btn",
+                            className="rebuild-btn", n_clicks=0,
+                            title="Copies the newest FSP report XLSX files from "
+                                  "~/Downloads into FSP Exports/ with canonical "
+                                  "names, then rebuilds the DB."),
                 html.Button("Rebuild DB", id="rebuild-btn", className="rebuild-btn",
                             n_clicks=0),
                 html.Div(id="rebuild-status",
                          style={"marginTop": "6px", "fontSize": "11px",
-                                "color": "#a1a1aa"}),
+                                "color": "#a1a1aa", "whiteSpace": "pre-wrap"}),
             ]),
         ],
     )
@@ -136,18 +142,25 @@ def create_app() -> dash.Dash:
         Input("theme-toggle", "n_clicks"),
     )
 
-    # Rebuild button
+    # Rebuild button + Import-latest-FSP-exports button share a status div.
     @app.callback(
         Output("rebuild-status", "children"),
         Input("rebuild-btn", "n_clicks"),
+        Input("import-btn", "n_clicks"),
         prevent_initial_call=True,
     )
-    def _rebuild(n_clicks):
-        if not n_clicks:
-            return no_update
-        data.clear_caches()
-        data.build_db(data.DEFAULT_DB)
-        return "Rebuilt. Refresh the page."
+    def _refresh(rebuild_clicks, import_clicks):
+        trigger = dash.callback_context.triggered_id
+        if trigger == "import-btn":
+            results = import_exports.import_latest()
+            data.clear_caches()
+            data.build_db(data.DEFAULT_DB)
+            return import_exports.summarize(results) + "\nRebuilt. Refresh the page."
+        if trigger == "rebuild-btn":
+            data.clear_caches()
+            data.build_db(data.DEFAULT_DB)
+            return "Rebuilt. Refresh the page."
+        return no_update
 
     return app
 

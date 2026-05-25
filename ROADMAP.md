@@ -2,7 +2,7 @@
 
 **Goal:** Pull data from Flight Schedule Pro (FSP) to track total cost, training duration, flight hours billed, and event counts across ratings (PPL, IFR, ASEL COM, AMEL, CFI, CFII, MEI). Compare individual students to norms at each milestone. Use it internally for course/instructor efficiency and externally for cost-transparency marketing.
 
-## Status snapshot (2026-05-24)
+## Status snapshot (2026-05-25)
 
 - **Phase 1 (schema) — done.** Metrics + milestones locked, see below.
 - **Phase 2 (FSP discovery) — done.** Reporting Hub is the data path. No Training Hub at Provectus, so no course/enrollment data in FSP. API path investigated but deferred (no subscription).
@@ -14,6 +14,8 @@
 - **Phase 8 (full web app) — done, then redesigned.** First pass in Streamlit (all 7 ratings, four pages). Second pass: rewrote in Dash for design control. Same four pages: All Ratings overview, Rating Detail, Student drill-down, Instructor view. No auth (boss-only access; add later if needed). Still on synthetic data.
 - **Phase 8.5 (design polish) — done.** Custom design system inspired by Linear / Stripe / Strava / Whoop / Hex. Dark + light mode (persisted via localStorage). Stripe-style metric cards, Whoop-style P25/P75 band charts, Strava-style per-rating timeline on Student page. Provectus logo in sidebar. Native system font stack (works under Brave Shields, corporate firewalls, offline).
 - **Phase 8.6 (boss distribution) — done.** Packaged the app as a double-click `.command` launcher with first-run venv bootstrap, plus a boss-facing `Read Me First.pdf`. Distribution zip lives in `dist/` (gitignored). Boss flow: unzip → right-click `Provectus.command` → Open → app installs deps on first run and opens browser to `127.0.0.1:8050`. App runs entirely on his Mac; no hosting needed.
+- **Phase 9 (automation) — done (manual-trigger flavor).** Claude-in-Chrome prompt drives the two Reporting Hub exports (`tools/fsp_export_prompt.md`); dashboard sidebar gained an "Import latest FSP exports" button that copies the newest matching XLSX files from `~/Downloads/` into `FSP Exports/` with canonical names and rebuilds the DB. Cadence: weekly + on-demand. Unattended scheduling intentionally not built. See `PHASE9_AUTOMATION.md`.
+- **Phase 9.5 (incremental ingest + override surface) — done.** `build_db()` is now non-destructive when real exports are present: `flights` UPSERT on `fsp_reservation`, invoices truncate-and-reload, `flight_overrides` table preserves manual tweaks across every weekly re-import. New **Flights** page in the dashboard provides an editable table for per-flight overrides (is_ground_lesson, billing_category, aircraft_class, reservation_type). Validated end-to-end against real exports (1915 flights, 4355 invoice lines, override survives rebuild).
 - All subsequent phases below.
 
 ## Data path decision (locked)
@@ -148,9 +150,34 @@ Caveats: macOS Gatekeeper requires the right-click→Open ritual on first launch
 
 ---
 
-### Phase 9 — Automation (deferred)
+### Phase 9 — Automation ✓
 
-Manual CSV export from Reporting Hub is the working assumption. Revisit later: options include (a) Claude-driven scheduled export via Chrome, (b) upgrading to Reporting Hub Advanced for scheduled email reports, (c) revisiting API access if Provectus's plan changes. Not blocking until weekly export becomes a pain.
+Shipped the Claude-in-Chrome flavor (option a). Full details in `PHASE9_AUTOMATION.md`. Headline:
+
+- `tools/fsp_export_prompt.md` — the prompt the user pastes into Claude in Chrome to drive the three Reporting Hub exports (Flight Detail, Invoice Detail, Reservation Detail) with a rolling 3-year window.
+- `src/provectus_analytics/import_exports.py` — picks the newest matching XLSX for each report from `~/Downloads/` (or `FSP Exports/`) and copies it into `FSP Exports/` with canonical filenames. Idempotent.
+- Dashboard sidebar → **"Import latest FSP exports"** button — runs the import helper then `build_db()` in one click.
+- Cadence: weekly calendar reminder + on-demand. Optional Claude scheduled-task reminder. No fully-unattended schedule (would require the boss's machine to be unlocked + signed in at trigger time).
+
+Options (b) Reporting Hub Advanced and (c) API access remain deferred.
+
+**Phase 9.5 closed this gap.** `build_db()` now auto-detects whether real exports exist in `FSP Exports/` and routes to either the live XLSX pipeline (non-destructive, override-preserving) or the synthetic CSV pipeline (destructive, used by tests). Two reports needed weekly: Flight Detail + Invoice Detail. Reservation Detail dropped — redundant with Flight Detail.
+
+### Phase 9.5 — Incremental ingest + override surface ✓
+
+Motivation: the user hand-curates a non-trivial number of flight rows (e.g. reclassifying multi-engine events that the auto-heuristic flagged as flights but were actually ground). A destructive rebuild would clobber those edits every week.
+
+Shipped:
+
+- `schema.py` — new `flight_overrides` table (`flight_id, field_name, value, note, set_at`). All DDL switched to `CREATE TABLE IF NOT EXISTS` so the rebuild path is a forward-only migrator.
+- `db.py` — new `open_or_create()` helper. Preserves existing data; reseeds ratings via `INSERT OR IGNORE`.
+- `ingest.py` — added `ingest_invoice_xlsx()` (truncate-and-reload), reworked `ingest_flight_detail_xlsx()` to UPSERT on reservation #, plus `apply_overrides()` / `set_flight_override()` / `clear_flight_override()`. Whitelist of overridable columns: `is_ground_lesson`, `billing_category`, `aircraft_class`, `reservation_type`.
+- `web/data.py` — `build_db()` auto-detects real vs synthetic exports.
+- `web/pages/flights.py` — new sidebar page. Sortable + filterable DataTable, inline edit on the four whitelisted columns. Save handler diffs against original rows, writes overrides, re-runs partition + milestones.
+
+End-to-end test (in `/tmp` sandbox): first build inserts 1915 flights / 4355 invoice lines; second build with an override set updates all 1915 rows and the override survives, applied during `build_db()` final step.
+
+**To extend overridable columns:** add to `_OVERRIDABLE_COLUMNS` in `ingest.py` AND to the editable columns list in `pages/flights.py`.
 
 ---
 

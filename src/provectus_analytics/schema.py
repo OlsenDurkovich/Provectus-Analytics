@@ -12,7 +12,7 @@ Tables:
 
 DDL = [
     """
-    CREATE TABLE ratings (
+    CREATE TABLE IF NOT EXISTS ratings (
         rating_id   INTEGER PRIMARY KEY,
         code        TEXT NOT NULL UNIQUE,    -- PPL, IFR, COM, AMEL, CFI, CFII, MEI
         display     TEXT NOT NULL,           -- Private Pilot, etc.
@@ -20,7 +20,7 @@ DDL = [
     )
     """,
     """
-    CREATE TABLE students (
+    CREATE TABLE IF NOT EXISTS students (
         student_id        INTEGER PRIMARY KEY,
         fsp_client_id     TEXT UNIQUE,        -- nullable: alum may not be matched yet
         fsp_display_name  TEXT,
@@ -32,7 +32,7 @@ DDL = [
     )
     """,
     """
-    CREATE TABLE enrollments (
+    CREATE TABLE IF NOT EXISTS enrollments (
         enrollment_id          INTEGER PRIMARY KEY,
         student_id             INTEGER NOT NULL REFERENCES students(student_id),
         rating_id              INTEGER NOT NULL REFERENCES ratings(rating_id),
@@ -45,7 +45,7 @@ DDL = [
     )
     """,
     """
-    CREATE TABLE flights (
+    CREATE TABLE IF NOT EXISTS flights (
         flight_id        INTEGER PRIMARY KEY,
         fsp_reservation  TEXT NOT NULL UNIQUE,
         fsp_flight_num   TEXT,
@@ -60,12 +60,15 @@ DDL = [
         aircraft_model   TEXT,
         aircraft_class   TEXT,                  -- SE_BASIC, SE_COMPLEX, ME (derived)
         instructor       TEXT,
+        hobbs_hours      REAL,                  -- actual Hobbs hours (null = ground lesson or synthetic data)
+        billing_category TEXT,                  -- AMEL|MEI|CFI|CFII|PRIMARY|MISC|NONE (null = synthetic/unknown)
+        is_ground_lesson INTEGER NOT NULL DEFAULT 0,  -- 1 if no aircraft + no Hobbs
         enrollment_id    INTEGER REFERENCES enrollments(enrollment_id),  -- set by partitioner; null = unattributed
         partition_notes  TEXT                   -- e.g. 'resolved via SE/ME tiebreaker'
     )
     """,
     """
-    CREATE TABLE invoices (
+    CREATE TABLE IF NOT EXISTS invoices (
         invoice_line_id   INTEGER PRIMARY KEY,
         fsp_invoice       TEXT NOT NULL,
         invoice_date      TEXT NOT NULL,
@@ -80,7 +83,7 @@ DDL = [
     )
     """,
     """
-    CREATE TABLE milestones (
+    CREATE TABLE IF NOT EXISTS milestones (
         milestone_id            INTEGER PRIMARY KEY,
         enrollment_id           INTEGER NOT NULL REFERENCES enrollments(enrollment_id),
         milestone_name          TEXT NOT NULL,    -- first_solo, xc_solos_complete, xc_pic_complete, checkride
@@ -93,19 +96,31 @@ DDL = [
     )
     """,
     """
-    CREATE TABLE surveys (
+    CREATE TABLE IF NOT EXISTS surveys (
         survey_id      INTEGER PRIMARY KEY,
         student_id     INTEGER REFERENCES students(student_id),
         submitted_at   TEXT,
         raw_response   TEXT NOT NULL    -- JSON dump of the full row
     )
     """,
-    "CREATE INDEX idx_flights_student      ON flights(student_id)",
-    "CREATE INDEX idx_flights_date         ON flights(flight_date)",
-    "CREATE INDEX idx_flights_enrollment   ON flights(enrollment_id)",
-    "CREATE INDEX idx_invoices_flight      ON invoices(flight_id)",
-    "CREATE INDEX idx_invoices_student     ON invoices(student_id)",
-    "CREATE INDEX idx_milestones_enrollment ON milestones(enrollment_id)",
+    """
+    CREATE TABLE IF NOT EXISTS flight_overrides (
+        override_id    INTEGER PRIMARY KEY,
+        flight_id      INTEGER NOT NULL REFERENCES flights(flight_id) ON DELETE CASCADE,
+        field_name     TEXT NOT NULL,       -- e.g. 'is_ground_lesson', 'billing_category'
+        value          TEXT,                -- stored as TEXT, cast at apply time
+        note           TEXT,
+        set_at         TEXT NOT NULL,       -- ISO timestamp
+        UNIQUE (flight_id, field_name)
+    )
+    """,
+    "CREATE INDEX IF NOT EXISTS idx_flights_student      ON flights(student_id)",
+    "CREATE INDEX IF NOT EXISTS idx_flights_date         ON flights(flight_date)",
+    "CREATE INDEX IF NOT EXISTS idx_flights_enrollment   ON flights(enrollment_id)",
+    "CREATE INDEX IF NOT EXISTS idx_invoices_flight      ON invoices(flight_id)",
+    "CREATE INDEX IF NOT EXISTS idx_invoices_student     ON invoices(student_id)",
+    "CREATE INDEX IF NOT EXISTS idx_milestones_enrollment ON milestones(enrollment_id)",
+    "CREATE INDEX IF NOT EXISTS idx_overrides_flight     ON flight_overrides(flight_id)",
 ]
 
 # Rating lookup seed data

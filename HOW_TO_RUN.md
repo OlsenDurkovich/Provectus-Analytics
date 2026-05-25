@@ -17,21 +17,20 @@ Either close the Terminal window or press **Ctrl+C** inside it. The browser tab 
 
 ## Updating data
 
-The dashboard reads four CSV files from this folder:
+The dashboard auto-detects whether to use real exports or fall back to synthetic CSVs.
+
+**Real exports (preferred):** drop two XLSX files into `FSP Exports/`:
 
 | File | Where it comes from |
 |---|---|
-| `synthetic_fsp_clients.csv` | FSP Reporting Hub → Sales by Client (or equivalent) |
-| `synthetic_fsp_reservations.csv` | FSP Reporting Hub → Reservation Detail |
-| `synthetic_fsp_invoices.csv` | FSP Reporting Hub → Invoice Detail |
-| `synthetic_alumni_survey.csv` | Google Form → Responses → Download as CSV |
+| `FlightDetail_Report.xlsx` | FSP Reporting Hub → Flight Detail |
+| `Invoice_Report.xlsx`      | FSP Reporting Hub → Invoice Detail |
 
-Until real data swaps in, these are synthetic. To use real data:
-1. Replace the four CSVs above (keep the same filenames).
-2. In the sidebar of the dashboard, click **"Rebuild DB."**
-3. Reload the page.
+Easiest workflow: use the Claude-in-Chrome prompt in `tools/fsp_export_prompt.md`. It downloads both to `~/Downloads/`, then click **"Import latest FSP exports"** in the sidebar — it copies + renames + rebuilds in one step.
 
-The exact column structure each file needs is documented in `SYNTHETIC_DATA_README.md`. The synthetic files in this folder are valid examples to copy the headers from.
+**Important:** the rebuild is **incremental + override-preserving**. Per-flight tweaks on the Flights page (e.g. reclassifying a multi-engine event as ground) survive every weekly re-import. They live in the `flight_overrides` table and are re-applied at the end of each rebuild.
+
+**Synthetic fallback:** if `FSP Exports/` is empty, the rebuild reads the four synthetic CSVs (`synthetic_fsp_*.csv`, `synthetic_alumni_survey.csv`). Used by tests + early development. Column structure documented in `SYNTHETIC_DATA_README.md`.
 
 ## Updating the app itself
 

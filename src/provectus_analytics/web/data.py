@@ -15,6 +15,7 @@ from .. import db as _db, ingest, reconcile, partition, milestones, norms
 
 REPO_ROOT = Path(__file__).resolve().parents[3]
 DEFAULT_DB = REPO_ROOT / "provectus.db"
+FSP_EXPORTS_DIR = REPO_ROOT / "FSP Exports"
 
 RATING_ORDER = ["PPL", "IFR", "COM", "AMEL", "CFI", "CFII", "MEI"]
 RATING_DISPLAY = {
@@ -37,20 +38,73 @@ MILESTONE_LABELS = {
 
 # ── Pipeline plumbing ───────────────────────────────────────────────────────
 
-def build_db(db_path: Path = DEFAULT_DB) -> None:
-    conn = _db.init_db(db_path)
-    ingest.ingest_all(
-        conn,
-        REPO_ROOT / "synthetic_fsp_clients.csv",
-        REPO_ROOT / "synthetic_fsp_reservations.csv",
-        REPO_ROOT / "synthetic_fsp_invoices.csv",
-        REPO_ROOT / "synthetic_alumni_survey.csv",
-    )
+def _find_xlsx(patterns: list[str]) -> Path | None:
+    """Return the newest XLSX in FSP_EXPORTS_DIR matching any of the substrings."""
+    if not FSP_EXPORTS_DIR.exists():
+        return None
+    candidates = []
+    for p in FSP_EXPORTS_DIR.iterdir():
+        if not p.is_file() or p.suffix.lower() != ".xlsx":
+            continue
+        name_lower = p.name.lower()
+        if any(pat.lower() in name_lower for pat in patterns):
+            candidates.append(p)
+    return max(candidates, key=lambda p: p.stat().st_mtime) if candidates else None
+
+
+def _has_real_exports() -> tuple[Path | None, Path | None]:
+    """Returns (flight_xlsx, invoice_xlsx) — either may be None if missing."""
+    # Match either the canonical name or messy FSP-emitted names like
+    # "2026 Flight 5:25:26.xlsx" or "FlightDetail_Report SG.xlsx".
+    flight = _find_xlsx(["flightdetail", "flight "])
+    if flight is None:
+        flight = _find_xlsx(["flight"])  # last-ditch
+    invoice = _find_xlsx(["invoice"])
+    return flight, invoice
+
+
+def build_db(db_path: Path = DEFAULT_DB) -> dict:
+    """Non-destructive rebuild.
+
+    - If real FSP XLSX exports exist in FSP Exports/, use the incremental
+      real-data path (preserves flight_overrides across rebuilds).
+    - Otherwise fall back to the synthetic CSV path (drops + reseeds, since
+      tests assume a clean slate).
+    """
+    flight_xlsx, invoice_xlsx = _has_real_exports()
+    use_real = flight_xlsx is not None and invoice_xlsx is not None
+
+    if use_real:
+        conn = _db.open_or_create(db_path)
+        result = {"mode": "real", "flight_xlsx": flight_xlsx.name,
+                  "invoice_xlsx": invoice_xlsx.name}
+        result["flights"] = ingest.ingest_flight_detail_xlsx(conn, flight_xlsx)
+        result["invoice_rows"] = ingest.ingest_invoice_xlsx(conn, invoice_xlsx)
+        # Survey CSV ingest still runs if a survey file exists.
+        survey = REPO_ROOT / "synthetic_alumni_survey.csv"
+        if survey.exists():
+            # Clear stale survey rows so we don't duplicate on re-import.
+            conn.execute("DELETE FROM surveys")
+            result["surveys"] = ingest.ingest_survey(conn, survey)
+        # Re-apply any manual overrides from prior sessions
+        result["overrides_applied"] = ingest.apply_overrides(conn)
+    else:
+        conn = _db.init_db(db_path)  # synthetic = destructive (tests rely on it)
+        ingest.ingest_all(
+            conn,
+            REPO_ROOT / "synthetic_fsp_clients.csv",
+            REPO_ROOT / "synthetic_fsp_reservations.csv",
+            REPO_ROOT / "synthetic_fsp_invoices.csv",
+            REPO_ROOT / "synthetic_alumni_survey.csv",
+        )
+        result = {"mode": "synthetic"}
+
     reconcile.reconcile(conn)
     partition.build_enrollments(conn)
     partition.partition_flights(conn)
     milestones.compute_milestones(conn)
     conn.close()
+    return result
 
 
 def _has_data(db_path: Path) -> bool:

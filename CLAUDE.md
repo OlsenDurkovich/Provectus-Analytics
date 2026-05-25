@@ -5,7 +5,7 @@ Python analytics web app pulling data from Flight Schedule Pro (FSP) to measure 
 **The roadmap is the source of truth — read it first:** `ROADMAP.md` in this folder.
 
 ## Current phase
-Phase 3 — alumni outreach (boss priority). Pipeline + dashboard are built against synthetic data; waiting on real survey responses to swap in live data. Phases 1–8.5 complete.
+Phase 3 — alumni outreach (boss priority). Pipeline + dashboard are built against synthetic data; waiting on real survey responses to swap in live data. Phases 1–8.6 + Phase 9 (Claude-in-Chrome automation) + Phase 9.5 (incremental ingest + per-flight override surface) complete.
 
 ## Key context (already locked, don't re-litigate)
 - Ratings covered: PPL, IFR, ASEL COM, AMEL, CFI, CFII, MEI.
