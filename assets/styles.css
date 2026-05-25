@@ -3,6 +3,7 @@
    Inspired by: Linear (layout + density), Stripe (metrics + tables),
    Strava (timeline), Whoop/Oura (P25/P75 bands), Hex (prose+data mix)
    ───────────────────────────────────────────────────────────────────────── */
+@import url('https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;500;600;700;800&display=swap');
 
 :root,
 :root[data-theme="light"] {
@@ -60,8 +61,8 @@
   --warning:       #fbbf24;
 
   /* type */
-  --font:          'Inter', -apple-system, BlinkMacSystemFont, 'Segoe UI',
-                   Roboto, Oxygen, Ubuntu, Cantarell, sans-serif;
+  --font:          'Plus Jakarta Sans', -apple-system, BlinkMacSystemFont,
+                   'Segoe UI', Roboto, Oxygen, Ubuntu, Cantarell, sans-serif;
   --font-mono:     ui-monospace, SFMono-Regular, 'SF Mono', Menlo, monospace;
 
   /* spacing */
@@ -120,8 +121,8 @@ a:hover { text-decoration: underline; }
   background: linear-gradient(135deg, #5e6ad2, #8b5cf6);
 }
 .brand-name {
-  font-size: 14px;
-  font-weight: 600;
+  font-size: 15px;
+  font-weight: 800;
   letter-spacing: -0.01em;
   color: #fff;
 }
@@ -160,6 +161,7 @@ a:hover { text-decoration: underline; }
 .nav-link.active {
   background: rgba(255,255,255,0.07);
   color: #fff;
+  font-weight: 800;
 }
 .nav-link .dot {
   width: 6px; height: 6px;
@@ -231,9 +233,9 @@ a:hover { text-decoration: underline; }
   margin-bottom: 6px;
 }
 .page-title {
-  font-size: 24px;
-  font-weight: 600;
-  letter-spacing: -0.015em;
+  font-size: 26px;
+  font-weight: 800;          /* Plus Jakarta Sans ExtraBold */
+  letter-spacing: -0.02em;
   margin: 0;
   color: var(--text);
 }
@@ -302,10 +304,10 @@ a:hover { text-decoration: underline; }
   margin-bottom: 6px;
 }
 .metric-value {
-  font-size: 26px;
-  font-weight: 600;
+  font-size: 28px;
+  font-weight: 800;          /* Plus Jakarta Sans ExtraBold */
   color: var(--text);
-  letter-spacing: -0.02em;
+  letter-spacing: -0.025em;
   line-height: 1.1;
   font-variant-numeric: tabular-nums;
 }
@@ -343,7 +345,7 @@ a:hover { text-decoration: underline; }
 }
 .section-title {
   font-size: 15px;
-  font-weight: 600;
+  font-weight: 800;
   color: var(--text);
   letter-spacing: -0.01em;
 }
