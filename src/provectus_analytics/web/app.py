@@ -25,7 +25,7 @@ def _sidebar() -> html.Div:
     if n_live > 0:
         badge = html.Span(
             [html.Span(className="pulse"),
-             f" Live · {n_live} student{'s' if n_live != 1 else ''}"],
+             f" Live · {n_live} client{'s' if n_live != 1 else ''}"],
             className="data-badge live",
         )
     else:

@@ -123,12 +123,18 @@ def ensure_db(db_path: Path = DEFAULT_DB) -> None:
 
 
 def is_live_data(db_path: Path = DEFAULT_DB) -> int:
-    """Return # of students with hobbs_hours (= real FSP rows)."""
+    """Return # of distinct clients seen in real-FSP flights.
+
+    Distinct clients (not students) so the badge flips to Live before survey
+    reconciliation links flights to student rows. A flight is real when
+    hobbs_hours is non-null OR billing_category was derived (synthetic data
+    has both as NULL).
+    """
     try:
         c = sqlite3.connect(db_path)
         n = c.execute(
-            "SELECT COUNT(DISTINCT student_id) FROM flights "
-            "WHERE hobbs_hours IS NOT NULL"
+            "SELECT COUNT(DISTINCT client_raw) FROM flights "
+            "WHERE hobbs_hours IS NOT NULL OR billing_category IS NOT NULL"
         ).fetchone()[0]
         c.close()
         return int(n)
