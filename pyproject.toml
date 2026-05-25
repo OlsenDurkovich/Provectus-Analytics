@@ -16,7 +16,7 @@ dev = [
     "pytest>=7.0",
 ]
 dashboard = [
-    "streamlit>=1.30",
+    "dash>=2.17",
     "plotly>=5.18",
 ]
 

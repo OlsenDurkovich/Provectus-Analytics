@@ -1,8 +1,12 @@
-"""Streamlit entry point.
+"""Dash entry point.
 
 Run:
-    streamlit run app.py
+    python app.py
 """
-from provectus_analytics.dashboard import render
+from provectus_analytics.web.app import create_app, main
 
-render()
+app = create_app()
+server = app.server  # for gunicorn etc.
+
+if __name__ == "__main__":
+    main()

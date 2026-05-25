@@ -10,7 +10,7 @@ See `ROADMAP.md` for phases and `SYNTHETIC_DATA_README.md` for the test data set
 pip install -e ".[dev,dashboard]"
 pytest                                       # run all tests (17, ~1.5s)
 python -m provectus_analytics.cli run        # full pipeline against synthetic data
-streamlit run app.py                         # Phase 7 PPL MVP dashboard
+python app.py                                # Dash web app at http://127.0.0.1:8050
 ```
 
 ## Layout
@@ -25,9 +25,15 @@ src/provectus_analytics/
   milestones.py    cumulative metrics at each milestone
   norms.py         per-rating cohort norms (P25/median/P75) + outlier filter
   cli.py           end-to-end runner
-  dashboard.py     Streamlit PPL MVP (Phase 7)
+  web/             Dash web app (Phase 8)
+    app.py           app factory + sidebar + routing
+    theme.py         Plotly template + color tokens
+    data.py          cached DB queries
+    components.py    reusable UI (metric cards, tables, etc.)
+    pages/           one file per route — All Ratings, Rating Detail, Student, Instructor
 
-app.py             Streamlit entry point — `streamlit run app.py`
+app.py             Dash entry point — `python app.py`
+assets/styles.css  design system (Linear/Stripe/Strava/Whoop/Hex-inspired)
 tests/             pytest suite (validates against ground_truth_per_milestone.csv)
 ```
 
