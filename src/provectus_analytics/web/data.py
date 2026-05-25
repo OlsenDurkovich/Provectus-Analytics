@@ -11,7 +11,7 @@ from pathlib import Path
 
 import pandas as pd
 
-from .. import db as _db, ingest, reconcile, partition, milestones, norms
+from .. import db as _db, ingest, reconcile, partition, guesstimate, milestones, norms
 
 REPO_ROOT = Path(__file__).resolve().parents[3]
 DEFAULT_DB = REPO_ROOT / "provectus.db"
@@ -98,6 +98,11 @@ def build_db(db_path: Path = DEFAULT_DB) -> dict:
                   "invoice_xlsx": invoice_xlsx.name}
         result["flights"] = ingest.ingest_flight_detail_xlsx(conn, flight_xlsx)
         result["invoice_rows"] = ingest.ingest_invoice_xlsx(conn, invoice_xlsx)
+        # Auto-populate students from flight clients so the Student page is
+        # usable before alumni surveys arrive. Each row gets
+        # match_status='auto_from_flights' so reconcile.reconcile() can upgrade
+        # them later when real survey responses land.
+        result["students_auto"] = ingest.auto_populate_students_from_flights(conn)
         # NOTE: synthetic_alumni_survey.csv is intentionally NOT loaded when
         # real flights are present — it pollutes the cohort with fake students
         # whose names don't match real FSP clients, producing milestones with
@@ -117,7 +122,8 @@ def build_db(db_path: Path = DEFAULT_DB) -> dict:
         result = {"mode": "synthetic"}
 
     reconcile.reconcile(conn)
-    partition.build_enrollments(conn)
+    partition.build_enrollments(conn)          # survey-backed enrollments
+    guesstimate.build_guesstimate_enrollments(conn)  # heuristic enrollments for non-survey students
     partition.partition_flights(conn)
     milestones.compute_milestones(conn)
     conn.close()
@@ -137,6 +143,24 @@ def _has_data(db_path: Path) -> bool:
 def ensure_db(db_path: Path = DEFAULT_DB) -> None:
     if not db_path.exists() or not _has_data(db_path):
         build_db(db_path)
+
+
+def row_counts(db_path: Path = DEFAULT_DB) -> dict[str, int]:
+    """Return row counts for the user-facing tables, for the sidebar debug panel."""
+    tables = ["flights", "invoices", "students", "surveys",
+              "enrollments", "milestones", "flight_overrides"]
+    out: dict[str, int] = {}
+    try:
+        c = sqlite3.connect(db_path)
+        for t in tables:
+            try:
+                out[t] = c.execute(f"SELECT COUNT(*) FROM {t}").fetchone()[0]
+            except sqlite3.OperationalError:
+                out[t] = 0
+        c.close()
+    except Exception:
+        out = {t: 0 for t in tables}
+    return out
 
 
 def has_flights_no_surveys(db_path: Path = DEFAULT_DB) -> bool:
@@ -183,6 +207,7 @@ def clear_caches() -> None:
     rating_cohort.cache_clear()
     student_trajectory.cache_clear()
     all_students.cache_clear()
+    student_flights.cache_clear()
     instructors.cache_clear()
     instructor_detail.cache_clear()
 
@@ -246,17 +271,51 @@ def student_trajectory(db_path: str, student: str) -> pd.DataFrame:
 
 @lru_cache(maxsize=4)
 def all_students(db_path: str) -> tuple[str, ...]:
+    """Students with at least one flight OR at least one milestone.
+
+    Pre-survey (auto-populated path): every client in flights shows up.
+    Post-survey: reconciled alumni also show up (some may have milestones but
+    no remaining un-attributed flights).
+    """
     conn = sqlite3.connect(db_path)
     rows = conn.execute(
-        """SELECT DISTINCT s.fsp_display_name
-           FROM milestones m
-           JOIN enrollments e USING (enrollment_id)
-           JOIN students    s USING (student_id)
-           WHERE s.fsp_display_name IS NOT NULL
-           ORDER BY s.fsp_display_name"""
+        """SELECT DISTINCT fsp_display_name FROM students s
+           WHERE fsp_display_name IS NOT NULL
+             AND (
+                 EXISTS (SELECT 1 FROM flights    f WHERE f.student_id = s.student_id)
+              OR EXISTS (SELECT 1 FROM milestones m
+                         JOIN enrollments e USING (enrollment_id)
+                         WHERE e.student_id = s.student_id)
+             )
+           ORDER BY fsp_display_name"""
     ).fetchall()
     conn.close()
     return tuple(r[0] for r in rows)
+
+
+@lru_cache(maxsize=256)
+def student_flights(db_path: str, student: str) -> pd.DataFrame:
+    """All flights for one student, newest first. Used by Student page when
+    no enrollments/milestones exist yet (pre-survey state)."""
+    conn = sqlite3.connect(db_path)
+    df = pd.read_sql(
+        """SELECT f.flight_date,
+                  f.reservation_type,
+                  f.aircraft_tail,
+                  f.aircraft_model,
+                  f.hobbs_hours,
+                  f.length_hrs,
+                  f.is_ground_lesson,
+                  f.billing_category,
+                  f.instructor
+           FROM flights f
+           JOIN students s USING (student_id)
+           WHERE s.fsp_display_name = ?
+           ORDER BY f.flight_date DESC""",
+        conn, params=(student,),
+    )
+    conn.close()
+    return df
 
 
 @lru_cache(maxsize=4)

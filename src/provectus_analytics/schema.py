@@ -36,12 +36,15 @@ DDL = [
         enrollment_id          INTEGER PRIMARY KEY,
         student_id             INTEGER NOT NULL REFERENCES students(student_id),
         rating_id              INTEGER NOT NULL REFERENCES ratings(rating_id),
-        start_date             TEXT NOT NULL,         -- YYYY-MM-01 (month precision from survey)
-        checkride_date         TEXT NOT NULL,         -- YYYY-MM-LAST_DAY
+        instance_num           INTEGER NOT NULL DEFAULT 0,  -- 0 for survey/normal; increments for OTHER recheck periods
+        start_date             TEXT NOT NULL,         -- YYYY-MM-01 (month precision from survey); exact date for guesstimate
+        checkride_date         TEXT NOT NULL,         -- YYYY-MM-LAST_DAY; '2099-12-31' sentinel for partial
         first_solo_date        TEXT,                  -- PPL only
         xc_solos_complete_date TEXT,                  -- PPL only
         xc_pic_complete_date   TEXT,                  -- IFR only
-        UNIQUE (student_id, rating_id)
+        source                 TEXT NOT NULL DEFAULT 'survey',   -- 'survey' | 'guesstimate'
+        is_partial             INTEGER NOT NULL DEFAULT 0,       -- 1 if no checkride found yet
+        UNIQUE (student_id, rating_id, instance_num)
     )
     """,
     """
@@ -125,11 +128,12 @@ DDL = [
 
 # Rating lookup seed data
 RATING_SEED = [
-    (1, "PPL",  "Private Pilot",              1),
-    (2, "IFR",  "Instrument Rating",          2),
-    (3, "COM",  "Commercial Single-Engine",   3),
-    (4, "AMEL", "Multi-Engine (AMEL)",        4),
-    (5, "CFI",  "Certificated Flight Instructor", 5),
-    (6, "CFII", "Instrument Instructor",      6),
-    (7, "MEI",  "Multi-Engine Instructor",    7),
+    (1, "PPL",   "Private Pilot",                  1),
+    (2, "IFR",   "Instrument Rating",              2),
+    (3, "COM",   "Commercial Single-Engine",       3),
+    (4, "AMEL",  "Multi-Engine (AMEL)",            4),
+    (5, "CFI",   "Certificated Flight Instructor", 5),
+    (6, "CFII",  "Instrument Instructor",          6),
+    (7, "MEI",   "Multi-Engine Instructor",        7),
+    (8, "OTHER", "Other Training",                 8),  # recheck prep / unclassified training
 ]

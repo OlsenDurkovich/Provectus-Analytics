@@ -20,6 +20,34 @@ ASSETS_DIR = REPO_ROOT / "assets"
 PAGES_DIR = Path(__file__).parent / "pages"
 
 
+def _data_state_panel() -> html.Div:
+    """Live row counts for the sidebar — surfaces stale-state confusion at a glance."""
+    counts = data.row_counts(data.DEFAULT_DB)
+    rows = [
+        ("Flights",   counts["flights"]),
+        ("Invoices",  counts["invoices"]),
+        ("Students",  counts["students"]),
+        ("Surveys",   counts["surveys"]),
+        ("Overrides", counts["flight_overrides"]),
+    ]
+    return html.Div(
+        className="data-state",
+        children=[
+            html.Div("Data state", className="data-state-title"),
+            *[
+                html.Div(
+                    className="data-state-row",
+                    children=[
+                        html.Span(label, className="data-state-label"),
+                        html.Span(f"{n:,}", className="data-state-value"),
+                    ],
+                )
+                for label, n in rows
+            ],
+        ],
+    )
+
+
 def _sidebar() -> html.Div:
     n_live = data.is_live_data(data.DEFAULT_DB)
     if n_live > 0:
@@ -77,6 +105,7 @@ def _sidebar() -> html.Div:
                 html.Div(id="rebuild-status",
                          style={"marginTop": "6px", "fontSize": "11px",
                                 "color": "#a1a1aa", "whiteSpace": "pre-wrap"}),
+                _data_state_panel(),
             ]),
         ],
     )

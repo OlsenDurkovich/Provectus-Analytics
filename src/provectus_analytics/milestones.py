@@ -52,9 +52,11 @@ def compute_milestones(conn: sqlite3.Connection) -> int:
         """SELECT e.enrollment_id, e.student_id, e.start_date,
                   e.first_solo_date, e.xc_solos_complete_date, e.xc_pic_complete_date,
                   e.checkride_date AS survey_checkride_date,
+                  e.is_partial,
                   r.code AS rating_code
            FROM enrollments e
-           JOIN ratings r USING (rating_id)"""
+           JOIN ratings r USING (rating_id)
+           WHERE r.code != 'OTHER'"""
     ))
 
     n = 0
@@ -97,7 +99,10 @@ def compute_milestones(conn: sqlite3.Connection) -> int:
         elif e["rating_code"] == "IFR" and e["xc_pic_complete_date"]:
             milestones.append(("xc_pic_complete", _date(e["xc_pic_complete_date"])))
 
-        milestones.append(("checkride", checkride_date))
+        # Partial enrollments (no checkride found yet) use a sentinel date;
+        # skip the checkride milestone so '2099-12-31' never surfaces in the UI.
+        if not e["is_partial"]:
+            milestones.append(("checkride", checkride_date))
 
         rating_start = _date(e["start_date"])
 

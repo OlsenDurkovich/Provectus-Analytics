@@ -603,6 +603,30 @@ details.method ul { margin: 4px 0 0 18px; color: var(--text-muted); }
 /* hide Dash undo/redo */
 ._dash-undo-redo { display: none !important; }
 
+/* Sidebar data-state debug panel */
+.data-state {
+  margin-top: 14px;
+  padding-top: 12px;
+  border-top: 1px solid rgba(255, 255, 255, 0.08);
+  font-size: 11px;
+  font-variant-numeric: tabular-nums;
+  color: var(--text-onDark-muted);
+}
+.data-state-title {
+  text-transform: uppercase;
+  letter-spacing: 0.06em;
+  font-size: 10px;
+  color: var(--text-onDark-muted);
+  margin-bottom: 6px;
+}
+.data-state-row {
+  display: flex;
+  justify-content: space-between;
+  padding: 2px 0;
+}
+.data-state-label { color: var(--text-onDark-muted); }
+.data-state-value { color: var(--text-onDark); }
+
 /* ── DataTable theming (Flights page) ─────────────────────────────────────
    Dash's DataTable doesn't fully honor our CSS vars in edit mode and the
    dropdown menu, so spell out the colors here. */

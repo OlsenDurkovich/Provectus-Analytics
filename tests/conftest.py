@@ -5,7 +5,7 @@ from pathlib import Path
 
 import pytest
 
-from provectus_analytics import db as _db, ingest, reconcile, partition, milestones
+from provectus_analytics import db as _db, ingest, reconcile, partition, guesstimate, milestones
 
 
 REPO_ROOT = Path(__file__).resolve().parents[1]
@@ -30,6 +30,7 @@ def pipeline_db(tmp_path, synthetic_data_dir):
     )
     reconcile.reconcile(conn)
     partition.build_enrollments(conn)
+    guesstimate.build_guesstimate_enrollments(conn)
     partition.partition_flights(conn)
     milestones.compute_milestones(conn)
     yield conn

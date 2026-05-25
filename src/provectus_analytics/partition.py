@@ -147,6 +147,15 @@ def _resolve_overlap(
     """
     bc = effective_billing or ""
 
+    # 0. OTHER rating takes priority — these are recheck-prep windows that were
+    #    intentionally carved out; a flight in that window belongs to OTHER.
+    other_c = [e for e in candidates if e["rating_code"] == "OTHER"]
+    if len(other_c) == 1:
+        return other_c[0]["enrollment_id"], "other training period (recheck prep)"
+    if len(other_c) > 1:
+        other_c.sort(key=lambda e: e["start_date"])
+        return other_c[0]["enrollment_id"], "other training; multiple windows → earliest"
+
     # 1. Unambiguous billing category → direct match
     if bc in BILLING_TO_RATING:
         target = BILLING_TO_RATING[bc]

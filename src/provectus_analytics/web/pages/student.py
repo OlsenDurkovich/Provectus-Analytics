@@ -134,6 +134,93 @@ def layout():
     ])
 
 
+def _flight_history_view(student: str) -> html.Div:
+    """Pre-survey fallback. Show raw flight history + aggregates for a client
+    that exists in students but has no enrollments/milestones yet."""
+    flights = data.student_flights(str(data.DEFAULT_DB), student)
+    if flights.empty:
+        return html.Div(
+            className="callout",
+            children=[
+                html.Strong(f"No flight rows for {student}."),
+                html.Div(
+                    "The student exists in the roster but no flight rows are "
+                    "linked. This usually means the FSP client name spelling "
+                    "differs across rows — check the Flights page.",
+                    style={"marginTop": "4px"},
+                ),
+            ],
+        )
+
+    # Aggregates
+    n_flights = len(flights)
+    # Per-flight hours: hobbs if present, else length_hrs, zero for ground
+    def _hrs(row):
+        if row["is_ground_lesson"]:
+            return 0.0
+        return float(row["hobbs_hours"]) if row["hobbs_hours"] is not None \
+            else float(row["length_hrs"] or 0.0)
+    flights = flights.copy()
+    flights["hours"] = flights.apply(_hrs, axis=1)
+    total_hours = float(flights["hours"].sum())
+    n_ground = int(flights["is_ground_lesson"].sum())
+    n_instructors = flights["instructor"].dropna().nunique()
+    first_date = flights["flight_date"].min()
+    last_date = flights["flight_date"].max()
+
+    hero = metric_grid([
+        metric_card("Flights", f"{n_flights:,}",
+                    sub=f"{n_ground} ground / {n_flights - n_ground} flight"),
+        metric_card("Hours", f"{total_hours:.1f}",
+                    sub="Hobbs where available, else length"),
+        metric_card("Instructors", f"{n_instructors}",
+                    sub="Distinct instructors flown with"),
+        metric_card("Date range", f"{first_date} → {last_date}",
+                    sub="First and last logged flights"),
+    ])
+
+    cols = [
+        {"key": "dt",  "label": "Date", "class": "muted"},
+        {"key": "ty",  "label": "Type"},
+        {"key": "ac",  "label": "Aircraft"},
+        {"key": "hrs", "label": "Hours", "num": True},
+        {"key": "bc",  "label": "Billing"},
+        {"key": "ins", "label": "Instructor"},
+    ]
+    rows = []
+    for _, r in flights.iterrows():
+        ac = r["aircraft_tail"] or ""
+        if r["aircraft_model"]:
+            ac = f"{ac} · {r['aircraft_model']}".strip(" ·")
+        rows.append([
+            r["flight_date"],
+            "Ground" if r["is_ground_lesson"] else (r["reservation_type"] or ""),
+            ac or "—",
+            f"{r['hours']:.1f}",
+            r["billing_category"] or "—",
+            r["instructor"] or "—",
+        ])
+
+    return html.Div([
+        html.Div(
+            className="callout",
+            style={"marginBottom": "16px"},
+            children=[
+                html.Strong("Pre-survey view."),
+                html.Span(
+                    " Showing raw flight history for this client. Rating "
+                    "breakdown (PPL hours, IFR hours, etc.) will appear once "
+                    "an alumni survey response links them to specific ratings.",
+                    style={"marginLeft": "4px"},
+                ),
+            ],
+        ),
+        hero,
+        section("Flight history", table(cols, rows),
+                sub=f"{n_flights} rows, newest first"),
+    ])
+
+
 @dash.callback(
     Output("st-content", "children"),
     Input("st-student", "value"),
@@ -144,7 +231,9 @@ def _update(student: str):
 
     traj = data.student_trajectory(str(data.DEFAULT_DB), student)
     if traj.empty:
-        return html.Div(f"No milestone data for {student}.", className="callout")
+        # Pre-survey state: no enrollments/milestones, but we may have raw
+        # flight rows for this client. Render a flight-history view.
+        return _flight_history_view(student)
 
     norms = data.all_norms(str(data.DEFAULT_DB))
     norm_by_rating = {n["rating"]: n for n in norms}

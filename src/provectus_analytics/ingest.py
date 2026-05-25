@@ -435,6 +435,72 @@ def ingest_invoice_xlsx(conn: sqlite3.Connection, xlsx_path: Path) -> int:
     return len(rows_to_insert)
 
 
+# ── Auto-populate students from flight client names ──────────────────────────
+
+def auto_populate_students_from_flights(conn: sqlite3.Connection) -> dict[str, int]:
+    """Insert one student row per distinct flights.client_raw, and backfill
+    flights.student_id so joins work.
+
+    Used in the real-data path before survey responses arrive. Each generated
+    student gets match_status='auto_from_flights' so reconcile.reconcile() can
+    later upgrade them to 'matched' when survey data lands.
+
+    Idempotent: re-running on a populated DB only inserts genuinely new clients
+    and only backfills flights that don't already have a student_id.
+
+    Returns {'inserted': N, 'backfilled': M}.
+    """
+    # Collect distinct client_raw values from flights — first non-empty token
+    # before any comma (multi-client flights use comma-separated names).
+    raw_rows = conn.execute(
+        "SELECT DISTINCT client_raw FROM flights "
+        "WHERE client_raw IS NOT NULL AND TRIM(client_raw) != ''"
+    ).fetchall()
+
+    inserted = 0
+    name_to_id: dict[str, int] = {}
+    for r in raw_rows:
+        primary = r["client_raw"].split(",")[0].strip()
+        if not primary:
+            continue
+        existing = conn.execute(
+            "SELECT student_id FROM students WHERE fsp_display_name = ?",
+            (primary,),
+        ).fetchone()
+        if existing is None:
+            cur = conn.execute(
+                """INSERT INTO students (fsp_display_name, match_status)
+                   VALUES (?, 'auto_from_flights')""",
+                (primary,),
+            )
+            name_to_id[primary] = cur.lastrowid
+            inserted += 1
+        else:
+            name_to_id[primary] = existing["student_id"]
+    conn.commit()
+
+    # Backfill flights.student_id for any flight that doesn't have one yet.
+    # Match on the primary (pre-comma) name.
+    backfilled = 0
+    to_update = conn.execute(
+        "SELECT flight_id, client_raw FROM flights WHERE student_id IS NULL "
+        "AND client_raw IS NOT NULL AND TRIM(client_raw) != ''"
+    ).fetchall()
+    for f in to_update:
+        primary = f["client_raw"].split(",")[0].strip()
+        sid = name_to_id.get(primary)
+        if sid is None:
+            continue
+        conn.execute(
+            "UPDATE flights SET student_id = ? WHERE flight_id = ?",
+            (sid, f["flight_id"]),
+        )
+        backfilled += 1
+    conn.commit()
+
+    return {"inserted": inserted, "backfilled": backfilled}
+
+
 # ── Override application ─────────────────────────────────────────────────────
 
 def apply_overrides(conn: sqlite3.Connection) -> int:

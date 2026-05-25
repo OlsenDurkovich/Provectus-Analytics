@@ -44,8 +44,12 @@ def _name_tokens(s: str | None) -> set[str]:
 
 def reconcile(conn: sqlite3.Connection) -> list[MatchResult]:
     """Match survey rows to FSP clients. Returns one MatchResult per survey row."""
+    # Include students sourced from the synthetic client roster (fsp_client_id
+    # set) AND students auto-populated from the real flight roster
+    # (fsp_client_id NULL but match_status='auto_from_flights').
     students = list(conn.execute(
-        "SELECT student_id, fsp_display_name, email FROM students WHERE fsp_client_id IS NOT NULL"
+        "SELECT student_id, fsp_display_name, email FROM students "
+        "WHERE fsp_client_id IS NOT NULL OR match_status = 'auto_from_flights'"
     ))
     by_email = {_norm(s["email"]): s for s in students if s["email"]}
     by_name = {_norm(s["fsp_display_name"]): s for s in students if s["fsp_display_name"]}

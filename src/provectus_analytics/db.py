@@ -36,6 +36,59 @@ def init_db(db_path: str | Path, drop_existing: bool = True) -> sqlite3.Connecti
     return conn
 
 
+def _migrate_enrollments(conn: sqlite3.Connection) -> None:
+    """Recreate the enrollments table if it predates the instance_num/source/is_partial columns.
+
+    Safe to call on a fresh DB (no-op if the new schema is already in place).
+    Clears milestones and enrollment_id references from flights since those are
+    always rebuilt from scratch by build_db() anyway.
+    """
+    cols = {row[1] for row in conn.execute("PRAGMA table_info(enrollments)").fetchall()}
+    if "instance_num" in cols:
+        return  # Already on new schema
+
+    conn.execute("PRAGMA foreign_keys = OFF")
+    conn.execute("DELETE FROM milestones")
+    conn.execute("UPDATE flights SET enrollment_id = NULL, partition_notes = NULL")
+    conn.execute("ALTER TABLE enrollments RENAME TO _enrollments_old")
+    conn.execute(
+        """
+        CREATE TABLE enrollments (
+            enrollment_id          INTEGER PRIMARY KEY,
+            student_id             INTEGER NOT NULL REFERENCES students(student_id),
+            rating_id              INTEGER NOT NULL REFERENCES ratings(rating_id),
+            instance_num           INTEGER NOT NULL DEFAULT 0,
+            start_date             TEXT NOT NULL,
+            checkride_date         TEXT NOT NULL,
+            first_solo_date        TEXT,
+            xc_solos_complete_date TEXT,
+            xc_pic_complete_date   TEXT,
+            source                 TEXT NOT NULL DEFAULT 'survey',
+            is_partial             INTEGER NOT NULL DEFAULT 0,
+            UNIQUE (student_id, rating_id, instance_num)
+        )
+        """
+    )
+    conn.execute(
+        """
+        INSERT INTO enrollments
+            (enrollment_id, student_id, rating_id, instance_num,
+             start_date, checkride_date,
+             first_solo_date, xc_solos_complete_date, xc_pic_complete_date,
+             source, is_partial)
+        SELECT enrollment_id, student_id, rating_id, 0,
+               start_date, checkride_date,
+               first_solo_date, xc_solos_complete_date, xc_pic_complete_date,
+               'survey', 0
+        FROM _enrollments_old
+        """
+    )
+    conn.execute("DROP TABLE _enrollments_old")
+    conn.execute("CREATE INDEX IF NOT EXISTS idx_milestones_enrollment ON milestones(enrollment_id)")
+    conn.execute("PRAGMA foreign_keys = ON")
+    conn.commit()
+
+
 def open_or_create(db_path: str | Path) -> sqlite3.Connection:
     """Open DB at db_path, creating tables/indexes that don't exist yet.
 
@@ -51,6 +104,7 @@ def open_or_create(db_path: str | Path) -> sqlite3.Connection:
         RATING_SEED,
     )
     conn.commit()
+    _migrate_enrollments(conn)  # forward-only: no-op if already on new schema
     return conn
 
 
