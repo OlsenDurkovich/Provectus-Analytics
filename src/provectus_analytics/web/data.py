@@ -76,16 +76,33 @@ def build_db(db_path: Path = DEFAULT_DB) -> dict:
 
     if use_real:
         conn = _db.open_or_create(db_path)
+        # Purge any stale synthetic rows from prior synthetic-mode runs so the
+        # cohort norms / Student / Instructor pages don't mix the two.
+        # Flights with hobbs_hours IS NULL AND billing_category IS NULL are the
+        # synthetic shape; real flights always have at least one of them.
+        conn.execute(
+            "DELETE FROM flights "
+            "WHERE hobbs_hours IS NULL AND billing_category IS NULL"
+        )
+        # The synthetic students/surveys/enrollments/milestones are derived; the
+        # cleanest reset is to clear them entirely. Real surveys will repopulate
+        # students once they arrive.
+        conn.execute("DELETE FROM milestones")
+        conn.execute("DELETE FROM enrollments")
+        conn.execute("DELETE FROM surveys")
+        conn.execute("DELETE FROM students "
+                     "WHERE fsp_client_id LIKE 'synth%' OR fsp_client_id IS NULL")
+        conn.commit()
+
         result = {"mode": "real", "flight_xlsx": flight_xlsx.name,
                   "invoice_xlsx": invoice_xlsx.name}
         result["flights"] = ingest.ingest_flight_detail_xlsx(conn, flight_xlsx)
         result["invoice_rows"] = ingest.ingest_invoice_xlsx(conn, invoice_xlsx)
-        # Survey CSV ingest still runs if a survey file exists.
-        survey = REPO_ROOT / "synthetic_alumni_survey.csv"
-        if survey.exists():
-            # Clear stale survey rows so we don't duplicate on re-import.
-            conn.execute("DELETE FROM surveys")
-            result["surveys"] = ingest.ingest_survey(conn, survey)
+        # NOTE: synthetic_alumni_survey.csv is intentionally NOT loaded when
+        # real flights are present — it pollutes the cohort with fake students
+        # whose names don't match real FSP clients, producing milestones with
+        # synthetic dates but zero hours/cost. Real surveys will be loaded
+        # here once they arrive.
         # Re-apply any manual overrides from prior sessions
         result["overrides_applied"] = ingest.apply_overrides(conn)
     else:
@@ -120,6 +137,25 @@ def _has_data(db_path: Path) -> bool:
 def ensure_db(db_path: Path = DEFAULT_DB) -> None:
     if not db_path.exists() or not _has_data(db_path):
         build_db(db_path)
+
+
+def has_flights_no_surveys(db_path: Path = DEFAULT_DB) -> bool:
+    """True iff we have real flights ingested but zero matched students.
+
+    Used by Student / Instructor / Overview to show a helpful 'awaiting survey
+    responses' message instead of a generic 'No data.'
+    """
+    try:
+        c = sqlite3.connect(db_path)
+        n_flights = c.execute(
+            "SELECT COUNT(*) FROM flights "
+            "WHERE hobbs_hours IS NOT NULL OR billing_category IS NOT NULL"
+        ).fetchone()[0]
+        n_milestones = c.execute("SELECT COUNT(*) FROM milestones").fetchone()[0]
+        c.close()
+        return n_flights > 0 and n_milestones == 0
+    except Exception:
+        return False
 
 
 def is_live_data(db_path: Path = DEFAULT_DB) -> int:

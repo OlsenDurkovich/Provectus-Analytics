@@ -104,6 +104,27 @@ def callout(text: str) -> html.Div:
     return html.Div(text, className="callout")
 
 
+def awaiting_surveys_callout(context: str = "this view") -> html.Div:
+    """Standard empty-state for pages that need survey-reconciled student data.
+
+    Shown when real flights are loaded but no alumni survey responses exist —
+    so flights have no student_id, no enrollments, no milestones.
+    """
+    return html.Div(
+        className="callout",
+        children=[
+            html.Strong("Awaiting alumni survey responses."),
+            html.Div(
+                f"FSP flights and invoices are loaded, but {context} needs "
+                "rating-boundary dates from alumni to attribute flights to "
+                "specific ratings. Until those arrive, this page stays empty. "
+                "Raw flight rows are visible on the Flights page.",
+                style={"marginTop": "4px"},
+            ),
+        ],
+    )
+
+
 def methodology(items: list[str]) -> html.Details:
     return html.Details(
         className="method",

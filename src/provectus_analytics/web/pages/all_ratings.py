@@ -7,7 +7,8 @@ from dash import html
 
 from provectus_analytics.web import data
 from provectus_analytics.web.components import (
-    metric_card, metric_grid, page_header, section, methodology, table,
+    awaiting_surveys_callout, metric_card, metric_grid, page_header,
+    section, methodology, table,
 )
 from provectus_analytics.web.theme import COLORS, base_layout
 
@@ -57,11 +58,12 @@ def _bar(metric_name: str, color: str, value_fmt: str, prefix: str = "") -> go.F
 def layout():
     norms = data.all_norms(str(data.DEFAULT_DB))
     if not norms:
-        return html.Div([
-            page_header("Cohort", "All Ratings"),
-            html.Div("No milestone data found. Rebuild the DB from the sidebar.",
-                     className="callout"),
-        ])
+        if data.has_flights_no_surveys(data.DEFAULT_DB):
+            empty = awaiting_surveys_callout("the cohort overview")
+        else:
+            empty = html.Div("No milestone data found. Rebuild the DB from the sidebar.",
+                             className="callout")
+        return html.Div([page_header("Cohort", "All Ratings"), empty])
 
     # Summary table — rating x medians
     cols = [

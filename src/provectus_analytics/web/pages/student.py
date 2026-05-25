@@ -11,7 +11,8 @@ from dash import Input, Output, dcc, html
 
 from provectus_analytics.web import data
 from provectus_analytics.web.components import (
-    metric_card, metric_grid, page_header, section, methodology, table,
+    awaiting_surveys_callout, metric_card, metric_grid, page_header,
+    section, methodology, table,
 )
 from provectus_analytics.web.theme import COLORS
 
@@ -104,10 +105,11 @@ def _timeline(traj: pd.DataFrame) -> html.Div:
 def layout():
     students = data.all_students(str(data.DEFAULT_DB))
     if not students:
-        return html.Div([
-            page_header("Drill-down", "Student"),
-            html.Div("No student data found.", className="callout"),
-        ])
+        if data.has_flights_no_surveys(data.DEFAULT_DB):
+            empty = awaiting_surveys_callout("the per-student drill-down")
+        else:
+            empty = html.Div("No student data found.", className="callout")
+        return html.Div([page_header("Drill-down", "Student"), empty])
 
     controls = html.Div(
         className="page-actions",

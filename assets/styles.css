@@ -602,3 +602,34 @@ details.method ul { margin: 4px 0 0 18px; color: var(--text-muted); }
 
 /* hide Dash undo/redo */
 ._dash-undo-redo { display: none !important; }
+
+/* ── DataTable theming (Flights page) ─────────────────────────────────────
+   Dash's DataTable doesn't fully honor our CSS vars in edit mode and the
+   dropdown menu, so spell out the colors here. */
+.dash-spreadsheet,
+.dash-spreadsheet-container {
+  background: var(--bg-card) !important;
+  color: var(--text) !important;
+}
+.dash-spreadsheet-inner table { color: var(--text) !important; }
+.dash-cell input.dash-cell-value,
+.dash-cell.focused input {
+  background: var(--bg-card) !important;
+  color: var(--text) !important;
+  border: 1px solid var(--accent) !important;
+}
+.dash-cell.dash-cell--selected { outline: 1px solid var(--accent) !important; }
+.dash-spreadsheet .Select-control,
+.dash-spreadsheet .Select-menu-outer {
+  background: var(--bg-card) !important;
+  color: var(--text) !important;
+  border-color: var(--divider) !important;
+}
+.dash-spreadsheet .Select-value-label,
+.dash-spreadsheet .Select-option { color: var(--text) !important; }
+.dash-spreadsheet .Select-option.is-focused {
+  background: var(--accent-band) !important;
+}
+.previous-next-container .previous-page,
+.previous-next-container .next-page,
+.column-header--sort { color: var(--text-muted) !important; }

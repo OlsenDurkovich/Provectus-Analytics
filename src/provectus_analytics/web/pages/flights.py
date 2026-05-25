@@ -144,6 +144,8 @@ def layout():
         ],
     )
 
+    # Match the dashboard's theme tokens. Computed once at layout time so
+    # initial paint isn't broken before clientside JS sets data-theme.
     table = dash_table.DataTable(
         id="fl-table",
         columns=DISPLAY_COLUMNS,
@@ -156,13 +158,36 @@ def layout():
         filter_action="none",
         sort_action="native",
         page_size=50,
-        style_table={"overflowX": "auto"},
-        style_cell={"fontSize": "12px", "padding": "6px 8px",
-                    "fontFamily": "system-ui, -apple-system, sans-serif"},
-        style_header={"fontWeight": "600", "background": "var(--bg-subtle)"},
+        style_table={"overflowX": "auto",
+                     "border": "1px solid var(--divider)",
+                     "borderRadius": "6px"},
+        style_cell={
+            "fontSize": "13px",
+            "padding": "8px 10px",
+            "fontFamily": "system-ui, -apple-system, sans-serif",
+            "backgroundColor": "var(--bg-card)",
+            "color": "var(--text)",
+            "border": "none",
+            "borderBottom": "1px solid var(--divider)",
+        },
+        style_header={
+            "fontWeight": "600",
+            "backgroundColor": "var(--bg-subtle)",
+            "color": "var(--text)",
+            "borderBottom": "1px solid var(--divider)",
+        },
         style_data_conditional=[
-            {"if": {"column_id": col}, "backgroundColor": "var(--bg-hover)"}
-            for col in EDITABLE_COLUMNS
+            # Editable cells: subtle tint + accent left border so it's
+            # obvious which columns accept edits.
+            *[
+                {
+                    "if": {"column_id": col},
+                    "backgroundColor": "var(--accent-band)",
+                    "borderLeft": "2px solid var(--accent)",
+                    "color": "var(--text)",
+                }
+                for col in EDITABLE_COLUMNS
+            ],
         ],
     )
 

@@ -7,7 +7,8 @@ from dash import Input, Output, dcc, html
 
 from provectus_analytics.web import data
 from provectus_analytics.web.components import (
-    metric_card, metric_grid, page_header, section, methodology, table,
+    awaiting_surveys_callout, metric_card, metric_grid, page_header,
+    section, methodology, table,
 )
 from provectus_analytics.web.theme import COLORS, base_layout
 
@@ -115,6 +116,8 @@ def _update(instructor: str):
 
     detail = data.instructor_detail(str(data.DEFAULT_DB), instructor)
     if detail.empty:
+        if data.has_flights_no_surveys(data.DEFAULT_DB):
+            return awaiting_surveys_callout(f"per-instructor efficiency for {instructor}")
         return html.Div(f"No checkride data for {instructor}.", className="callout")
 
     norms = data.all_norms(str(data.DEFAULT_DB))
