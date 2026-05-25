@@ -10,8 +10,9 @@
 - **Phase 4 (name reconciliation + rating attribution) — done against synthetic data.** Code in `src/provectus_analytics/{reconcile,partition}.py`. End-to-end test asserts output matches `ground_truth_per_milestone.csv` exactly.
 - **Phase 5 (data model) — done.** SQLite via `src/provectus_analytics/{schema,db}.py`. Tables: students, ratings, enrollments, milestones, flights, invoices, surveys.
 - **Phase 6 (cleaning + norms) — done.** `src/provectus_analytics/norms.py`. Tukey-fence outlier filter, median + P25/P75, low-sample flag at n<10.
-- **Phase 7 (MVP dashboard) — done for PPL.** Streamlit + Plotly; see `PHASE7_FRAMEWORK_DECISION.md`. Launch: `streamlit run app.py`. Cohort overview + box plot distributions + selected-student trajectory vs cohort median.
-- **Phase 8 (full web app) — done.** All 7 ratings. Pages: All Ratings overview, Rating Detail (with date-range filter + student overlay), Student drill-down (all ratings + vs-cohort delta), Instructor view (student list + efficiency vs cohort norms). No auth (boss-only access; add later if needed). Still on synthetic data.
+- **Phase 7 (MVP dashboard) — done for PPL, then superseded.** Original framework was Streamlit; see `PHASE7_FRAMEWORK_DECISION.md`. The PPL MVP validated the pipeline + methodology before scaling.
+- **Phase 8 (full web app) — done, then redesigned.** First pass in Streamlit (all 7 ratings, four pages). Second pass: rewrote in Dash for design control. Same four pages: All Ratings overview, Rating Detail, Student drill-down, Instructor view. No auth (boss-only access; add later if needed). Still on synthetic data.
+- **Phase 8.5 (design polish) — done.** Custom design system inspired by Linear / Stripe / Strava / Whoop / Hex. Dark + light mode (persisted via localStorage). Stripe-style metric cards, Whoop-style P25/P75 band charts, Strava-style per-rating timeline on Student page. Native system font stack (works under Brave Shields, corporate firewalls, offline).
 - All subsequent phases below.
 
 ## Data path decision (locked)
@@ -97,17 +98,37 @@ Document the rules — the transparency story relies on defensibility.
 
 ---
 
-### Phase 7 — MVP dashboard (PPL only, local)
+### Phase 7 — MVP dashboard (PPL only, local) ✓
 
-Pick framework: **Streamlit** (recommended — fastest path for a solo build, minimal web code) vs **Flask + Plotly** (full control, deferred). Pick at start of this phase, document the why.
-
-Build smallest useful view: PPL cost/hours/duration distribution + a single student plotted against the norm. Validates the data pipeline, methodology, and framework choice before scaling to all ratings.
+Built in **Streamlit** for the MVP (see `PHASE7_FRAMEWORK_DECISION.md`). PPL cost/hours/duration distribution + a single student plotted against the norm. Validated the data pipeline, methodology, and framework choice before scaling to all ratings. Superseded by Phase 8.
 
 ---
 
 ### Phase 8 — Full web app ✓
 
 Expanded to all 7 ratings. Four pages: All Ratings overview, Rating Detail (date filter + student overlay), Student drill-down, Instructor view (student list + efficiency vs cohort). Auth deferred — not needed yet.
+
+Framework note: shipped initially in Streamlit, then rewritten in **Dash** (Phase 8.5) for finer-grained design control. Launch: `python app.py` → `http://127.0.0.1:8050`.
+
+---
+
+### Phase 8.5 — Design polish ✓
+
+Rewrote the Streamlit app in Dash to enable a custom design system. Reference apps: Linear (layout/density), Stripe (metric cards/tables), Strava (timeline + cohort comparison), Whoop/Oura (P25/P75 band charts), Hex (prose + data mix). Dark sidebar / light content with full dark-mode toggle (persisted via `localStorage`). Native system font stack — no network dependency, works under Brave Shields and offline.
+
+Structure:
+
+```
+src/provectus_analytics/web/
+  app.py            Dash app factory + sidebar + routing
+  theme.py          Plotly template + chart color tokens
+  data.py           cached DB queries
+  components.py     metric cards, tables, page headers
+  pages/            one file per route (all_ratings, rating_detail, student, instructor)
+assets/
+  styles.css        design system (CSS variables for both themes)
+  00-theme-init.js  applies persisted theme before paint
+```
 
 ---
 

@@ -5,7 +5,7 @@ Python analytics web app pulling data from Flight Schedule Pro (FSP) to measure 
 **The roadmap is the source of truth — read it first:** `ROADMAP.md` in this folder.
 
 ## Current phase
-Phase 2 — FSP data discovery. Confirm API vs export access, enumerate per-event fields, identify all billing categories beyond "primary."
+Phase 3 — alumni outreach (boss priority). Pipeline + dashboard are built against synthetic data; waiting on real survey responses to swap in live data. Phases 1–8.5 complete.
 
 ## Key context (already locked, don't re-litigate)
 - Ratings covered: PPL, IFR, ASEL COM, AMEL, CFI, CFII, MEI.
@@ -18,4 +18,4 @@ Phase 2 — FSP data discovery. Confirm API vs export access, enumerate per-even
 - Be brief, no filler or trailing summaries.
 - Flag guesses explicitly.
 - GitHub pushes are manual — confirm before `git push`.
-- Framework choice (Streamlit vs Flask) deferred to Phase 7 — don't commit prematurely.
+- Web framework locked: **Dash** (replaced original Streamlit MVP in Phase 8.5). Launch with `python app.py`. Design system lives in `assets/styles.css` with CSS variables for dark/light themes.
