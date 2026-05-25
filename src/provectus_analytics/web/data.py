@@ -63,16 +63,19 @@ def _has_real_exports() -> tuple[Path | None, Path | None]:
     return flight, invoice
 
 
-def build_db(db_path: Path = DEFAULT_DB) -> dict:
+def build_db(db_path: Path = DEFAULT_DB, force_synthetic: bool = False) -> dict:
     """Non-destructive rebuild.
 
-    - If real FSP XLSX exports exist in FSP Exports/, use the incremental
-      real-data path (preserves flight_overrides across rebuilds).
+    - If real FSP XLSX exports exist in FSP Exports/ AND force_synthetic is
+      False, use the incremental real-data path (preserves flight_overrides).
     - Otherwise fall back to the synthetic CSV path (drops + reseeds, since
       tests assume a clean slate).
+    - Pass force_synthetic=True to use synthetic data even when real exports
+      are present (useful while real-data inputs are still being normalised).
     """
     flight_xlsx, invoice_xlsx = _has_real_exports()
-    use_real = flight_xlsx is not None and invoice_xlsx is not None
+    use_real = (flight_xlsx is not None and invoice_xlsx is not None
+                and not force_synthetic)
 
     if use_real:
         conn = _db.open_or_create(db_path)
@@ -111,7 +114,13 @@ def build_db(db_path: Path = DEFAULT_DB) -> dict:
         # Re-apply any manual overrides from prior sessions
         result["overrides_applied"] = ingest.apply_overrides(conn)
     else:
-        conn = _db.init_db(db_path)  # synthetic = destructive (tests rely on it)
+        # Synthetic path: build in /tmp first, then copy to db_path.
+        # This avoids SQLite journal-file failures on FUSE-mounted filesystems
+        # (e.g. the Cowork sandbox), where unlink() and write transactions are
+        # both blocked even though the file itself is writable.
+        import shutil, tempfile
+        tmp_path = Path(tempfile.mktemp(suffix=".db"))
+        conn = _db.init_db(tmp_path, drop_existing=True)
         ingest.ingest_all(
             conn,
             REPO_ROOT / "synthetic_fsp_clients.csv",
@@ -127,6 +136,16 @@ def build_db(db_path: Path = DEFAULT_DB) -> dict:
     partition.partition_flights(conn)
     milestones.compute_milestones(conn)
     conn.close()
+
+    if not use_real:
+        # Move the finished DB from /tmp to the real destination.
+        # Use explicit read/write rather than shutil.copy2: on some FUSE-mounted
+        # filesystems (e.g. the Cowork sandbox) os.sendfile silently writes 0 bytes.
+        data_bytes = tmp_path.read_bytes()
+        with open(db_path, "wb") as fout:
+            fout.write(data_bytes)
+        tmp_path.unlink()
+
     return result
 
 

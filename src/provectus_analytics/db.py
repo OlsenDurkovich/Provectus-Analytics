@@ -24,7 +24,27 @@ def init_db(db_path: str | Path, drop_existing: bool = True) -> sqlite3.Connecti
     """
     p = Path(db_path)
     if drop_existing and p.exists():
-        p.unlink()
+        try:
+            p.unlink()
+        except PermissionError:
+            # On some mounted filesystems unlink is blocked (e.g. macOS FUSE
+            # mounts in the Cowork sandbox).  Build in /tmp then copy over.
+            import tempfile
+            tmp = Path(tempfile.mktemp(suffix=".db"))
+            conn_tmp = connect(tmp)
+            for stmt in DDL:
+                conn_tmp.execute(stmt)
+            conn_tmp.executemany(
+                "INSERT OR IGNORE INTO ratings "
+                "(rating_id, code, display, sort_order) VALUES (?, ?, ?, ?)",
+                RATING_SEED,
+            )
+            conn_tmp.commit()
+            conn_tmp.close()
+            with open(p, "wb") as fout:
+                fout.write(tmp.read_bytes())
+            tmp.unlink()
+            return connect(p)  # return early — DDL already applied
     conn = connect(p)
     for stmt in DDL:
         conn.execute(stmt)

@@ -102,6 +102,10 @@ def _sidebar() -> html.Div:
                                   "names, then rebuilds the DB."),
                 html.Button("Rebuild DB", id="rebuild-btn", className="rebuild-btn",
                             n_clicks=0),
+                html.Button("Rebuild (synthetic)", id="rebuild-synthetic-btn",
+                            className="rebuild-btn", n_clicks=0,
+                            title="Force a rebuild from synthetic CSVs, "
+                                  "ignoring any real FSP exports."),
                 html.Div(id="rebuild-status",
                          style={"marginTop": "6px", "fontSize": "11px",
                                 "color": "#a1a1aa", "whiteSpace": "pre-wrap"}),
@@ -176,9 +180,10 @@ def create_app() -> dash.Dash:
         Output("rebuild-status", "children"),
         Input("rebuild-btn", "n_clicks"),
         Input("import-btn", "n_clicks"),
+        Input("rebuild-synthetic-btn", "n_clicks"),
         prevent_initial_call=True,
     )
-    def _refresh(rebuild_clicks, import_clicks):
+    def _refresh(rebuild_clicks, import_clicks, rebuild_synthetic_clicks):
         trigger = dash.callback_context.triggered_id
         if trigger == "import-btn":
             results = import_exports.import_latest()
@@ -189,6 +194,10 @@ def create_app() -> dash.Dash:
             data.clear_caches()
             data.build_db(data.DEFAULT_DB)
             return "Rebuilt. Refresh the page."
+        if trigger == "rebuild-synthetic-btn":
+            data.clear_caches()
+            data.build_db(data.DEFAULT_DB, force_synthetic=True)
+            return "Rebuilt from synthetic data. Refresh the page."
         return no_update
 
     return app
