@@ -61,6 +61,11 @@ def _sidebar() -> html.Div:
                     "Data source: " +
                     ("FSP Reporting Hub exports" if n_live > 0 else "synthetic CSVs"),
                 ),
+                html.Button(
+                    [html.Span("Theme"), html.Span("Light", id="theme-label",
+                                                   className="indicator")],
+                    id="theme-toggle", className="theme-toggle", n_clicks=0,
+                ),
                 html.Button("Rebuild DB", id="rebuild-btn", className="rebuild-btn",
                             n_clicks=0),
                 html.Div(id="rebuild-status",
@@ -110,6 +115,25 @@ def create_app() -> dash.Dash:
             is_active = (pathname == path) or (path == "/" and pathname in (None, "", "/"))
             results.append("nav-link active" if is_active else "nav-link")
         return results
+
+    # Theme toggle — runs entirely client-side, persists to localStorage.
+    app.clientside_callback(
+        """
+        function(n_clicks) {
+            var cur = document.documentElement.getAttribute('data-theme') || 'light';
+            // On first paint, n_clicks is 0 — just return the current label, don't flip.
+            if (!n_clicks) {
+                return cur === 'dark' ? 'Dark' : 'Light';
+            }
+            var next = cur === 'dark' ? 'light' : 'dark';
+            document.documentElement.setAttribute('data-theme', next);
+            try { localStorage.setItem('theme', next); } catch (e) {}
+            return next === 'dark' ? 'Dark' : 'Light';
+        }
+        """,
+        Output("theme-label", "children"),
+        Input("theme-toggle", "n_clicks"),
+    )
 
     # Rebuild button
     @app.callback(

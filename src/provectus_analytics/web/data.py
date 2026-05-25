@@ -27,6 +27,13 @@ RATING_DISPLAY = {
     "MEI":  "MEI",
 }
 
+MILESTONE_LABELS = {
+    "first_solo":         "First solo",
+    "xc_solos_complete":  "Cross-country solos complete",
+    "xc_pic_complete":    "Instrument XC PIC complete",
+    "checkride":          "Checkride",
+}
+
 
 # ── Pipeline plumbing ───────────────────────────────────────────────────────
 

@@ -121,14 +121,13 @@ def _update(instructor: str):
     norm_by_rating = {n["rating"]: n for n in norms}
     ratings_taught = detail.sort_values("sort_order")["rating"].unique().tolist()
 
-    # Hero metrics
+    # Hero metrics — kept minimal; the per-rating efficiency table below carries
+    # the real signal (cross-rating medians aren't comparable).
     hero = metric_grid([
         metric_card("Ratings taught", str(len(ratings_taught)),
                     sub=", ".join(ratings_taught)),
-        metric_card("Students at checkride", str(detail["student"].nunique())),
-        metric_card("Median hours/student", f"{detail['hours'].median():.1f}",
-                    sub="Across all their checkrides"),
-        metric_card("Median cost/student", f"${detail['cost'].median():,.0f}"),
+        metric_card("Students at checkride", str(detail["student"].nunique()),
+                    sub="Counted once per rating completed"),
     ])
 
     # Efficiency table — Linear-dense

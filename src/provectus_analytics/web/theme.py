@@ -6,16 +6,18 @@ import plotly.io as pio
 
 # Mirror of CSS tokens so charts and DOM agree.
 COLORS = {
-    "text":        "#18181b",
-    "text_muted":  "#71717a",
-    "text_faint":  "#a1a1aa",
-    "border":      "#e7e7e9",
-    "divider":     "#ededef",
-    "bg":          "#ffffff",
-    "bg_subtle":   "#f4f4f5",
-    "accent":      "#5e6ad2",
-    "accent_band": "rgba(94, 106, 210, 0.16)",
-    "accent_line": "rgba(94, 106, 210, 0.55)",
+    # Charts use neutral mid-tones so figures render acceptably in both light
+    # and dark mode without regenerating them on theme switch.
+    "text":        "#71717a",                       # neutral gray reads on both
+    "text_muted":  "#8b8d92",
+    "text_faint":  "#9c9ca3",
+    "border":      "rgba(127,127,127,0.22)",
+    "divider":     "rgba(127,127,127,0.18)",
+    "bg":          "rgba(0,0,0,0)",
+    "bg_subtle":   "rgba(127,127,127,0.06)",
+    "accent":      "#6f7ad8",                       # tuned for both modes
+    "accent_band": "rgba(111, 122, 216, 0.18)",
+    "accent_line": "rgba(111, 122, 216, 0.55)",
     "success":     "#10b981",
     "danger":      "#ef4444",
     "warning":     "#f59e0b",

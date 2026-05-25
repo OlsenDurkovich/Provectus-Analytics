@@ -4,8 +4,9 @@
    Strava (timeline), Whoop/Oura (P25/P75 bands), Hex (prose+data mix)
    ───────────────────────────────────────────────────────────────────────── */
 
-:root {
-  /* color tokens */
+:root,
+:root[data-theme="light"] {
+  /* color tokens — light mode (default) */
   --bg-app:        #fafafa;
   --bg-card:       #ffffff;
   --bg-sidebar:    #0f1011;
@@ -31,6 +32,32 @@
   --danger:        #ef4444;
   --danger-bg:     #fdecec;
   --warning:       #f59e0b;
+}
+
+:root[data-theme="dark"] {
+  --bg-app:        #0a0a0b;
+  --bg-card:       #131316;
+  --bg-sidebar:    #08080a;
+  --bg-subtle:     #1a1a1d;
+  --bg-hover:      #1c1c20;
+
+  --border:        #26262a;
+  --border-strong: #34343a;
+  --divider:       #1f1f23;
+
+  --text:          #f4f4f5;
+  --text-muted:    #a1a1aa;
+  --text-faint:    #71717a;
+
+  --accent:        #818cf8;       /* lifted indigo for dark contrast */
+  --accent-soft:   #1c1d2e;
+  --accent-band:   rgba(129, 140, 248, 0.18);
+
+  --success:       #34d399;
+  --success-bg:    #0f2a22;
+  --danger:        #f87171;
+  --danger-bg:     #2a1313;
+  --warning:       #fbbf24;
 
   /* type */
   --font:          'Inter', -apple-system, BlinkMacSystemFont, 'Segoe UI',
@@ -485,6 +512,44 @@ details.method summary {
 }
 details.method[open] summary { margin-bottom: 10px; }
 details.method ul { margin: 4px 0 0 18px; color: var(--text-muted); }
+
+/* ─── Theme toggle button (in sidebar foot) ───────────────────────────── */
+.theme-toggle {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  width: 100%;
+  padding: 6px 10px;
+  margin-top: 8px;
+  background: rgba(255,255,255,0.04);
+  color: var(--text-onDark);
+  border: 1px solid rgba(255,255,255,0.08);
+  border-radius: 6px;
+  font-family: inherit;
+  font-size: 12px;
+  cursor: pointer;
+}
+.theme-toggle:hover { background: rgba(255,255,255,0.08); }
+.theme-toggle .indicator {
+  font-size: 10px;
+  letter-spacing: 0.04em;
+  text-transform: uppercase;
+  color: var(--text-onDark-muted);
+}
+
+/* Callout colour tweak for dark mode so amber doesn't burn */
+:root[data-theme="dark"] .callout {
+  background: #2a210e;
+  color: #fcd34d;
+  border-color: #4a3a16;
+}
+:root[data-theme="dark"] .pill.warn {
+  background: #2a210e;
+  color: #fcd34d;
+}
+
+/* Stripe-style table hover */
+:root[data-theme="dark"] .tbl tr:hover td { background: var(--bg-hover); }
 
 /* hide Dash undo/redo */
 ._dash-undo-redo { display: none !important; }

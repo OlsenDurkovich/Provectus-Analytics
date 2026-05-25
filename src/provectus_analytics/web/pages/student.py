@@ -47,10 +47,11 @@ def _timeline(traj: pd.DataFrame) -> html.Div:
         for _, m in group.iterrows():
             pos_pct = (m["date"] - global_min).days / total_span * 100
             classes = "timeline-dot" + (" checkride" if m["milestone"] == "checkride" else "")
+            label = data.MILESTONE_LABELS.get(m["milestone"], m["milestone"])
             dots.append(html.Div(
                 className=classes,
                 style={"left": f"{pos_pct}%"},
-                title=f"{m['milestone']} — {m['milestone_date']}",
+                title=f"{label} — {m['milestone_date']}",
             ))
 
         # Total per-rating duration & cost — shown as right-side caption
@@ -215,7 +216,8 @@ def _update(student: str):
             {"key": "c",  "label": "Cost",  "num": True},
         ]
         rows_t = [
-            [m["milestone"], m["milestone_date"], int(m["days"]),
+            [data.MILESTONE_LABELS.get(m["milestone"], m["milestone"]),
+             m["milestone_date"], int(m["days"]),
              int(m["flights"]), f"{m['hours']:.1f}", f"${m['cost']:,.0f}"]
             for _, m in r_traj.iterrows()
         ]

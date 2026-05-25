@@ -63,20 +63,6 @@ def layout():
                      className="callout"),
         ])
 
-    # Aggregate roll-ups across all ratings — Stripe-style hero metrics
-    total_students = sum(n["n_raw"] for n in norms)
-    total_ratings = len(norms)
-    low_sample = sum(1 for n in norms if n["low_sample_flag"])
-
-    hero = metric_grid([
-        metric_card("Ratings tracked", str(total_ratings),
-                    sub=f"{', '.join(n['rating'] for n in norms)}"),
-        metric_card("Checkrides in dataset", f"{total_students}",
-                    sub="Sum of cohort sizes across ratings"),
-        metric_card("Low-sample ratings", f"{low_sample}",
-                    sub=f"n < 10 ({'OK' if low_sample == 0 else 'norms are indicative only'})"),
-    ])
-
     # Summary table — rating x medians
     cols = [
         {"key": "rating", "label": "Rating"},
@@ -114,7 +100,6 @@ def layout():
             "All ratings",
             "Median + P25–P75 to checkride for each rating. Built from alumni-reported boundary dates and FSP flight data.",
         ),
-        hero,
         section("Cohort norms", summary_table),
         section(
             "Median flight hours to checkride",
