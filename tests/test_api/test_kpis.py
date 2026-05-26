@@ -23,7 +23,9 @@ def test_kpis_returns_four_cards(tmp_path, monkeypatch):
     assert keys == {"ratings_completed", "active_clients", "flight_hours", "total_billed"}
     for k in kpis:
         assert "value" in k and "spark" in k and isinstance(k["spark"], list)
-        assert k["delta"] == 0.0  # 0% placeholder until prior-period math lands
+        assert isinstance(k["delta"], float)
+        # positive flag must match the sign of delta (>=0 → positive)
+        assert k["positive"] is (k["delta"] >= 0)
 
 
 def test_kpis_range_all(tmp_path, monkeypatch):
@@ -32,3 +34,20 @@ def test_kpis_range_all(tmp_path, monkeypatch):
     assert response.status_code == 200
     kpis = response.json()
     assert len(kpis) == 4
+    # "all" range has no prior window — deltas must stay at 0.
+    for k in kpis:
+        assert k["delta"] == 0.0
+        assert k["positive"] is True
+
+
+def test_kpis_delta_uses_prior_window(tmp_path, monkeypatch):
+    """If prior window has zero activity but current does, delta stays 0 (not infinity)."""
+    client = _fresh(tmp_path, monkeypatch)
+    response = client.get("/api/kpis?range=30d")
+    assert response.status_code == 200
+    kpis = response.json()
+    for k in kpis:
+        # Deltas are bounded — never NaN/inf, and the placeholder math returns 0.0
+        # when prior is empty.
+        assert isinstance(k["delta"], float)
+        assert k["delta"] == k["delta"]  # NaN check

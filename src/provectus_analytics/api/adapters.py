@@ -57,69 +57,126 @@ def meta() -> schemas.Meta:
     )
 
 
-def kpis(range_key: schemas.RangeKey) -> list[schemas.Kpi]:
-    cutoff = range_cutoff(range_key)
-    cutoff_iso = cutoff.isoformat() if cutoff else None
+def _kpi_window(conn: sqlite3.Connection, lo: date | None, hi: date | None) -> tuple[int, int, float, float]:
+    """Return (ratings_completed, active, hours, billed) for [lo, hi).
+
+    lo=None means no lower bound; hi=None means no upper bound (i.e., open-ended to today).
+    For all 4 metrics, more-is-better — % delta direction is consistent across them.
+    """
+    where = []
+    params: list = []
+    if lo is not None:
+        where.append("flight_date >= ?")
+        params.append(lo.isoformat())
+    if hi is not None:
+        where.append("flight_date < ?")
+        params.append(hi.isoformat())
+    flight_where = (" WHERE " + " AND ".join(where)) if where else ""
+
+    # Milestones use milestone_date, not flight_date.
+    ms_where = []
+    ms_params: list = []
+    if lo is not None:
+        ms_where.append("milestone_date >= ?")
+        ms_params.append(lo.isoformat())
+    if hi is not None:
+        ms_where.append("milestone_date < ?")
+        ms_params.append(hi.isoformat())
+    ms_clause = (" AND " + " AND ".join(ms_where)) if ms_where else ""
+
+    ratings_completed = conn.execute(
+        f"SELECT COUNT(*) FROM milestones WHERE milestone_name='checkride'{ms_clause}",
+        ms_params,
+    ).fetchone()[0]
+    active = conn.execute(
+        f"SELECT COUNT(DISTINCT student_id) FROM flights{flight_where}",
+        params,
+    ).fetchone()[0]
+    hours = conn.execute(
+        f"SELECT COALESCE(SUM(length_hrs),0) FROM flights{flight_where}",
+        params,
+    ).fetchone()[0]
+    # Invoices join through flights so the window applies to the *flown* date, not the
+    # invoice date — matches how the dashboard frames "revenue from work done in window".
+    if where:
+        billed = conn.execute(
+            "SELECT COALESCE(SUM(i.amount),0) FROM invoices i "
+            "JOIN flights f ON f.flight_id = i.flight_id "
+            "WHERE " + " AND ".join(w.replace("flight_date", "f.flight_date") for w in where),
+            params,
+        ).fetchone()[0]
+    else:
+        billed = conn.execute(
+            "SELECT COALESCE(SUM(amount),0) FROM invoices"
+        ).fetchone()[0]
+    return int(ratings_completed), int(active), float(hours), float(billed)
+
+
+def _pct_delta(current: float, prior: float) -> float:
+    """Return % change from prior to current, rounded to 3 decimals.
+
+    Returns 0.0 if prior is 0 (avoids div-by-zero and bogus +infinity deltas
+    for KPIs that simply didn't exist in the prior window).
+    """
+    if prior == 0:
+        return 0.0
+    return round((current - prior) / prior, 3)
+
+
+def kpis(range_key: schemas.RangeKey, today: date | None = None) -> list[schemas.Kpi]:
+    today = today or date.today()
+    cutoff = range_cutoff(range_key, today)
 
     conn = sqlite3.connect(web_data.DEFAULT_DB)
     try:
-        if cutoff_iso:
-            ratings_completed = conn.execute(
-                "SELECT COUNT(*) FROM milestones "
-                "WHERE milestone_name='checkride' AND milestone_date >= ?",
-                (cutoff_iso,),
-            ).fetchone()[0]
-            active = conn.execute(
-                "SELECT COUNT(DISTINCT student_id) FROM flights WHERE flight_date >= ?",
-                (cutoff_iso,),
-            ).fetchone()[0]
-            hours = conn.execute(
-                "SELECT COALESCE(SUM(length_hrs),0) FROM flights WHERE flight_date >= ?",
-                (cutoff_iso,),
-            ).fetchone()[0]
-            billed = conn.execute(
-                "SELECT COALESCE(SUM(i.amount),0) FROM invoices i "
-                "JOIN flights f ON f.flight_id = i.flight_id "
-                "WHERE f.flight_date >= ?",
-                (cutoff_iso,),
-            ).fetchone()[0]
+        cur_ratings, cur_active, cur_hours, cur_billed = _kpi_window(conn, cutoff, None)
+
+        # Prior window: equal-length stretch immediately before the current cutoff.
+        # For "all" there's no prior — leave deltas at 0.
+        if cutoff is None:
+            prior_ratings = prior_active = 0
+            prior_hours = prior_billed = 0.0
+            has_prior = False
         else:
-            ratings_completed = conn.execute(
-                "SELECT COUNT(*) FROM milestones WHERE milestone_name='checkride'"
-            ).fetchone()[0]
-            active = conn.execute(
-                "SELECT COUNT(DISTINCT student_id) FROM flights"
-            ).fetchone()[0]
-            hours = conn.execute(
-                "SELECT COALESCE(SUM(length_hrs),0) FROM flights"
-            ).fetchone()[0]
-            billed = conn.execute(
-                "SELECT COALESCE(SUM(amount),0) FROM invoices"
-            ).fetchone()[0]
+            window_days = (today - cutoff).days
+            prior_lo = cutoff - timedelta(days=window_days)
+            prior_hi = cutoff
+            prior_ratings, prior_active, prior_hours, prior_billed = _kpi_window(
+                conn, prior_lo, prior_hi
+            )
+            has_prior = True
     finally:
         conn.close()
 
     sub = _RANGE_SUB[range_key]
+    if has_prior:
+        d_ratings = _pct_delta(cur_ratings, prior_ratings)
+        d_active = _pct_delta(cur_active, prior_active)
+        d_hours = _pct_delta(cur_hours, prior_hours)
+        d_billed = _pct_delta(cur_billed, prior_billed)
+    else:
+        d_ratings = d_active = d_hours = d_billed = 0.0
+
     return [
         schemas.Kpi(
             key="ratings_completed", label="Ratings completed",
-            value=str(ratings_completed), sub=sub, delta=0.0, positive=True,
-            spark=[float(ratings_completed)] * 8, color="#6E56F8",
+            value=str(cur_ratings), sub=sub, delta=d_ratings, positive=d_ratings >= 0,
+            spark=[float(cur_ratings)] * 8, color="#6E56F8",
         ),
         schemas.Kpi(
             key="active_clients", label="Active clients",
-            value=str(active), sub=sub, delta=0.0, positive=True,
-            spark=[float(active)] * 8, color="#3DD68C",
+            value=str(cur_active), sub=sub, delta=d_active, positive=d_active >= 0,
+            spark=[float(cur_active)] * 8, color="#3DD68C",
         ),
         schemas.Kpi(
             key="flight_hours", label="Flight hours",
-            value=f"{hours:,.0f}", sub=sub, delta=0.0, positive=True,
-            spark=[float(hours)] * 8, color="#22D3EE",
+            value=f"{cur_hours:,.0f}", sub=sub, delta=d_hours, positive=d_hours >= 0,
+            spark=[float(cur_hours)] * 8, color="#22D3EE",
         ),
         schemas.Kpi(
             key="total_billed", label="Total billed",
-            value=f"${billed:,.0f}", sub=sub, delta=0.0, positive=True,
-            spark=[float(billed)] * 8, color="#F59E0B",
+            value=f"${cur_billed:,.0f}", sub=sub, delta=d_billed, positive=d_billed >= 0,
+            spark=[float(cur_billed)] * 8, color="#F59E0B",
         ),
     ]
 
@@ -655,6 +712,49 @@ def instructor_detail(instructor_id: str) -> schemas.InstructorDetail:
     )
 
 
+def _trailing_8_months(today: date) -> list[str]:
+    """Return 8 YYYY-MM strings, oldest first, ending at today's month."""
+    out: list[str] = []
+    year, month = today.year, today.month
+    for _ in range(8):
+        out.append(f"{year:04d}-{month:02d}")
+        month -= 1
+        if month == 0:
+            year -= 1
+            month = 12
+    return list(reversed(out))
+
+
+def _sparkline_by_enrollment(
+    conn: sqlite3.Connection, months: list[str]
+) -> dict[tuple[int, int], list[float]]:
+    """Build {(student_id, enrollment_id) → 8 hour totals, oldest first}.
+
+    One DB pass over flights — keyed on enrollment, not student, so a student
+    enrolled in PPL and IFR gets two distinct sparklines.
+    """
+    if not months:
+        return {}
+    oldest = months[0]
+    rows = conn.execute(
+        """SELECT student_id, enrollment_id, substr(flight_date,1,7) AS ym,
+                  COALESCE(SUM(length_hrs), 0) AS hrs
+           FROM flights
+           WHERE flight_date >= ? AND enrollment_id IS NOT NULL
+           GROUP BY student_id, enrollment_id, ym""",
+        (oldest + "-01",),
+    ).fetchall()
+    by_key: dict[tuple[int, int], dict[str, float]] = {}
+    for student_id, enrollment_id, ym, hrs in rows:
+        if not ym:
+            continue
+        by_key.setdefault((student_id, enrollment_id), {})[ym] = float(hrs)
+    out: dict[tuple[int, int], list[float]] = {}
+    for key, ym_map in by_key.items():
+        out[key] = [ym_map.get(m, 0.0) for m in months]
+    return out
+
+
 def clients(
     range_key: schemas.RangeKey, rating: schemas.RatingCode | None = None
 ) -> list[schemas.ClientRow]:
@@ -663,6 +763,8 @@ def clients(
     from .. import norms as _norms
 
     cutoff = range_cutoff(range_key)
+    today = _date.today()
+    spark_months = _trailing_8_months(today)
 
     conn = sqlite3.connect(web_data.DEFAULT_DB)
     conn.row_factory = sqlite3.Row
@@ -671,11 +773,30 @@ def clients(
             n.rating: n.median_hours for n in _norms.compute_rating_norms(conn)
         }
 
+        spark_by_key = _sparkline_by_enrollment(conn, spark_months)
+
         sql = """
             SELECT s.student_id, s.fsp_display_name, r.code AS rating_code,
+                   e.enrollment_id,
                    COALESCE(SUM(f.length_hrs), 0) AS hours,
                    MIN(f.flight_date) AS first_flight,
                    MAX(f.flight_date) AS last_flight,
+                   COALESCE((
+                       SELECT SUM(i.amount) FROM invoices i
+                       JOIN flights f2 ON f2.flight_id = i.flight_id
+                       WHERE f2.student_id = s.student_id
+                         AND f2.enrollment_id = e.enrollment_id
+                   ), 0) AS cost,
+                   (
+                       SELECT f3.instructor FROM flights f3
+                       WHERE f3.student_id = s.student_id
+                         AND f3.enrollment_id = e.enrollment_id
+                         AND f3.instructor IS NOT NULL
+                         AND f3.instructor != ''
+                       GROUP BY f3.instructor
+                       ORDER BY SUM(f3.length_hrs) DESC
+                       LIMIT 1
+                   ) AS primary_instructor,
                    EXISTS (
                        SELECT 1 FROM milestones m
                        JOIN enrollments e2 USING (enrollment_id)
@@ -697,13 +818,12 @@ def clients(
         if rating:
             sql += " AND r.code = ?"
             params.append(rating)
-        sql += " GROUP BY s.student_id, r.code ORDER BY s.fsp_display_name"
+        sql += " GROUP BY s.student_id, r.code, e.enrollment_id ORDER BY s.fsp_display_name"
         rows = conn.execute(sql, params).fetchall()
     finally:
         conn.close()
 
     out: list[schemas.ClientRow] = []
-    today = _date.today()
     for row in rows:
         rating_code = row["rating_code"]
         hours = float(row["hours"] or 0)
@@ -725,6 +845,10 @@ def clients(
         else:
             status = "Active"
 
+        spark = spark_by_key.get(
+            (row["student_id"], row["enrollment_id"]), [0.0] * len(spark_months)
+        )
+
         out.append(
             schemas.ClientRow(
                 id=str(row["student_id"]),
@@ -734,6 +858,9 @@ def clients(
                 hoursToDate=hours,
                 daysEnrolled=int(days),
                 status=status,
+                costToDate=float(row["cost"] or 0),
+                instructor=row["primary_instructor"] or "",
+                sparkline=spark,
             )
         )
     return out

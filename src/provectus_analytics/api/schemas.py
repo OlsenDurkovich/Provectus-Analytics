@@ -77,6 +77,13 @@ class ClientRow(BaseModel):
     hoursToDate: float
     daysEnrolled: int
     status: FlightStatus
+    # Phase 11.5: restore Dash-era columns. costToDate is the invoice total for
+    # this student's flights in this rating; instructor is the primary instructor
+    # (most hours) for that enrollment; sparkline is 8 trailing monthly hour totals
+    # (oldest → newest), used by the tiny inline chart on the Clients table.
+    costToDate: float = 0.0
+    instructor: str = ""
+    sparkline: list[float] = []
 
 
 class StudentTimelineMilestone(BaseModel):

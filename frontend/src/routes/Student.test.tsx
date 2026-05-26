@@ -41,7 +41,7 @@ beforeEach(() => {
       };
     } else if (url.includes('/api/students')) {
       body = [
-        { id: 'student-1', name: 'Alex Martinez', rating: 'PPL', progressPct: 0.9, hoursToDate: 65, daysEnrolled: 160, status: 'Completed' },
+        { id: 'student-1', name: 'Alex Martinez', rating: 'PPL', progressPct: 0.9, hoursToDate: 65, daysEnrolled: 160, status: 'Completed', costToDate: 14500, instructor: 'Doug Hayes', sparkline: [2, 3, 5, 6, 8, 7, 6, 5] },
       ];
     }
     return Promise.resolve({ ok: true, json: async () => body });

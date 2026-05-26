@@ -4,8 +4,8 @@ import { ClientsTable } from './ClientsTable';
 import type { ClientRow } from '../data/types';
 
 const rows: ClientRow[] = [
-  { id: '1', name: 'Alex Doe', rating: 'PPL', progressPct: 0.5, hoursToDate: 40, daysEnrolled: 60, status: 'Active' },
-  { id: '2', name: 'Jamie Lee', rating: 'IFR', progressPct: 0.95, hoursToDate: 38, daysEnrolled: 180, status: 'On checkride' },
+  { id: '1', name: 'Alex Doe', rating: 'PPL', progressPct: 0.5, hoursToDate: 40, daysEnrolled: 60, status: 'Active', costToDate: 8500, instructor: 'Carter, S.', sparkline: [2, 4, 6, 8, 5, 3, 4, 6] },
+  { id: '2', name: 'Jamie Lee', rating: 'IFR', progressPct: 0.95, hoursToDate: 38, daysEnrolled: 180, status: 'On checkride', costToDate: 11200, instructor: 'Patel, R.', sparkline: [1, 3, 2, 4, 6, 8, 9, 7] },
 ];
 
 test('renders rows', () => {

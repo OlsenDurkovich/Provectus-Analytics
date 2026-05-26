@@ -13,7 +13,7 @@ const RATING_META: Record<RatingCode, { name: string; color: string }> = {
   MEI: { name: 'MEI', color: '#F472B6' },
 };
 
-type ColKey = 'name' | 'rating' | 'hours' | 'days' | 'progress' | 'status';
+type ColKey = 'name' | 'rating' | 'cost' | 'hours' | 'instructor' | 'days' | 'sparkline' | 'progress' | 'status';
 
 const CLIENT_COLS: Array<{
   key: ColKey;
@@ -22,13 +22,45 @@ const CLIENT_COLS: Array<{
   width: string;
   noSort?: boolean;
 }> = [
-  { key: 'name', label: 'Client', align: 'left', width: '28%' },
-  { key: 'rating', label: 'Rating', align: 'left', width: '18%' },
-  { key: 'hours', label: 'Hours', align: 'right', width: '12%' },
-  { key: 'days', label: 'Days', align: 'right', width: '10%' },
-  { key: 'progress', label: 'Progress', align: 'left', width: '20%', noSort: true },
-  { key: 'status', label: 'Status', align: 'left', width: '12%' },
+  { key: 'name', label: 'Client', align: 'left', width: '20%' },
+  { key: 'rating', label: 'Rating', align: 'left', width: '13%' },
+  { key: 'cost', label: 'Cost', align: 'right', width: '10%' },
+  { key: 'hours', label: 'Hours', align: 'right', width: '8%' },
+  { key: 'instructor', label: 'Instructor', align: 'left', width: '13%' },
+  { key: 'days', label: 'Days', align: 'right', width: '7%' },
+  { key: 'sparkline', label: 'Activity', align: 'left', width: '10%', noSort: true },
+  { key: 'progress', label: 'Progress', align: 'left', width: '11%', noSort: true },
+  { key: 'status', label: 'Status', align: 'left', width: '8%' },
 ];
+
+function Sparkline({ data, color }: { data: number[]; color: string }) {
+  if (!data || data.length === 0) {
+    return <span className="muted tiny">—</span>;
+  }
+  const max = Math.max(...data, 1);
+  const w = 72;
+  const h = 22;
+  const step = data.length > 1 ? w / (data.length - 1) : 0;
+  const pts = data
+    .map((v, i) => {
+      const x = i * step;
+      const y = h - (v / max) * h;
+      return `${x.toFixed(1)},${y.toFixed(1)}`;
+    })
+    .join(' ');
+  return (
+    <svg width={w} height={h} viewBox={`0 0 ${w} ${h}`} aria-label="Activity sparkline">
+      <polyline
+        fill="none"
+        stroke={color}
+        strokeWidth="1.5"
+        strokeLinejoin="round"
+        strokeLinecap="round"
+        points={pts}
+      />
+    </svg>
+  );
+}
 
 type SortState = { key: ColKey; dir: 'asc' | 'desc' };
 
@@ -53,7 +85,9 @@ function rowSortValue(row: ClientRow, key: ColKey): string | number {
   switch (key) {
     case 'name': return row.name;
     case 'rating': return row.rating;
+    case 'cost': return row.costToDate;
     case 'hours': return row.hoursToDate;
+    case 'instructor': return row.instructor || '';
     case 'days': return row.daysEnrolled;
     case 'status': return row.status;
     default: return 0;
@@ -86,7 +120,9 @@ export function ClientsTable({ rows, loading = false, filterRating, onClearFilte
     if (s) {
       r = r.filter(
         (row) =>
-          row.name.toLowerCase().includes(s) || row.rating.toLowerCase().includes(s)
+          row.name.toLowerCase().includes(s) ||
+          row.rating.toLowerCase().includes(s) ||
+          (row.instructor || '').toLowerCase().includes(s)
       );
     }
     const dir = sort.dir === 'asc' ? 1 : -1;
@@ -105,13 +141,16 @@ export function ClientsTable({ rows, loading = false, filterRating, onClearFilte
   }
 
   function exportCsv() {
-    const cols = CLIENT_COLS.filter((c) => visibleCols[c.key] && c.key !== 'progress');
+    const cols = CLIENT_COLS.filter(
+      (c) => visibleCols[c.key] && c.key !== 'progress' && c.key !== 'sparkline'
+    );
     const head = cols.map((c) => c.label).join(',');
     const lines = filtered.map((r) =>
       cols
         .map((c) => {
           let v: string | number = rowSortValue(r, c.key);
           if (c.key === 'hours') v = (r.hoursToDate).toFixed(1);
+          if (c.key === 'cost') v = (r.costToDate).toFixed(2);
           if (typeof v === 'string' && (v.includes(',') || v.includes(' '))) v = `"${v}"`;
           return v;
         })
@@ -251,11 +290,26 @@ export function ClientsTable({ rows, loading = false, filterRating, onClearFilte
                         <span className="muted tiny" style={{ marginLeft: 8 }}>{meta.name}</span>
                       </td>
                     )}
+                    {visibleCols.cost && (
+                      <td className="num">
+                        {r.costToDate > 0 ? `$${r.costToDate.toLocaleString(undefined, { maximumFractionDigits: 0 })}` : '—'}
+                      </td>
+                    )}
                     {visibleCols.hours && (
                       <td className="num">{r.hoursToDate.toFixed(1)}</td>
                     )}
+                    {visibleCols.instructor && (
+                      <td>
+                        {r.instructor ? <span>{r.instructor}</span> : <span className="muted">—</span>}
+                      </td>
+                    )}
                     {visibleCols.days && (
                       <td className="num">{r.daysEnrolled}</td>
+                    )}
+                    {visibleCols.sparkline && (
+                      <td>
+                        <Sparkline data={r.sparkline || []} color={meta.color} />
+                      </td>
                     )}
                     {visibleCols.progress && (
                       <td>

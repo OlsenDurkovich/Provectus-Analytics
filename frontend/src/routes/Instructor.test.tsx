@@ -14,7 +14,7 @@ beforeEach(() => {
         id: 'Doug Hayes',
         name: 'Doug Hayes',
         students: [
-          { id: 's1', name: 'Alex Martinez', rating: 'PPL', progressPct: 0.95, hoursToDate: 62, daysEnrolled: 160, status: 'Completed' },
+          { id: 's1', name: 'Alex Martinez', rating: 'PPL', progressPct: 0.95, hoursToDate: 62, daysEnrolled: 160, status: 'Completed', costToDate: 14500, instructor: 'Doug Hayes', sparkline: [4, 6, 8, 7, 5, 4, 3, 2] },
         ],
         perRating: [
           { rating: 'PPL', n: 5, medianHrs: 61, medianCost: 14500, medianDays: 158 },

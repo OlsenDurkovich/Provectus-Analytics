@@ -70,6 +70,10 @@ export interface ClientRow {
   hoursToDate: number;
   daysEnrolled: number;
   status: FlightStatus;
+  // Phase 11.5: restored from Dash design.
+  costToDate: number;
+  instructor: string;
+  sparkline: number[]; // 8 trailing monthly hour totals, oldest first
 }
 
 export interface StudentTimelineMilestone {
