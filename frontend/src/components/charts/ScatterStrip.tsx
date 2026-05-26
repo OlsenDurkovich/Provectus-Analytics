@@ -62,8 +62,9 @@ export function ScatterStrip({
   const xAt = (i: number) => padL + ((i + 1) / (n + 1)) * innerW;
 
   const tickCount = mini ? 2 : 5;
-  const ticks = Array.from({ length: tickCount }, (_, i) =>
-    tickCount === 1 ? yMin : yMin + (ySpan * i) / (tickCount - 1),
+  const ticks = Array.from(
+    { length: tickCount },
+    (_, i) => yMin + (ySpan * i) / (tickCount - 1),
   );
 
   const dotR = mini ? 3 : 5;
