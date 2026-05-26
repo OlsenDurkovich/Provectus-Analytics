@@ -18,10 +18,6 @@ dev = [
     "pytest>=7.0",
     "httpx>=0.27",
 ]
-dashboard = [
-    "dash>=2.17",
-    "plotly>=5.18",
-]
 
 [project.scripts]
 provectus-analytics = "provectus_analytics.cli:main"
