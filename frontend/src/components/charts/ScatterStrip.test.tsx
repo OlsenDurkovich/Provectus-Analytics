@@ -104,3 +104,71 @@ test('mini variant renders 2 y-axis ticks instead of 5', () => {
   expect(fullGridLines.length).toBe(5);
   expect(miniGridLines.length).toBe(2);
 });
+
+import { fireEvent } from '@testing-library/react';
+
+test('highlighted dot uses accent color by default', () => {
+  const { container } = render(
+    <ScatterStrip
+      points={POINTS}
+      band={BAND}
+      median={MEDIAN}
+      highlightName="Alice"
+      yLabel="Hours"
+      fmt={(v) => v.toFixed(1)}
+    />,
+  );
+  const accentCircle = Array.from(container.querySelectorAll('circle')).find(
+    (c) => c.getAttribute('fill') === 'var(--accent)',
+  );
+  expect(accentCircle).toBeTruthy();
+});
+
+test('highlightInProgress swaps highlighted dot fill to warn color', () => {
+  const { container } = render(
+    <ScatterStrip
+      points={POINTS}
+      band={BAND}
+      median={MEDIAN}
+      highlightName="Alice"
+      yLabel="Hours"
+      fmt={(v) => v.toFixed(1)}
+      highlightInProgress
+    />,
+  );
+  const warnCircle = Array.from(container.querySelectorAll('circle')).find(
+    (c) => c.getAttribute('fill') === 'var(--warn)',
+  );
+  expect(warnCircle).toBeTruthy();
+  const accentCircle = Array.from(container.querySelectorAll('circle')).find(
+    (c) =>
+      c.getAttribute('fill') === 'var(--accent)' &&
+      c.getAttribute('r') === '7',
+  );
+  expect(accentCircle).toBeFalsy();
+});
+
+test('tooltip on in-progress highlighted dot suffixes "(in progress)"', () => {
+  const { container } = render(
+    <ScatterStrip
+      points={POINTS}
+      band={BAND}
+      median={MEDIAN}
+      highlightName="Alice"
+      yLabel="Hours"
+      fmt={(v) => v.toFixed(1)}
+      highlightInProgress
+    />,
+  );
+  const aliceGroup = Array.from(container.querySelectorAll('g')).find((g) =>
+    Array.from(g.querySelectorAll('circle')).some(
+      (c) => c.getAttribute('fill') === 'var(--warn)',
+    ),
+  );
+  expect(aliceGroup).toBeTruthy();
+  fireEvent.mouseEnter(aliceGroup!);
+  const tooltipText = Array.from(container.querySelectorAll('text')).find((t) =>
+    (t.textContent ?? '').includes('(in progress)'),
+  );
+  expect(tooltipText).toBeTruthy();
+});

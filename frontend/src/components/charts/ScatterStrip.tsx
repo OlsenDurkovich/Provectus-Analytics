@@ -14,6 +14,7 @@ interface Props {
   fmt: (v: number) => string;
   height?: number;
   size?: 'full' | 'mini';
+  highlightInProgress?: boolean;
 }
 
 export function ScatterStrip({
@@ -25,6 +26,7 @@ export function ScatterStrip({
   fmt,
   height,
   size = 'full',
+  highlightInProgress = false,
 }: Props) {
   const mini = size === 'mini';
   const resolvedHeight = height ?? (mini ? 64 : 280);
@@ -138,6 +140,7 @@ export function ScatterStrip({
         {/* Dots */}
         {points.map((p, i) => {
           const isHighlighted = p.student === highlightName;
+          const inProgress = isHighlighted && highlightInProgress;
           const cx = xAt(i);
           const cy = yAt(p.value);
           return (
@@ -146,7 +149,13 @@ export function ScatterStrip({
                 cx={cx}
                 cy={cy}
                 r={isHighlighted ? dotRHighlight : dotR}
-                fill={isHighlighted ? 'var(--accent)' : 'var(--fg-dim)'}
+                fill={
+                  inProgress
+                    ? 'var(--warn)'
+                    : isHighlighted
+                      ? 'var(--accent)'
+                      : 'var(--fg-dim)'
+                }
                 fillOpacity={isHighlighted ? 1 : 0.5}
                 stroke={isHighlighted ? 'var(--bg)' : 'none'}
                 strokeWidth="1.5"
@@ -184,7 +193,9 @@ export function ScatterStrip({
                   fill="var(--fg)"
                   fontWeight="500"
                 >
-                  {p.student}
+                  {p.student === highlightName && highlightInProgress
+                    ? `${p.student} (in progress)`
+                    : p.student}
                 </text>
                 <text
                   x={tx + 10}
