@@ -63,7 +63,7 @@ export default function App() {
         importPending={importMut.isPending}
         rebuildPending={rebuildMut.isPending}
       />
-      <div className="main">
+      <div className="main-col">
         <Topbar
           breadcrumb={breadcrumb}
           range={range}
