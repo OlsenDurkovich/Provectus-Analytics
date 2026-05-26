@@ -358,6 +358,80 @@ def student_detail(student_id: str) -> schemas.StudentDetail:
     )
 
 
+_BILLING_VALUES = {"Hobbs", "Tach", "Block"}
+_ACCLASS_VALUES = {"SE_BASIC", "SE_COMPLEX", "ME_BASIC", "HP_COMPLEX"}
+
+
+def _norm_billing(v) -> schemas.BillingKind:
+    return v if v in _BILLING_VALUES else "—"
+
+
+def _norm_acclass(v) -> schemas.AcClass:
+    return v if v in _ACCLASS_VALUES else "SE_BASIC"
+
+
+def flights(filter: dict) -> list[schemas.FlightRow]:
+    conn = sqlite3.connect(web_data.DEFAULT_DB)
+    try:
+        sql = """
+            SELECT f.flight_id, f.flight_date, f.client_raw, f.instructor,
+                   f.reservation_type, f.billing_category, f.aircraft_class,
+                   f.is_ground_lesson, f.length_hrs,
+                   COALESCE(
+                       (SELECT SUM(amount) FROM invoices i WHERE i.flight_id = f.flight_id),
+                       0
+                   ) AS cost
+            FROM flights f
+            WHERE 1=1
+        """
+        params: list = []
+        if filter.get("instructor"):
+            sql += " AND f.instructor = ?"
+            params.append(filter["instructor"])
+        if filter.get("client"):
+            sql += " AND f.client_raw LIKE ?"
+            params.append(f"%{filter['client']}%")
+        if filter.get("ground") == "Flight (0)":
+            sql += " AND COALESCE(f.is_ground_lesson, 0) = 0"
+        elif filter.get("ground") == "Ground (1)":
+            sql += " AND COALESCE(f.is_ground_lesson, 0) = 1"
+        sort = filter.get("sort") or "-date"
+        order = "DESC" if sort.startswith("-") else "ASC"
+        sql += f" ORDER BY f.flight_date {order}, f.flight_id {order} LIMIT 500"
+        rows = conn.execute(sql, params).fetchall()
+    finally:
+        conn.close()
+
+    out: list[schemas.FlightRow] = []
+    for (
+        flight_id,
+        date,
+        client,
+        instructor,
+        rtype,
+        billing,
+        acclass,
+        is_ground,
+        hours,
+        cost,
+    ) in rows:
+        out.append(
+            schemas.FlightRow(
+                id=str(flight_id),
+                date=date or "",
+                client=client or "",
+                instructor=instructor or "",
+                type=rtype or "Dual flight training",
+                billing=_norm_billing(billing),
+                acClass=_norm_acclass(acclass),
+                ground="Ground (1)" if is_ground else "Flight (0)",
+                hours=float(hours or 0),
+                cost=float(cost or 0),
+            )
+        )
+    return out
+
+
 def instructors_list() -> list[schemas.InstructorSummary]:
     conn = sqlite3.connect(web_data.DEFAULT_DB)
     try:
