@@ -1,6 +1,13 @@
-import { useQuery, useMutation, useQueryClient } from '@tanstack/react-query';
+import { useQueries, useQuery, useMutation, useQueryClient } from '@tanstack/react-query';
+import type { UseQueryResult } from '@tanstack/react-query';
 import { client } from './client';
-import type { RangeKey, MetricKey, RatingCode, FlightUpdate } from './types';
+import type {
+  RangeKey,
+  MetricKey,
+  RatingCode,
+  RatingCohortMember,
+  FlightUpdate,
+} from './types';
 
 export const queryKeys = {
   meta: ['meta'] as const,
@@ -43,6 +50,22 @@ export const useRatingCohort = (code: RatingCode) =>
     queryKey: queryKeys.ratingCohort(code),
     queryFn: () => client.getRatingCohort(code),
   });
+
+export const useRatingCohorts = (
+  codes: RatingCode[],
+): Map<RatingCode, UseQueryResult<RatingCohortMember[]>> => {
+  const queries = useQueries({
+    queries: codes.map((code) => ({
+      queryKey: queryKeys.ratingCohort(code),
+      queryFn: () => client.getRatingCohort(code),
+    })),
+  });
+  const map = new Map<RatingCode, UseQueryResult<RatingCohortMember[]>>();
+  codes.forEach((code, i) => {
+    map.set(code, queries[i] as UseQueryResult<RatingCohortMember[]>);
+  });
+  return map;
+};
 
 export const useRatingsCompleted = (range: RangeKey) =>
   useQuery({
