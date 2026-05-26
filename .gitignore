@@ -31,4 +31,8 @@ dist/
 # Local analysis outputs (regenerable)
 output/
 FSP Exports/
-FSP Exports/
+
+# Frontend
+frontend/node_modules/
+frontend/dist/
+frontend/.vite/
