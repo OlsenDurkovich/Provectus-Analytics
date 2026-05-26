@@ -15,6 +15,7 @@ dist/
 *.swp
 .vscode/
 .idea/
+.claude/
 
 # LibreOffice / Excel lock files
 .~lock.*#
