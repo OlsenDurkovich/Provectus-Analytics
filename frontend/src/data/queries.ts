@@ -8,6 +8,7 @@ export const queryKeys = {
   ratingBars: (metric: MetricKey, range: RangeKey) =>
     ['ratingBars', metric, range] as const,
   rating: (code: RatingCode, range: RangeKey) => ['rating', code, range] as const,
+  ratingCohort: (code: RatingCode) => ['ratingCohort', code] as const,
   ratingsCompleted: (range: RangeKey) => ['ratingsCompleted', range] as const,
   heatmap: (range: RangeKey) => ['heatmap', range] as const,
   clients: (range: RangeKey, rating?: RatingCode) =>
@@ -35,6 +36,12 @@ export const useRating = (code: RatingCode | undefined, range: RangeKey) =>
     queryKey: queryKeys.rating(code as RatingCode, range),
     queryFn: () => client.getRating(code as RatingCode, range),
     enabled: !!code,
+  });
+
+export const useRatingCohort = (code: RatingCode) =>
+  useQuery({
+    queryKey: queryKeys.ratingCohort(code),
+    queryFn: () => client.getRatingCohort(code),
   });
 
 export const useRatingsCompleted = (range: RangeKey) =>

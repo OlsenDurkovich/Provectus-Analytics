@@ -44,4 +44,20 @@ describe('client', () => {
       expect.anything(),
     );
   });
+
+  test('getRatingCohort calls /api/ratings/PPL/cohort', async () => {
+    (globalThis.fetch as ReturnType<typeof vi.fn>).mockResolvedValue({
+      ok: true,
+      json: async () => [
+        { studentId: '1', name: 'Alice', hours: 60.0, cost: 15000, days: 400 },
+      ],
+    });
+    const result = await client.getRatingCohort('PPL');
+    expect(result).toHaveLength(1);
+    expect(result[0].studentId).toBe('1');
+    expect(globalThis.fetch).toHaveBeenCalledWith(
+      '/api/ratings/PPL/cohort',
+      expect.anything(),
+    );
+  });
 });

@@ -14,6 +14,7 @@ import type {
   MetricKey,
   RatingCode,
   Rating,
+  RatingCohortMember,
 } from './types';
 
 export class ApiError extends Error {
@@ -72,6 +73,8 @@ export const client = {
     get<RatingBarPoint[]>('/api/ratings', { metric, range }),
   getRating: (code: RatingCode, range: RangeKey) =>
     get<Rating>(`/api/ratings/${code}`, { range }),
+  getRatingCohort: (code: RatingCode) =>
+    get<RatingCohortMember[]>(`/api/ratings/${code}/cohort`),
   getRatingsCompleted: (range: RangeKey) =>
     get<RatingsCompletedRow[]>('/api/ratings/completed', { range }),
   getHeatmap: (range: RangeKey) => get<Heatmap>('/api/heatmap', { range }),

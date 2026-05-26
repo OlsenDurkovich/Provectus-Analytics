@@ -43,6 +43,14 @@ export interface Rating {
   lowSample?: boolean;
 }
 
+export interface RatingCohortMember {
+  studentId: string;
+  name: string;
+  hours: number;
+  cost: number;
+  days: number;
+}
+
 export interface RatingBarPoint {
   code: RatingCode;
   name: string;
