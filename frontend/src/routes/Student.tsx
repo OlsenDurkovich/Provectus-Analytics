@@ -280,7 +280,36 @@ function RatingBlockStrips({
   studentName: string;
   cohortQuery: UseQueryResult<RatingCohortMember[]> | undefined;
 }) {
-  const rawCohort = cohortQuery?.data ?? [];
+  if (r.lowSample) {
+    return (
+      <div className="rating-block-strips rating-block-strips-empty muted tiny">
+        Distribution hidden — low sample
+      </div>
+    );
+  }
+
+  if (cohortQuery?.isLoading) {
+    return (
+      <div className="rating-block-strips">
+        <div className="strip-cell">
+          <Skel h={60} />
+        </div>
+        <div className="strip-cell">
+          <Skel h={60} />
+        </div>
+        <div className="strip-cell">
+          <Skel h={60} />
+        </div>
+      </div>
+    );
+  }
+
+  if (cohortQuery?.isError || !cohortQuery?.data || cohortQuery.data.length === 0) {
+    // Silently hide strips; numeric MiniKpis above still convey value.
+    return null;
+  }
+
+  const rawCohort = cohortQuery.data;
   const inCohort = rawCohort.some((m) => m.studentId === studentId);
   const hasStudentData = r.hours != null || r.cost != null || r.days != null;
 
@@ -303,6 +332,7 @@ function RatingBlockStrips({
   const stripPoints = (selector: (m: RatingCohortMember) => number) =>
     cohort.map((m) => ({ student: m.name, value: selector(m) }));
 
+  // Derive P25/P75 band client-side from cohort points (Student API exposes medians only).
   const range = (selector: (m: RatingCohortMember) => number) => {
     if (cohort.length === 0) return { low: 0, high: 0 };
     const vals = cohort.map(selector).sort((a, b) => a - b);

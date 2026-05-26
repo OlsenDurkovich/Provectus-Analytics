@@ -1593,3 +1593,11 @@ table.dt {
 .strip-cell {
   min-width: 0;
 }
+
+.rating-block-strips-empty {
+  display: block;
+  text-align: center;
+  padding: 14px 8px;
+  border-top: 1px dashed var(--border);
+  color: var(--fg-dim);
+}
