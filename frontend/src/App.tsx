@@ -55,7 +55,13 @@ export default function App() {
 
   return (
     <div className={'app ' + (collapsed ? 'sidebar-collapsed' : '')}>
-      <Sidebar collapsed={collapsed} />
+      <Sidebar
+        collapsed={collapsed}
+        onImport={() => importMut.mutate()}
+        onRebuild={(synthetic) => rebuildMut.mutate({ synthetic })}
+        importPending={importMut.isPending}
+        rebuildPending={rebuildMut.isPending}
+      />
       <div className="main">
         <Topbar
           breadcrumb={breadcrumb}
@@ -65,9 +71,8 @@ export default function App() {
           onOpenCmdK={() => setCmdkOpen(true)}
           theme={theme}
           onThemeToggle={toggleTheme}
-          onImport={() => {
-            /* wired in Phase 9 */
-          }}
+          onImport={() => importMut.mutate()}
+          importPending={importMut.isPending}
           notifOpen={notifOpen}
           setNotifOpen={setNotifOpen}
           showRangePicker={isOverview}

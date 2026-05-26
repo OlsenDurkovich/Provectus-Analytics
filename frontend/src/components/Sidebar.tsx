@@ -30,9 +30,19 @@ const DEFAULT_PINNED: PinnedReport[] = [
 
 type Props = {
   collapsed: boolean;
+  onImport?: () => void;
+  onRebuild?: (synthetic: boolean) => void;
+  importPending?: boolean;
+  rebuildPending?: boolean;
 };
 
-export function Sidebar({ collapsed }: Props) {
+export function Sidebar({
+  collapsed,
+  onImport,
+  onRebuild,
+  importPending = false,
+  rebuildPending = false,
+}: Props) {
   const meta = useMeta();
   const ds = meta.data?.dataState ?? {
     flights: 0,
@@ -101,6 +111,42 @@ export function Sidebar({ collapsed }: Props) {
       </div>
 
       <div className="sidebar-spacer" />
+
+      {!collapsed && (onImport || onRebuild) && (
+        <div className="sidebar-section">
+          <div className="sidebar-section-label">Data actions</div>
+          {onImport && (
+            <button
+              type="button"
+              className="nav-item"
+              onClick={onImport}
+              disabled={importPending}
+            >
+              <span className="nav-item-icon">
+                <Icon name="download" size={14} />
+              </span>
+              <span className="nav-item-label">
+                {importPending ? 'Importing…' : 'Import FSP'}
+              </span>
+            </button>
+          )}
+          {onRebuild && (
+            <button
+              type="button"
+              className="nav-item"
+              onClick={() => onRebuild(false)}
+              disabled={rebuildPending}
+            >
+              <span className="nav-item-icon">
+                <Icon name="sparkles" size={14} />
+              </span>
+              <span className="nav-item-label">
+                {rebuildPending ? 'Rebuilding…' : 'Rebuild DB'}
+              </span>
+            </button>
+          )}
+        </div>
+      )}
 
       {!collapsed && (
         <div className="data-state">
