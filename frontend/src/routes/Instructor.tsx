@@ -1,11 +1,26 @@
 import { useNavigate, useParams } from 'react-router-dom';
-import { BigKpi, Select } from '../components/helpers';
+import type { UseQueryResult } from '@tanstack/react-query';
+import { BigKpi, DeltaText, MiniKpi, Select } from '../components/helpers';
 import { Skel } from '../components/primitives';
-import { useInstructor, useInstructors } from '../data/queries';
-import type { InstructorDetail } from '../data/types';
+import { ScatterStrip } from '../components/charts/ScatterStrip';
+import { useInstructor, useInstructors, useRatingCohorts } from '../data/queries';
+import type {
+  InstructorDetail,
+  InstructorPerRating,
+  RatingCohortMember,
+} from '../data/types';
 
 function fmtCost(v: number): string {
   return `$${Math.round(v).toLocaleString()}`;
+}
+
+function median(vals: number[]): number {
+  if (vals.length === 0) return 0;
+  const sorted = [...vals].sort((a, b) => a - b);
+  const mid = Math.floor(sorted.length / 2);
+  return sorted.length % 2 === 0
+    ? (sorted[mid - 1] + sorted[mid]) / 2
+    : sorted[mid];
 }
 
 export default function Instructor() {
@@ -62,6 +77,8 @@ export default function Instructor() {
 function InstructorBody({ detail }: { detail: InstructorDetail }) {
   const totalHours = detail.students.reduce((s, c) => s + c.hoursToDate, 0);
   const studentsAtCheckride = detail.students.filter((s) => s.status === 'Completed').length;
+  const cohortCodes = detail.perRating.map((p) => p.rating);
+  const cohorts = useRatingCohorts(cohortCodes);
 
   return (
     <>
@@ -79,48 +96,25 @@ function InstructorBody({ detail }: { detail: InstructorDetail }) {
       </div>
 
       <div className="section-head">
-        <h2 className="section-title">Efficiency vs cohort</h2>
+        <h2 className="section-title">Per rating vs cohort</h2>
       </div>
-      <div className="card table-card">
-        <div className="table-wrap">
-          <table className="dt">
-            <thead>
-              <tr>
-                <th>Rating</th>
-                <th className="num">Students</th>
-                <th className="num">Med hrs</th>
-                <th className="num">Med cost</th>
-                <th className="num">Med days</th>
-              </tr>
-            </thead>
-            <tbody>
-              {detail.perRating.length === 0 && (
-                <tr>
-                  <td colSpan={5}>
-                    <div className="empty">
-                      <div className="empty-title">No completed ratings yet</div>
-                      <div className="empty-sub">
-                        Students under this instructor haven't reached checkride.
-                      </div>
-                    </div>
-                  </td>
-                </tr>
-              )}
-              {detail.perRating.map((p) => (
-                <tr key={p.rating}>
-                  <td>
-                    <span className="rating-chip">{p.rating}</span>
-                  </td>
-                  <td className="num">{p.n}</td>
-                  <td className="num">{p.medianHrs.toFixed(1)}</td>
-                  <td className="num">{fmtCost(p.medianCost)}</td>
-                  <td className="num">{Math.round(p.medianDays).toLocaleString()}</td>
-                </tr>
-              ))}
-            </tbody>
-          </table>
+      {detail.perRating.length === 0 && (
+        <div className="card">
+          <div className="empty">
+            <div className="empty-title">No completed ratings yet</div>
+            <div className="empty-sub">
+              Students under this instructor haven't reached checkride.
+            </div>
+          </div>
         </div>
-      </div>
+      )}
+      {detail.perRating.map((r) => (
+        <InstructorRatingBlock
+          key={r.rating}
+          r={r}
+          cohortQuery={cohorts.get(r.rating)}
+        />
+      ))}
 
       <div className="section-head">
         <h2 className="section-title">Student roster</h2>
@@ -163,5 +157,168 @@ function InstructorBody({ detail }: { detail: InstructorDetail }) {
         </div>
       </div>
     </>
+  );
+}
+
+function InstructorRatingBlock({
+  r,
+  cohortQuery,
+}: {
+  r: InstructorPerRating;
+  cohortQuery: UseQueryResult<RatingCohortMember[]> | undefined;
+}) {
+  const cohort = cohortQuery?.data ?? [];
+  const cohortMedHrs = median(cohort.map((m) => m.hours));
+  const cohortMedCost = median(cohort.map((m) => m.cost));
+  const cohortMedDays = median(cohort.map((m) => m.days));
+
+  const highlightNames = cohort
+    .filter((m) => r.studentIds.includes(m.studentId))
+    .map((m) => m.name);
+
+  return (
+    <div className="rating-block">
+      <div className="rating-block-head">
+        <div className="rating-block-title">
+          <span className="rating-chip">{r.rating}</span>
+          <span className="rating-block-name">
+            {r.n} student{r.n === 1 ? '' : 's'}
+          </span>
+        </div>
+        <div className="rating-block-n">n={r.n}</div>
+      </div>
+
+      <div className="minikpi-grid">
+        <MiniKpi
+          label="Avg hours"
+          value={r.avgHrs.toFixed(1)}
+          deltaNode={
+            <DeltaText
+              value={cohortMedHrs ? +(r.avgHrs - cohortMedHrs).toFixed(1) : 0}
+              betterWhenLower
+              fmt={(v) => v.toFixed(1)}
+            />
+          }
+          sub={cohortMedHrs ? `Cohort median: ${cohortMedHrs.toFixed(1)}` : 'No cohort data'}
+        />
+        <MiniKpi
+          label="Avg cost"
+          value={fmtCost(r.avgCost)}
+          deltaNode={
+            <DeltaText
+              value={cohortMedCost ? r.avgCost - cohortMedCost : 0}
+              betterWhenLower
+              fmt={(v) => fmtCost(v)}
+            />
+          }
+          sub={cohortMedCost ? `Cohort median: ${fmtCost(cohortMedCost)}` : 'No cohort data'}
+        />
+        <MiniKpi
+          label="Avg days"
+          value={Math.round(r.avgDays).toLocaleString()}
+          deltaNode={
+            <DeltaText
+              value={cohortMedDays ? r.avgDays - cohortMedDays : 0}
+              betterWhenLower
+              fmt={(v) => Math.round(v).toLocaleString()}
+            />
+          }
+          sub={cohortMedDays ? `Cohort median: ${Math.round(cohortMedDays)}` : 'No cohort data'}
+        />
+        <MiniKpi label="Students (n)" value={String(r.n)} />
+      </div>
+
+      <InstructorStrips
+        r={r}
+        cohortQuery={cohortQuery}
+        highlightNames={highlightNames}
+      />
+    </div>
+  );
+}
+
+function InstructorStrips({
+  r,
+  cohortQuery,
+  highlightNames,
+}: {
+  r: InstructorPerRating;
+  cohortQuery: UseQueryResult<RatingCohortMember[]> | undefined;
+  highlightNames: string[];
+}) {
+  if (cohortQuery?.isLoading) {
+    return (
+      <div className="rating-block-strips">
+        <div className="strip-cell">
+          <Skel h={60} />
+        </div>
+        <div className="strip-cell">
+          <Skel h={60} />
+        </div>
+        <div className="strip-cell">
+          <Skel h={60} />
+        </div>
+      </div>
+    );
+  }
+
+  if (cohortQuery?.isError || !cohortQuery?.data || cohortQuery.data.length === 0) {
+    return null;
+  }
+
+  const cohort = cohortQuery.data;
+
+  const stripPoints = (selector: (m: RatingCohortMember) => number) =>
+    cohort.map((m) => ({ student: m.name, value: selector(m) }));
+
+  // Derive P25/P75 band client-side from cohort points (consistent with Student Detail).
+  const range = (selector: (m: RatingCohortMember) => number) => {
+    if (cohort.length === 0) return { low: 0, high: 0 };
+    const vals = cohort.map(selector).sort((a, b) => a - b);
+    const q = (p: number) => vals[Math.min(vals.length - 1, Math.floor(p * (vals.length - 1)))];
+    return { low: q(0.25), high: q(0.75) };
+  };
+
+  const medianHrs = median(cohort.map((m) => m.hours));
+  const medianCost = median(cohort.map((m) => m.cost));
+  const medianDays = median(cohort.map((m) => m.days));
+  void r; // r is unused here but kept in the signature for future per-rating tweaks
+
+  return (
+    <div className="rating-block-strips">
+      <div className="strip-cell">
+        <ScatterStrip
+          size="mini"
+          points={stripPoints((m) => m.hours)}
+          band={range((m) => m.hours)}
+          median={medianHrs}
+          highlightNames={highlightNames}
+          yLabel="Hours"
+          fmt={(v) => v.toFixed(1)}
+        />
+      </div>
+      <div className="strip-cell">
+        <ScatterStrip
+          size="mini"
+          points={stripPoints((m) => m.cost)}
+          band={range((m) => m.cost)}
+          median={medianCost}
+          highlightNames={highlightNames}
+          yLabel="Cost"
+          fmt={(v) => (v >= 1000 ? `$${(v / 1000).toFixed(1)}k` : `$${Math.round(v)}`)}
+        />
+      </div>
+      <div className="strip-cell">
+        <ScatterStrip
+          size="mini"
+          points={stripPoints((m) => m.days)}
+          band={range((m) => m.days)}
+          median={medianDays}
+          highlightNames={highlightNames}
+          yLabel="Days"
+          fmt={(v) => Math.round(v).toLocaleString()}
+        />
+      </div>
+    </div>
   );
 }
