@@ -43,7 +43,7 @@ test('ScatterStrip renders an SVG with dots for each point', () => {
       points={points}
       band={{ low: 58, high: 72 }}
       median={65}
-      highlightName="Bob"
+      highlightNames={["Bob"]}
       yLabel="Hours"
       fmt={(v) => v.toFixed(1)}
     />,
@@ -59,7 +59,7 @@ test('ScatterStrip renders without highlighted point', () => {
       points={[{ student: 'Alice', value: 60 }]}
       band={{ low: 55, high: 65 }}
       median={60}
-      highlightName={null}
+      highlightNames={[]}
       yLabel="Hours"
       fmt={(v) => v.toFixed(1)}
     />,

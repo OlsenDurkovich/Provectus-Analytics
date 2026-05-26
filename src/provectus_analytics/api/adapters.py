@@ -677,7 +677,8 @@ def instructor_detail(instructor_id: str) -> schemas.InstructorDetail:
             """SELECT r.code AS rating, COUNT(*) AS n,
                       AVG(m.cumulative_hours) AS avg_hours,
                       AVG(m.cumulative_cost) AS avg_cost,
-                      AVG(m.days_from_rating_start) AS avg_days
+                      AVG(m.days_from_rating_start) AS avg_days,
+                      GROUP_CONCAT(DISTINCT CAST(e.student_id AS TEXT)) AS student_ids
                FROM milestones m
                JOIN enrollments e USING (enrollment_id)
                JOIN ratings r USING (rating_id)
@@ -730,9 +731,12 @@ def instructor_detail(instructor_id: str) -> schemas.InstructorDetail:
         schemas.InstructorPerRating(
             rating=row["rating"],
             n=int(row["n"] or 0),
-            medianHrs=float(row["avg_hours"] or 0),
-            medianCost=float(row["avg_cost"] or 0),
-            medianDays=float(row["avg_days"] or 0),
+            avgHrs=float(row["avg_hours"] or 0),
+            avgCost=float(row["avg_cost"] or 0),
+            avgDays=float(row["avg_days"] or 0),
+            studentIds=(
+                row["student_ids"].split(",") if row["student_ids"] else []
+            ),
         )
         for row in per_rating_rows
     ]

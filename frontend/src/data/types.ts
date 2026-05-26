@@ -127,9 +127,10 @@ export interface InstructorSummary {
 export interface InstructorPerRating {
   rating: RatingCode;
   n: number;
-  medianHrs: number;
-  medianCost: number;
-  medianDays: number;
+  avgHrs: number;
+  avgCost: number;
+  avgDays: number;
+  studentIds: string[];
 }
 
 export interface InstructorDetail {

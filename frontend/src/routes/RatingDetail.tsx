@@ -224,7 +224,7 @@ function DistributionSection({
             points={cohort.map((p) => ({ student: p.name, value: p.hours }))}
             band={{ low: band.hrs[0], high: band.hrs[1] }}
             median={median.hrs}
-            highlightName={overlayName}
+            highlightNames={overlayName ? [overlayName] : []}
             yLabel="Hours"
             fmt={(v) => v.toFixed(1)}
           />
@@ -243,7 +243,7 @@ function DistributionSection({
             points={cohort.map((p) => ({ student: p.name, value: p.cost }))}
             band={{ low: band.cost[0], high: band.cost[1] }}
             median={median.cost}
-            highlightName={overlayName}
+            highlightNames={overlayName ? [overlayName] : []}
             yLabel="USD"
             fmt={(v) => (v >= 1000 ? `$${(v / 1000).toFixed(1)}k` : `$${Math.round(v)}`)}
           />
@@ -262,7 +262,7 @@ function DistributionSection({
             points={cohort.map((p) => ({ student: p.name, value: p.days }))}
             band={{ low: band.days[0], high: band.days[1] }}
             median={median.days}
-            highlightName={overlayName}
+            highlightNames={overlayName ? [overlayName] : []}
             yLabel="Days"
             fmt={(v) => Math.round(v).toLocaleString()}
           />

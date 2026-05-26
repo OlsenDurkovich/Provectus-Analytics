@@ -137,9 +137,10 @@ class InstructorSummary(BaseModel):
 class InstructorPerRating(BaseModel):
     rating: RatingCode
     n: int
-    medianHrs: float
-    medianCost: float
-    medianDays: float
+    avgHrs: float
+    avgCost: float
+    avgDays: float
+    studentIds: list[str]
 
 
 class InstructorDetail(BaseModel):
