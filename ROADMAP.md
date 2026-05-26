@@ -16,6 +16,7 @@
 - **Phase 8.6 (boss distribution) — done.** Packaged the app as a double-click `.command` launcher with first-run venv bootstrap, plus a boss-facing `Read Me First.pdf`. Distribution zip lives in `dist/` (gitignored). Boss flow: unzip → right-click `Provectus.command` → Open → app installs deps on first run and opens browser to `127.0.0.1:8050`. App runs entirely on his Mac; no hosting needed.
 - **Phase 9 (automation) — done (manual-trigger flavor).** Claude-in-Chrome prompt drives the two Reporting Hub exports (`tools/fsp_export_prompt.md`); dashboard sidebar gained an "Import latest FSP exports" button that copies the newest matching XLSX files from `~/Downloads/` into `FSP Exports/` with canonical names and rebuilds the DB. Cadence: weekly + on-demand. Unattended scheduling intentionally not built. See `PHASE9_AUTOMATION.md`.
 - **Phase 9.5 (incremental ingest + override surface) — done.** `build_db()` is now non-destructive when real exports are present: `flights` UPSERT on `fsp_reservation`, invoices truncate-and-reload, `flight_overrides` table preserves manual tweaks across every weekly re-import. New **Flights** page in the dashboard provides an editable table for per-flight overrides (is_ground_lesson, billing_category, aircraft_class, reservation_type). Validated end-to-end against real exports (1915 flights, 4355 invoice lines, override survives rebuild).
+- **Phase 9.7 (React + FastAPI rewrite) — done.** Dash is gone; frontend is Vite+React+TS, backend is FastAPI. All 5 tabs at parity. Boss launcher unchanged.
 - All subsequent phases below.
 
 ## Data path decision (locked)
@@ -178,6 +179,25 @@ Shipped:
 End-to-end test (in `/tmp` sandbox): first build inserts 1915 flights / 4355 invoice lines; second build with an override set updates all 1915 rows and the override survives, applied during `build_db()` final step.
 
 **To extend overridable columns:** add to `_OVERRIDABLE_COLUMNS` in `ingest.py` AND to the editable columns list in `pages/flights.py`.
+
+---
+
+### Phase 9.7 — React + FastAPI rewrite ✓
+
+Replaced the Dash UI with a Vite + React 18 + TypeScript frontend backed by a FastAPI app that wraps the existing Python pipeline. Boss distribution model preserved (prebuilt `frontend/dist/` shipped in zip, `.command` launcher → uvicorn → 127.0.0.1:8050). Phase 9.5 override surface (editable Flights cells → `set_flight_override` + partition/milestones rerun) preserved end-to-end. Hand-rolled SVG charts ported from the Claude Design hi-fi handoff (`design_handoff_provectus_analytics/`).
+
+Shipped:
+
+- `src/provectus_analytics/api/` — FastAPI app: schemas (Pydantic), adapters (Python→wire), routers (kpis, ratings, students, instructors, flights, meta).
+- `src/provectus_analytics/api/queries.py` — formerly `web/data.py`, now lives next to the API code it serves.
+- `frontend/` — Vite + React + TS app, all 5 tabs (Overview, Rating Detail, Student, Instructor, Flights), CmdK palette, ErrorBoundary, light/dark theme.
+- `tools/build_dist.sh` — packs `frontend/dist/` + Python source into the boss-distributable zip.
+- Legacy Dash code deleted: `app.py`, `src/provectus_analytics/web/`, `dash`/`plotly` deps.
+
+37 backend tests + 48 frontend tests passing.
+
+Spec: `docs/superpowers/specs/2026-05-25-dash-to-react-rewrite-design.md`
+Plan: `docs/superpowers/plans/2026-05-25-dash-to-react-rewrite.md`
 
 ---
 
