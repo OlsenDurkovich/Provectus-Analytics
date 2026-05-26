@@ -122,3 +122,110 @@ def kpis(range_key: schemas.RangeKey) -> list[schemas.Kpi]:
             spark=[float(billed)] * 8, color="#F59E0B",
         ),
     ]
+
+
+_RATING_DISPLAY = {
+    "PPL": "Private Pilot",
+    "IFR": "Instrument",
+    "COM": "Commercial SE",
+    "AMEL": "Multi-Engine",
+    "CFI": "CFI",
+    "CFII": "CFII",
+    "MEI": "MEI",
+}
+
+
+def rating_bars(
+    metric: schemas.MetricKey, range_key: schemas.RangeKey
+) -> list[schemas.RatingBarPoint]:
+    from .. import norms
+
+    conn = sqlite3.connect(web_data.DEFAULT_DB)
+    conn.row_factory = sqlite3.Row
+    try:
+        norm_rows = norms.compute_rating_norms(conn)
+    finally:
+        conn.close()
+
+    metric_attrs = {
+        "hours": ("median_hours", "p25_hours", "p75_hours"),
+        "cost": ("median_cost", "p25_cost", "p75_cost"),
+        "days": ("median_days", "p25_days", "p75_days"),
+    }
+    med_a, p25_a, p75_a = metric_attrs[metric]
+
+    out: list[schemas.RatingBarPoint] = []
+    for n in norm_rows:
+        out.append(
+            schemas.RatingBarPoint(
+                code=n.rating,
+                name=_RATING_DISPLAY.get(n.rating, n.rating),
+                n=n.n_raw,
+                median=float(getattr(n, med_a) or 0),
+                p25=float(getattr(n, p25_a) or 0),
+                p75=float(getattr(n, p75_a) or 0),
+            )
+        )
+    return out
+
+
+def ratings_completed(range_key: schemas.RangeKey) -> list[schemas.RatingsCompletedRow]:
+    cutoff = range_cutoff(range_key)
+    conn = sqlite3.connect(web_data.DEFAULT_DB)
+    try:
+        if cutoff:
+            rows = conn.execute(
+                """SELECT r.code, COUNT(*) FROM milestones m
+                   JOIN enrollments e USING (enrollment_id)
+                   JOIN ratings r USING (rating_id)
+                   WHERE m.milestone_name='checkride' AND m.milestone_date >= ?
+                   GROUP BY r.code""",
+                (cutoff.isoformat(),),
+            ).fetchall()
+        else:
+            rows = conn.execute(
+                """SELECT r.code, COUNT(*) FROM milestones m
+                   JOIN enrollments e USING (enrollment_id)
+                   JOIN ratings r USING (rating_id)
+                   WHERE m.milestone_name='checkride'
+                   GROUP BY r.code"""
+            ).fetchall()
+    finally:
+        conn.close()
+    return [schemas.RatingsCompletedRow(rating=code, count=cnt) for code, cnt in rows]
+
+
+def heatmap(range_key: schemas.RangeKey) -> schemas.Heatmap:
+    """7×12 day-of-week × time-of-day matrix.
+
+    FSP doesn't expose time-of-day. Until it does, count distinct flights per
+    day-of-week and spread evenly across the 12 buckets — preserves the design's
+    visual density per row without inventing hour-level information.
+    """
+    from datetime import datetime
+
+    cutoff = range_cutoff(range_key)
+    conn = sqlite3.connect(web_data.DEFAULT_DB)
+    try:
+        if cutoff:
+            data_rows = conn.execute(
+                "SELECT flight_date FROM flights WHERE flight_date >= ?",
+                (cutoff.isoformat(),),
+            ).fetchall()
+        else:
+            data_rows = conn.execute("SELECT flight_date FROM flights").fetchall()
+    finally:
+        conn.close()
+
+    buckets = ["6a", "8a", "10a", "12p", "2p", "4p", "6p", "8p", "10p", "12a", "2a", "4a"]
+    rows = [[0.0] * 12 for _ in range(7)]
+    for (date_s,) in data_rows:
+        if not date_s:
+            continue
+        try:
+            dow = datetime.fromisoformat(date_s).weekday()
+        except ValueError:
+            continue
+        for col in range(12):
+            rows[dow][col] += 1 / 12
+    return schemas.Heatmap(rows=rows, buckets=buckets)

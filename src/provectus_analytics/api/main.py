@@ -9,6 +9,7 @@ from fastapi.staticfiles import StaticFiles
 
 from .routers import kpis as kpis_router
 from .routers import meta as meta_router
+from .routers import ratings as ratings_router
 
 REPO_ROOT = Path(__file__).resolve().parents[3]
 FRONTEND_DIST = REPO_ROOT / "frontend" / "dist"
@@ -35,6 +36,7 @@ def create_app() -> FastAPI:
 
     app.include_router(meta_router.router)
     app.include_router(kpis_router.router)
+    app.include_router(ratings_router.router)
 
     if FRONTEND_DIST.exists():
         app.mount("/", StaticFiles(directory=FRONTEND_DIST, html=True), name="frontend")
