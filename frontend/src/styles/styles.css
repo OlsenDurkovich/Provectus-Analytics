@@ -1581,3 +1581,23 @@ table.dt {
 }
 .editable-opt:hover { background: var(--bg-elev-2); }
 .editable-opt.active { color: var(--accent-strong); }
+
+.rating-block-strips {
+  display: grid;
+  grid-template-columns: repeat(3, 1fr);
+  gap: 12px;
+  margin-top: 12px;
+  padding: 0 4px;
+}
+
+.strip-cell {
+  min-width: 0;
+}
+
+.rating-block-strips-empty {
+  display: block;
+  text-align: center;
+  padding: 14px 8px;
+  border-top: 1px dashed var(--border);
+  color: var(--fg-dim);
+}
