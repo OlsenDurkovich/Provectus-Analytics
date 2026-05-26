@@ -91,3 +91,55 @@ test('renders 3 mini scatter strips per rating block', async () => {
     expect(svgs.length).toBe(3);
   });
 });
+
+test('injects student as in-progress dot when not in cohort', async () => {
+  globalThis.fetch = vi.fn().mockImplementation((url: string) => {
+    let body: unknown = [];
+    if (url.includes('/api/ratings/IFR/cohort')) {
+      body = [
+        { studentId: 'other-1', name: 'Other A', hours: 45, cost: 11000, days: 120 },
+        { studentId: 'other-2', name: 'Other B', hours: 55, cost: 13000, days: 140 },
+      ];
+    } else if (url.includes('/api/students/')) {
+      body = {
+        id: 'student-1',
+        name: 'Alex Martinez',
+        timeline: [],
+        perRating: [
+          {
+            rating: 'IFR',
+            name: 'Instrument Rating',
+            n: 8,
+            hours: 32, // student has hours but no checkride
+            cost: 9000,
+            days: 90,
+            medianHrs: 50,
+            medianCost: 12000,
+            medianDays: 130,
+            lowSample: false,
+          },
+        ],
+      };
+    } else {
+      body = [];
+    }
+    return Promise.resolve({ ok: true, json: async () => body });
+  });
+  const { container } = render(wrap('/students/student-1'));
+  await waitFor(() => expect(screen.getByText('Instrument Rating')).toBeTruthy());
+  await waitFor(() => {
+    const warnDot = container.querySelector('.rating-block circle[fill="var(--warn)"]');
+    expect(warnDot).toBeTruthy();
+  });
+});
+
+test('renders without warn dot when student is in cohort', async () => {
+  const { container } = render(wrap('/students/student-1'));
+  await waitFor(() => expect(screen.getByText('Private Pilot')).toBeTruthy());
+  await waitFor(() => {
+    const svgs = container.querySelectorAll('.rating-block svg');
+    expect(svgs.length).toBe(3);
+  });
+  const warnDot = container.querySelector('.rating-block circle[fill="var(--warn)"]');
+  expect(warnDot).toBeNull();
+});

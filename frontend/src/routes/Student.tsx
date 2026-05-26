@@ -280,13 +280,29 @@ function RatingBlockStrips({
   studentName: string;
   cohortQuery: UseQueryResult<RatingCohortMember[]> | undefined;
 }) {
-  const cohort = cohortQuery?.data ?? [];
-  const inCohort = cohort.some((m) => m.studentId === studentId);
+  const rawCohort = cohortQuery?.data ?? [];
+  const inCohort = rawCohort.some((m) => m.studentId === studentId);
+  const hasStudentData = r.hours != null || r.cost != null || r.days != null;
+
+  // Inject the student as a synthetic point if they aren't in the cohort.
+  const cohort: RatingCohortMember[] = inCohort || !hasStudentData
+    ? rawCohort
+    : [
+        ...rawCohort,
+        {
+          studentId,
+          name: studentName,
+          hours: r.hours ?? 0,
+          cost: r.cost ?? 0,
+          days: r.days ?? 0,
+        },
+      ];
+
+  const highlightInProgress = !inCohort && hasStudentData;
 
   const stripPoints = (selector: (m: RatingCohortMember) => number) =>
     cohort.map((m) => ({ student: m.name, value: selector(m) }));
 
-  // Derive P25/P75 band client-side from cohort points (Student API exposes medians only).
   const range = (selector: (m: RatingCohortMember) => number) => {
     if (cohort.length === 0) return { low: 0, high: 0 };
     const vals = cohort.map(selector).sort((a, b) => a - b);
@@ -303,7 +319,7 @@ function RatingBlockStrips({
           band={range((m) => m.hours)}
           median={r.medianHrs ?? 0}
           highlightName={studentName}
-          highlightInProgress={!inCohort && r.hours != null}
+          highlightInProgress={highlightInProgress}
           yLabel="Hours"
           fmt={(v) => v.toFixed(1)}
         />
@@ -315,7 +331,7 @@ function RatingBlockStrips({
           band={range((m) => m.cost)}
           median={r.medianCost ?? 0}
           highlightName={studentName}
-          highlightInProgress={!inCohort && r.cost != null}
+          highlightInProgress={highlightInProgress}
           yLabel="Cost"
           fmt={(v) => (v >= 1000 ? `$${(v / 1000).toFixed(1)}k` : `$${Math.round(v)}`)}
         />
@@ -327,7 +343,7 @@ function RatingBlockStrips({
           band={range((m) => m.days)}
           median={r.medianDays ?? 0}
           highlightName={studentName}
-          highlightInProgress={!inCohort && r.days != null}
+          highlightInProgress={highlightInProgress}
           yLabel="Days"
           fmt={(v) => Math.round(v).toLocaleString()}
         />
