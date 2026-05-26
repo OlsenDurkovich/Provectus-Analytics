@@ -4,8 +4,27 @@ This is the only module that imports from web/data.py. Routers import from here.
 """
 from __future__ import annotations
 
+from datetime import date, timedelta
+
 from ..web import data as web_data
 from . import schemas
+
+
+def range_cutoff(range_key: schemas.RangeKey, today: date | None = None) -> date | None:
+    today = today or date.today()
+    if range_key == "30d":
+        return today - timedelta(days=30)
+    if range_key == "90d":
+        return today - timedelta(days=90)
+    if range_key == "6mo":
+        return today - timedelta(days=180)
+    if range_key == "12mo":
+        return today - timedelta(days=365)
+    if range_key == "ytd":
+        return date(today.year, 1, 1)
+    if range_key == "all":
+        return None
+    raise ValueError(f"unknown range_key: {range_key}")
 
 
 def meta() -> schemas.Meta:
