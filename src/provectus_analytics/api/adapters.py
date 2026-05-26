@@ -261,6 +261,103 @@ def rating_detail(code: schemas.RatingCode) -> schemas.Rating:
     raise LookupError(f"rating not found: {code}")
 
 
+def student_detail(student_id: str) -> schemas.StudentDetail:
+    from .. import norms as _norms
+
+    conn = sqlite3.connect(web_data.DEFAULT_DB)
+    conn.row_factory = sqlite3.Row
+    try:
+        row = conn.execute(
+            "SELECT student_id, fsp_display_name FROM students WHERE student_id = ?",
+            (student_id,),
+        ).fetchone()
+        if not row:
+            raise LookupError(f"student {student_id}")
+        name = row["fsp_display_name"] or "Unknown"
+        median_by_rating = {
+            n.rating: n for n in _norms.compute_rating_norms(conn)
+        }
+        per_rating_rows = conn.execute(
+            """SELECT r.code AS rating,
+                      COALESCE(SUM(f.length_hrs), 0) AS hours,
+                      COALESCE((
+                          SELECT SUM(i.amount) FROM invoices i
+                          JOIN flights f2 ON f2.flight_id = i.flight_id
+                          WHERE f2.student_id = ? AND f2.enrollment_id = e.enrollment_id
+                      ), 0) AS cost,
+                      MIN(f.flight_date) AS first_flight,
+                      MAX(f.flight_date) AS last_flight
+               FROM enrollments e
+               JOIN ratings r USING (rating_id)
+               LEFT JOIN flights f
+                 ON f.student_id = e.student_id AND f.enrollment_id = e.enrollment_id
+               WHERE e.student_id = ?
+               GROUP BY r.code, r.sort_order, e.enrollment_id
+               ORDER BY r.sort_order""",
+            (student_id, student_id),
+        ).fetchall()
+    finally:
+        conn.close()
+
+    df = web_data.student_trajectory(str(web_data.DEFAULT_DB), name)
+    timeline: list[schemas.StudentTimelinePoint] = []
+    for rating_code, group in df.groupby("rating", sort=False):
+        ms = [
+            schemas.StudentTimelineMilestone(
+                name=r["milestone"], date=r["milestone_date"] or ""
+            )
+            for _, r in group.iterrows()
+        ]
+        if not ms:
+            continue
+        timeline.append(
+            schemas.StudentTimelinePoint(
+                rating=rating_code,
+                start=ms[0].date,
+                end=ms[-1].date if len(ms) > 1 else None,
+                milestones=ms,
+            )
+        )
+
+    from datetime import date as _date
+    today = _date.today()
+    per_rating: list[schemas.StudentPerRating] = []
+    for row in per_rating_rows:
+        rating_code = row["rating"]
+        hours = float(row["hours"] or 0)
+        cost = float(row["cost"] or 0)
+        first = row["first_flight"]
+        last = row["last_flight"]
+        days = 0
+        if first and last:
+            try:
+                days = (_date.fromisoformat(last) - _date.fromisoformat(first)).days
+            except ValueError:
+                days = 0
+        norm = median_by_rating.get(rating_code)
+        per_rating.append(
+            schemas.StudentPerRating(
+                rating=rating_code,
+                name=_RATING_DISPLAY.get(rating_code, rating_code),
+                n=norm.n_raw if norm else 0,
+                hours=hours if hours else None,
+                cost=cost if cost else None,
+                days=days if days else None,
+                medianHrs=float(norm.median_hours) if norm and norm.median_hours else None,
+                medianCost=float(norm.median_cost) if norm and norm.median_cost else None,
+                medianDays=float(norm.median_days) if norm and norm.median_days else None,
+                lowSample=bool(norm.low_sample_flag) if norm else False,
+            )
+        )
+
+    return schemas.StudentDetail(
+        id=student_id,
+        name=name,
+        timeline=timeline,
+        perRating=per_rating,
+    )
+
+
 def clients(
     range_key: schemas.RangeKey, rating: schemas.RatingCode | None = None
 ) -> list[schemas.ClientRow]:

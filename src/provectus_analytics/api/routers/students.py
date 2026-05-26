@@ -1,4 +1,4 @@
-from fastapi import APIRouter, Query
+from fastapi import APIRouter, HTTPException, Query
 
 from .. import adapters, schemas
 
@@ -11,3 +11,11 @@ def get_clients(
     rating: schemas.RatingCode | None = Query(None),
 ):
     return adapters.clients(range, rating)
+
+
+@router.get("/students/{student_id}", response_model=schemas.StudentDetail)
+def get_student(student_id: str):
+    try:
+        return adapters.student_detail(student_id)
+    except LookupError as exc:
+        raise HTTPException(status_code=404, detail=str(exc)) from exc
