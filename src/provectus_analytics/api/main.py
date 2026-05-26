@@ -3,8 +3,11 @@ from __future__ import annotations
 
 from pathlib import Path
 
-from fastapi import FastAPI
+from fastapi import FastAPI, Request
+from fastapi.responses import JSONResponse
 from fastapi.staticfiles import StaticFiles
+
+from .routers import meta as meta_router
 
 REPO_ROOT = Path(__file__).resolve().parents[3]
 FRONTEND_DIST = REPO_ROOT / "frontend" / "dist"
@@ -20,6 +23,16 @@ def create_app() -> FastAPI:
     @app.get("/api/healthz")
     def healthz() -> dict[str, str]:
         return {"status": "ok"}
+
+    @app.exception_handler(LookupError)
+    def _lookup_handler(request: Request, exc: LookupError):  # noqa: ARG001
+        return JSONResponse(status_code=404, content={"error": str(exc)})
+
+    @app.exception_handler(ValueError)
+    def _value_handler(request: Request, exc: ValueError):  # noqa: ARG001
+        return JSONResponse(status_code=400, content={"error": str(exc)})
+
+    app.include_router(meta_router.router)
 
     if FRONTEND_DIST.exists():
         app.mount("/", StaticFiles(directory=FRONTEND_DIST, html=True), name="frontend")
