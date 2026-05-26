@@ -7,7 +7,7 @@ from __future__ import annotations
 import sqlite3
 from datetime import date, timedelta
 
-from ..web import data as web_data
+from . import queries as web_data
 from . import schemas
 
 

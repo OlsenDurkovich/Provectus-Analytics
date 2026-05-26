@@ -2,7 +2,7 @@ from fastapi import APIRouter, Query
 
 from ... import import_exports
 from .. import adapters, schemas
-from ...web import data as web_data
+from .. import queries as web_data
 
 router = APIRouter(prefix="/api", tags=["meta"])
 

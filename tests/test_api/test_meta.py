@@ -1,7 +1,7 @@
 from fastapi.testclient import TestClient
 
 from provectus_analytics.api import create_app
-from provectus_analytics.web import data as web_data
+from provectus_analytics.api import queries as web_data
 
 
 def _fresh_synthetic(tmp_path, monkeypatch):
