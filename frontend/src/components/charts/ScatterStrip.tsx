@@ -9,7 +9,7 @@ interface Props {
   points: Point[];
   band: { low: number; high: number };
   median: number;
-  highlightName: string | null;
+  highlightNames: string[];
   yLabel: string;
   fmt: (v: number) => string;
   height?: number;
@@ -21,7 +21,7 @@ export function ScatterStrip({
   points,
   band,
   median,
-  highlightName,
+  highlightNames,
   yLabel,
   fmt,
   height,
@@ -140,7 +140,7 @@ export function ScatterStrip({
 
         {/* Dots */}
         {points.map((p, i) => {
-          const isHighlighted = p.student === highlightName;
+          const isHighlighted = highlightNames.includes(p.student);
           const inProgress = isHighlighted && highlightInProgress;
           const cx = xAt(i);
           const cy = yAt(p.value);
@@ -194,7 +194,7 @@ export function ScatterStrip({
                   fill="var(--fg)"
                   fontWeight="500"
                 >
-                  {p.student === highlightName && highlightInProgress
+                  {highlightNames.includes(p.student) && highlightInProgress
                     ? `${p.student} (in progress)`
                     : p.student}
                 </text>

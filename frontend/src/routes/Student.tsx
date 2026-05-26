@@ -348,7 +348,7 @@ function RatingBlockStrips({
           points={stripPoints((m) => m.hours)}
           band={range((m) => m.hours)}
           median={r.medianHrs ?? 0}
-          highlightName={studentName}
+          highlightNames={[studentName]}
           highlightInProgress={highlightInProgress}
           yLabel="Hours"
           fmt={(v) => v.toFixed(1)}
@@ -360,7 +360,7 @@ function RatingBlockStrips({
           points={stripPoints((m) => m.cost)}
           band={range((m) => m.cost)}
           median={r.medianCost ?? 0}
-          highlightName={studentName}
+          highlightNames={[studentName]}
           highlightInProgress={highlightInProgress}
           yLabel="Cost"
           fmt={(v) => (v >= 1000 ? `$${(v / 1000).toFixed(1)}k` : `$${Math.round(v)}`)}
@@ -372,7 +372,7 @@ function RatingBlockStrips({
           points={stripPoints((m) => m.days)}
           band={range((m) => m.days)}
           median={r.medianDays ?? 0}
-          highlightName={studentName}
+          highlightNames={[studentName]}
           highlightInProgress={highlightInProgress}
           yLabel="Days"
           fmt={(v) => Math.round(v).toLocaleString()}
