@@ -231,6 +231,36 @@ def heatmap(range_key: schemas.RangeKey) -> schemas.Heatmap:
     return schemas.Heatmap(rows=rows, buckets=buckets)
 
 
+def rating_detail(code: schemas.RatingCode) -> schemas.Rating:
+    from .. import norms as _norms
+
+    conn = sqlite3.connect(web_data.DEFAULT_DB)
+    conn.row_factory = sqlite3.Row
+    try:
+        norm_rows = _norms.compute_rating_norms(conn)
+    finally:
+        conn.close()
+
+    for n in norm_rows:
+        if n.rating == code:
+            return schemas.Rating(
+                code=code,
+                name=_RATING_DISPLAY.get(code, code),
+                n=n.n_raw,
+                medianHrs=float(n.median_hours or 0),
+                p25Hrs=float(n.p25_hours or 0),
+                p75Hrs=float(n.p75_hours or 0),
+                medianCost=float(n.median_cost or 0),
+                p25Cost=float(n.p25_cost or 0),
+                p75Cost=float(n.p75_cost or 0),
+                medianDays=float(n.median_days or 0),
+                p25Days=float(n.p25_days or 0),
+                p75Days=float(n.p75_days or 0),
+                lowSample=bool(n.low_sample_flag),
+            )
+    raise LookupError(f"rating not found: {code}")
+
+
 def clients(
     range_key: schemas.RangeKey, rating: schemas.RatingCode | None = None
 ) -> list[schemas.ClientRow]:

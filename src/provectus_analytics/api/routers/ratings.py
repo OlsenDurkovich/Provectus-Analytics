@@ -21,3 +21,8 @@ def get_ratings_completed(range: schemas.RangeKey = Query("12mo")):
 @router.get("/heatmap", response_model=schemas.Heatmap)
 def get_heatmap(range: schemas.RangeKey = Query("12mo")):
     return adapters.heatmap(range)
+
+
+@router.get("/ratings/{code}", response_model=schemas.Rating)
+def get_rating(code: schemas.RatingCode, range: schemas.RangeKey = Query("12mo")):  # noqa: ARG001
+    return adapters.rating_detail(code)
