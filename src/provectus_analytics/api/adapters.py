@@ -358,6 +358,140 @@ def student_detail(student_id: str) -> schemas.StudentDetail:
     )
 
 
+def instructors_list() -> list[schemas.InstructorSummary]:
+    conn = sqlite3.connect(web_data.DEFAULT_DB)
+    try:
+        rows = conn.execute(
+            """SELECT instructor,
+                      COALESCE(SUM(length_hrs), 0) AS hours,
+                      COUNT(DISTINCT student_id) AS students
+               FROM flights
+               WHERE instructor IS NOT NULL AND instructor != ''
+               GROUP BY instructor
+               ORDER BY hours DESC"""
+        ).fetchall()
+    finally:
+        conn.close()
+    return [
+        schemas.InstructorSummary(
+            id=name,
+            name=name,
+            hours=float(hours or 0),
+            students=int(students or 0),
+            passRate=0.0,
+        )
+        for name, hours, students in rows
+    ]
+
+
+def instructor_detail(instructor_id: str) -> schemas.InstructorDetail:
+    from datetime import date as _date
+
+    from .. import norms as _norms
+
+    conn = sqlite3.connect(web_data.DEFAULT_DB)
+    conn.row_factory = sqlite3.Row
+    try:
+        exists = conn.execute(
+            "SELECT 1 FROM flights WHERE instructor = ? LIMIT 1",
+            (instructor_id,),
+        ).fetchone()
+        if not exists:
+            raise LookupError(f"instructor {instructor_id}")
+        norm_by_rating = {n.rating: n for n in _norms.compute_rating_norms(conn)}
+        # Students taught by this instructor — one row per student/rating they touched.
+        student_rows = conn.execute(
+            """SELECT s.student_id, s.fsp_display_name AS name,
+                      r.code AS rating,
+                      COALESCE(SUM(f.length_hrs), 0) AS hours,
+                      MIN(f.flight_date) AS first_flight,
+                      MAX(f.flight_date) AS last_flight,
+                      EXISTS (
+                          SELECT 1 FROM milestones m
+                          JOIN enrollments e2 USING (enrollment_id)
+                          WHERE e2.student_id = s.student_id
+                            AND e2.rating_id = r.rating_id
+                            AND m.milestone_name = 'checkride'
+                      ) AS has_checkride
+               FROM flights f
+               JOIN students s USING (student_id)
+               JOIN enrollments e
+                 ON e.enrollment_id = f.enrollment_id AND e.student_id = s.student_id
+               JOIN ratings r USING (rating_id)
+               WHERE f.instructor = ?
+               GROUP BY s.student_id, r.code
+               ORDER BY s.fsp_display_name""",
+            (instructor_id,),
+        ).fetchall()
+        # Per-rating aggregates for this instructor (from completed milestones).
+        per_rating_rows = conn.execute(
+            """SELECT r.code AS rating, COUNT(*) AS n,
+                      AVG(m.cumulative_hours) AS avg_hours,
+                      AVG(m.cumulative_cost) AS avg_cost,
+                      AVG(m.days_from_rating_start) AS avg_days
+               FROM milestones m
+               JOIN enrollments e USING (enrollment_id)
+               JOIN ratings r USING (rating_id)
+               WHERE m.milestone_name = 'checkride'
+                 AND e.enrollment_id IN (
+                     SELECT DISTINCT f.enrollment_id FROM flights f
+                     WHERE f.instructor = ? AND f.enrollment_id IS NOT NULL
+                 )
+               GROUP BY r.code, r.sort_order
+               ORDER BY r.sort_order""",
+            (instructor_id,),
+        ).fetchall()
+    finally:
+        conn.close()
+
+    today = _date.today()
+    students: list[schemas.ClientRow] = []
+    for row in student_rows:
+        rating_code = row["rating"]
+        hours = float(row["hours"] or 0)
+        norm = norm_by_rating.get(rating_code)
+        median = float(norm.median_hours) if norm and norm.median_hours else 0.0
+        progress = round(min(hours / median, 1.5), 3) if median > 0 else 0.0
+        first = row["first_flight"]
+        days = 0
+        if first:
+            try:
+                days = (today - _date.fromisoformat(first)).days
+            except ValueError:
+                days = 0
+        if row["has_checkride"]:
+            status: schemas.FlightStatus = "Completed"
+        elif progress >= 0.9:
+            status = "On checkride"
+        else:
+            status = "Active"
+        students.append(
+            schemas.ClientRow(
+                id=str(row["student_id"]),
+                name=row["name"] or "Unknown",
+                rating=rating_code,
+                progressPct=progress,
+                hoursToDate=hours,
+                daysEnrolled=int(days),
+                status=status,
+            )
+        )
+
+    per_rating = [
+        schemas.InstructorPerRating(
+            rating=row["rating"],
+            n=int(row["n"] or 0),
+            medianHrs=float(row["avg_hours"] or 0),
+            medianCost=float(row["avg_cost"] or 0),
+            medianDays=float(row["avg_days"] or 0),
+        )
+        for row in per_rating_rows
+    ]
+    return schemas.InstructorDetail(
+        id=instructor_id, name=instructor_id, students=students, perRating=per_rating
+    )
+
+
 def clients(
     range_key: schemas.RangeKey, rating: schemas.RatingCode | None = None
 ) -> list[schemas.ClientRow]:

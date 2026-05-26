@@ -7,6 +7,7 @@ from fastapi import FastAPI, Request
 from fastapi.responses import FileResponse, JSONResponse
 from fastapi.staticfiles import StaticFiles
 
+from .routers import instructors as instructors_router
 from .routers import kpis as kpis_router
 from .routers import meta as meta_router
 from .routers import ratings as ratings_router
@@ -39,6 +40,7 @@ def create_app() -> FastAPI:
     app.include_router(kpis_router.router)
     app.include_router(ratings_router.router)
     app.include_router(students_router.router)
+    app.include_router(instructors_router.router)
 
     if FRONTEND_DIST.exists():
         # Mount /assets explicitly so hashed JS/CSS bundles are served directly.
