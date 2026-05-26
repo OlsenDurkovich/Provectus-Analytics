@@ -229,3 +229,87 @@ def heatmap(range_key: schemas.RangeKey) -> schemas.Heatmap:
         for col in range(12):
             rows[dow][col] += 1 / 12
     return schemas.Heatmap(rows=rows, buckets=buckets)
+
+
+def clients(
+    range_key: schemas.RangeKey, rating: schemas.RatingCode | None = None
+) -> list[schemas.ClientRow]:
+    from datetime import date as _date
+
+    from .. import norms as _norms
+
+    cutoff = range_cutoff(range_key)
+
+    conn = sqlite3.connect(web_data.DEFAULT_DB)
+    conn.row_factory = sqlite3.Row
+    try:
+        median_hours_by_rating = {
+            n.rating: n.median_hours for n in _norms.compute_rating_norms(conn)
+        }
+
+        sql = """
+            SELECT s.student_id, s.fsp_display_name, r.code AS rating_code,
+                   COALESCE(SUM(f.length_hrs), 0) AS hours,
+                   MIN(f.flight_date) AS first_flight,
+                   MAX(f.flight_date) AS last_flight,
+                   EXISTS (
+                       SELECT 1 FROM milestones m
+                       JOIN enrollments e2 USING (enrollment_id)
+                       WHERE e2.student_id = s.student_id
+                         AND e2.rating_id = r.rating_id
+                         AND m.milestone_name = 'checkride'
+                   ) AS has_checkride
+            FROM students s
+            JOIN enrollments e USING (student_id)
+            JOIN ratings r USING (rating_id)
+            LEFT JOIN flights f
+              ON f.student_id = s.student_id AND f.enrollment_id = e.enrollment_id
+            WHERE 1=1
+        """
+        params: list = []
+        if cutoff:
+            sql += " AND (f.flight_date >= ? OR f.flight_date IS NULL)"
+            params.append(cutoff.isoformat())
+        if rating:
+            sql += " AND r.code = ?"
+            params.append(rating)
+        sql += " GROUP BY s.student_id, r.code ORDER BY s.fsp_display_name"
+        rows = conn.execute(sql, params).fetchall()
+    finally:
+        conn.close()
+
+    out: list[schemas.ClientRow] = []
+    today = _date.today()
+    for row in rows:
+        rating_code = row["rating_code"]
+        hours = float(row["hours"] or 0)
+        median = median_hours_by_rating.get(rating_code) or 0.0
+        progress = round(min(hours / median, 1.5), 3) if median > 0 else 0.0
+
+        first = row["first_flight"]
+        days = 0
+        if first:
+            try:
+                days = (today - _date.fromisoformat(first)).days
+            except ValueError:
+                days = 0
+
+        if row["has_checkride"]:
+            status = "Completed"
+        elif progress >= 0.9:
+            status = "On checkride"
+        else:
+            status = "Active"
+
+        out.append(
+            schemas.ClientRow(
+                id=str(row["student_id"]),
+                name=row["fsp_display_name"] or "Unknown",
+                rating=rating_code,
+                progressPct=progress,
+                hoursToDate=hours,
+                daysEnrolled=int(days),
+                status=status,
+            )
+        )
+    return out
