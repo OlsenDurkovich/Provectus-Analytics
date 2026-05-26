@@ -13,6 +13,7 @@ interface Props {
   yLabel: string;
   fmt: (v: number) => string;
   height?: number;
+  size?: 'full' | 'mini';
 }
 
 export function ScatterStrip({
@@ -22,8 +23,12 @@ export function ScatterStrip({
   highlightName,
   yLabel,
   fmt,
-  height = 280,
+  height,
+  size = 'full',
 }: Props) {
+  const mini = size === 'mini';
+  const resolvedHeight = height ?? (mini ? 64 : 280);
+
   const ref = useRef<HTMLDivElement | null>(null);
   const [w, setW] = useState(800);
   const [hovered, setHovered] = useState<number | null>(null);
@@ -35,9 +40,12 @@ export function ScatterStrip({
     return () => ro.disconnect();
   }, []);
 
-  const padL = 56, padR = 16, padT = 18, padB = 16;
+  const padL = mini ? 36 : 56;
+  const padR = mini ? 8 : 16;
+  const padT = mini ? 8 : 18;
+  const padB = mini ? 8 : 16;
   const innerW = Math.max(10, w - padL - padR);
-  const innerH = height - padT - padB;
+  const innerH = resolvedHeight - padT - padB;
   const n = Math.max(1, points.length);
 
   const allVals = [...points.map((p) => p.value), band.low, band.high, median];
@@ -51,13 +59,20 @@ export function ScatterStrip({
   const yAt = (v: number) => padT + innerH - ((v - yMin) / ySpan) * innerH;
   const xAt = (i: number) => padL + ((i + 1) / (n + 1)) * innerW;
 
-  const ticks = Array.from({ length: 5 }, (_, i) => yMin + (ySpan * i) / 4);
+  const tickCount = mini ? 2 : 5;
+  const ticks = Array.from({ length: tickCount }, (_, i) =>
+    tickCount === 1 ? yMin : yMin + (ySpan * i) / (tickCount - 1),
+  );
+
+  const dotR = mini ? 3 : 5;
+  const dotRHighlight = mini ? 4 : 7;
+  const tickFont = mini ? 9 : 10.5;
 
   return (
     <div ref={ref} className="timechart">
       <svg
         width={w}
-        height={height}
+        height={resolvedHeight}
         onMouseLeave={() => setHovered(null)}
         style={{ cursor: 'default' }}
       >
@@ -73,10 +88,10 @@ export function ScatterStrip({
               strokeWidth="1"
             />
             <text
-              x={padL - 8}
+              x={padL - 6}
               y={yAt(t) + 3}
               textAnchor="end"
-              fontSize="10.5"
+              fontSize={tickFont}
               fill="var(--fg-dim)"
               fontFamily="'Geist Mono', monospace"
             >
@@ -85,17 +100,19 @@ export function ScatterStrip({
           </g>
         ))}
 
-        {/* Y-axis label */}
-        <text
-          x={10}
-          y={padT + innerH / 2}
-          textAnchor="middle"
-          fontSize="10"
-          fill="var(--fg-dim)"
-          transform={`rotate(-90, 10, ${padT + innerH / 2})`}
-        >
-          {yLabel}
-        </text>
+        {/* Y-axis label (full only) */}
+        {!mini && (
+          <text
+            x={10}
+            y={padT + innerH / 2}
+            textAnchor="middle"
+            fontSize="10"
+            fill="var(--fg-dim)"
+            transform={`rotate(-90, 10, ${padT + innerH / 2})`}
+          >
+            {yLabel}
+          </text>
+        )}
 
         {/* P25-P75 band */}
         <rect
@@ -128,7 +145,7 @@ export function ScatterStrip({
               <circle
                 cx={cx}
                 cy={cy}
-                r={isHighlighted ? 7 : 5}
+                r={isHighlighted ? dotRHighlight : dotR}
                 fill={isHighlighted ? 'var(--accent)' : 'var(--fg-dim)'}
                 fillOpacity={isHighlighted ? 1 : 0.5}
                 stroke={isHighlighted ? 'var(--bg)' : 'none'}
@@ -145,7 +162,8 @@ export function ScatterStrip({
             const p = points[hovered];
             const cx = xAt(hovered);
             const cy = yAt(p.value);
-            const tipW = 152, tipH = 44;
+            const tipW = mini ? 124 : 152;
+            const tipH = mini ? 36 : 44;
             const tx = Math.min(Math.max(cx - tipW / 2, padL), w - padR - tipW);
             const ty = Math.max(padT + 4, cy - tipH - 10);
             return (
@@ -161,8 +179,8 @@ export function ScatterStrip({
                 />
                 <text
                   x={tx + 10}
-                  y={ty + 17}
-                  fontSize="11"
+                  y={ty + (mini ? 14 : 17)}
+                  fontSize={mini ? 10 : 11}
                   fill="var(--fg)"
                   fontWeight="500"
                 >
@@ -170,8 +188,8 @@ export function ScatterStrip({
                 </text>
                 <text
                   x={tx + 10}
-                  y={ty + 33}
-                  fontSize="11"
+                  y={ty + (mini ? 27 : 33)}
+                  fontSize={mini ? 10 : 11}
                   fill="var(--fg-dim)"
                   fontFamily="'Geist Mono', monospace"
                 >
