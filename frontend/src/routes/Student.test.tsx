@@ -9,7 +9,13 @@ const origFetch = globalThis.fetch;
 beforeEach(() => {
   globalThis.fetch = vi.fn().mockImplementation((url: string) => {
     let body: unknown = [];
-    if (url.includes('/api/students/')) {
+    if (url.includes('/api/ratings/PPL/cohort')) {
+      body = [
+        { studentId: 'student-1', name: 'Alex Martinez', hours: 65, cost: 15000, days: 165 },
+        { studentId: 'other-1', name: 'Other A', hours: 60, cost: 14500, days: 155 },
+        { studentId: 'other-2', name: 'Other B', hours: 70, cost: 16000, days: 175 },
+      ];
+    } else if (url.includes('/api/students/')) {
       body = {
         id: 'student-1',
         name: 'Alex Martinez',
@@ -75,4 +81,13 @@ test('shows student detail after selecting one', async () => {
   render(wrap('/students/student-1'));
   await waitFor(() => expect(screen.getByText('Total flight hours')).toBeTruthy());
   expect(screen.getByText('Private Pilot')).toBeTruthy();
+});
+
+test('renders 3 mini scatter strips per rating block', async () => {
+  const { container } = render(wrap('/students/student-1'));
+  await waitFor(() => expect(screen.getByText('Private Pilot')).toBeTruthy());
+  await waitFor(() => {
+    const svgs = container.querySelectorAll('.rating-block svg');
+    expect(svgs.length).toBe(3);
+  });
 });

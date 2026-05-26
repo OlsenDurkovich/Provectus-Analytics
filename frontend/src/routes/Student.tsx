@@ -1,8 +1,15 @@
 import { useNavigate, useParams } from 'react-router-dom';
+import type { UseQueryResult } from '@tanstack/react-query';
 import { BigKpi, DeltaText, MiniKpi, Select } from '../components/helpers';
 import { Skel } from '../components/primitives';
-import { useClients, useStudent } from '../data/queries';
-import type { StudentDetail, StudentPerRating, StudentTimelinePoint } from '../data/types';
+import { ScatterStrip } from '../components/charts/ScatterStrip';
+import { useClients, useRatingCohorts, useStudent } from '../data/queries';
+import type {
+  RatingCohortMember,
+  StudentDetail,
+  StudentPerRating,
+  StudentTimelinePoint,
+} from '../data/types';
 
 function fmtCost(v: number | null | undefined): string {
   if (v == null) return '—';
@@ -89,6 +96,8 @@ function StudentBody({ detail }: { detail: StudentDetail }) {
     { hours: 0, cost: 0, days: 0 },
   );
   const codes = detail.timeline.map((t) => t.rating).join(', ') || '—';
+  const cohortCodes = detail.perRating.map((r) => r.rating);
+  const cohorts = useRatingCohorts(cohortCodes);
 
   return (
     <>
@@ -107,7 +116,13 @@ function StudentBody({ detail }: { detail: StudentDetail }) {
       {detail.timeline.length > 0 && <JourneyTimeline timeline={detail.timeline} />}
 
       {detail.perRating.map((r) => (
-        <RatingBlock key={r.rating} r={r} />
+        <RatingBlock
+          key={r.rating}
+          r={r}
+          studentId={detail.id}
+          studentName={detail.name}
+          cohortQuery={cohorts.get(r.rating)}
+        />
       ))}
     </>
   );
@@ -176,7 +191,17 @@ function JourneyTimeline({ timeline }: { timeline: StudentTimelinePoint[] }) {
   );
 }
 
-function RatingBlock({ r }: { r: StudentPerRating }) {
+function RatingBlock({
+  r,
+  studentId,
+  studentName,
+  cohortQuery,
+}: {
+  r: StudentPerRating;
+  studentId: string;
+  studentName: string;
+  cohortQuery: UseQueryResult<RatingCohortMember[]> | undefined;
+}) {
   const hours = r.hours ?? 0;
   const cost = r.cost ?? 0;
   const days = r.days ?? 0;
@@ -233,6 +258,79 @@ function RatingBlock({ r }: { r: StudentPerRating }) {
           sub={cohortDays ? `Cohort median: ${Math.round(cohortDays)}` : 'No cohort data'}
         />
         <MiniKpi label="Alumni (n)" value={String(r.n)} />
+      </div>
+      <RatingBlockStrips
+        r={r}
+        studentId={studentId}
+        studentName={studentName}
+        cohortQuery={cohortQuery}
+      />
+    </div>
+  );
+}
+
+function RatingBlockStrips({
+  r,
+  studentId,
+  studentName,
+  cohortQuery,
+}: {
+  r: StudentPerRating;
+  studentId: string;
+  studentName: string;
+  cohortQuery: UseQueryResult<RatingCohortMember[]> | undefined;
+}) {
+  const cohort = cohortQuery?.data ?? [];
+  const inCohort = cohort.some((m) => m.studentId === studentId);
+
+  const stripPoints = (selector: (m: RatingCohortMember) => number) =>
+    cohort.map((m) => ({ student: m.name, value: selector(m) }));
+
+  // Derive P25/P75 band client-side from cohort points (Student API exposes medians only).
+  const range = (selector: (m: RatingCohortMember) => number) => {
+    if (cohort.length === 0) return { low: 0, high: 0 };
+    const vals = cohort.map(selector).sort((a, b) => a - b);
+    const q = (p: number) => vals[Math.min(vals.length - 1, Math.floor(p * (vals.length - 1)))];
+    return { low: q(0.25), high: q(0.75) };
+  };
+
+  return (
+    <div className="rating-block-strips">
+      <div className="strip-cell">
+        <ScatterStrip
+          size="mini"
+          points={stripPoints((m) => m.hours)}
+          band={range((m) => m.hours)}
+          median={r.medianHrs ?? 0}
+          highlightName={studentName}
+          highlightInProgress={!inCohort && r.hours != null}
+          yLabel="Hours"
+          fmt={(v) => v.toFixed(1)}
+        />
+      </div>
+      <div className="strip-cell">
+        <ScatterStrip
+          size="mini"
+          points={stripPoints((m) => m.cost)}
+          band={range((m) => m.cost)}
+          median={r.medianCost ?? 0}
+          highlightName={studentName}
+          highlightInProgress={!inCohort && r.cost != null}
+          yLabel="Cost"
+          fmt={(v) => (v >= 1000 ? `$${(v / 1000).toFixed(1)}k` : `$${Math.round(v)}`)}
+        />
+      </div>
+      <div className="strip-cell">
+        <ScatterStrip
+          size="mini"
+          points={stripPoints((m) => m.days)}
+          band={range((m) => m.days)}
+          median={r.medianDays ?? 0}
+          highlightName={studentName}
+          highlightInProgress={!inCohort && r.days != null}
+          yLabel="Days"
+          fmt={(v) => Math.round(v).toLocaleString()}
+        />
       </div>
     </div>
   );
