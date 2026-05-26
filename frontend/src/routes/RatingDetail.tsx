@@ -1,4 +1,4 @@
-import { useState } from 'react';
+import { useState, useEffect } from 'react';
 import { useNavigate, useParams } from 'react-router-dom';
 import { BigKpi, DeltaText, Select } from '../components/helpers';
 import { Skel } from '../components/primitives';
@@ -19,6 +19,10 @@ export default function RatingDetail({ range }: Props) {
   const navigate = useNavigate();
   const selected = (CODES.includes(code as RatingCode) ? code : 'PPL') as RatingCode;
   const [overlayId, setOverlayId] = useState<string | null>(null);
+
+  useEffect(() => {
+    setOverlayId(null);
+  }, [selected]);
 
   const rating = useRating(selected, range);
   const cohort = useRatingCohort(selected);
@@ -45,10 +49,7 @@ export default function RatingDetail({ range }: Props) {
             label="Rating"
             value={selected}
             onChange={(v) => {
-              if (v) {
-                setOverlayId(null);
-                navigate(`/ratings/${v}`);
-              }
+              if (v) navigate(`/ratings/${v}`);
             }}
             options={CODES.map((c) => ({ value: c, label: c }))}
             width={130}
@@ -132,7 +133,7 @@ export default function RatingDetail({ range }: Props) {
                   <DeltaText
                     value={overlayPt.days - Math.round(rating.data.medianDays)}
                     betterWhenLower
-                    fmt={(v) => Math.round(Math.abs(v)).toLocaleString()}
+                    fmt={(v) => Math.round(v).toLocaleString()}
                   />
                 ) : undefined
               }
@@ -140,7 +141,14 @@ export default function RatingDetail({ range }: Props) {
             />
           </div>
 
-          {!cohort.isLoading && cohortData.length > 0 && (
+          {cohort.isError ? (
+            <div className="card">
+              <div className="empty">
+                <div className="empty-title">Could not load cohort</div>
+                <div className="empty-sub">Check your connection and reload.</div>
+              </div>
+            </div>
+          ) : !cohort.isLoading && cohortData.length > 0 ? (
             <DistributionSection
               ratingName={rating.data.name}
               cohort={cohortData}
@@ -156,7 +164,7 @@ export default function RatingDetail({ range }: Props) {
               }}
               overlayName={overlayPt?.name ?? null}
             />
-          )}
+          ) : null}
         </>
       ) : (
         <div className="card">

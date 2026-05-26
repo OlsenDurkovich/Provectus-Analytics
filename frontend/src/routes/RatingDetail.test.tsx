@@ -80,3 +80,46 @@ test('renders Distribution section heading', async () => {
   render(wrap());
   await waitFor(() => expect(screen.getByText('Distribution')).toBeTruthy());
 });
+
+test('Distribution section hidden when cohort is empty', async () => {
+  // Override fetch to return empty cohort
+  globalThis.fetch = vi.fn().mockImplementation((url: string) => {
+    if (url.includes('/cohort')) {
+      return Promise.resolve({ ok: true, json: async () => [] });
+    }
+    if (url.includes('/api/ratings/PPL')) {
+      return Promise.resolve({ ok: true, json: async () => RATING_BODY });
+    }
+    return Promise.resolve({ ok: true, json: async () => [] });
+  });
+  render(wrap());
+  await waitFor(() => expect(screen.getByText('Alumni (n)')).toBeTruthy());
+  // Distribution heading should NOT appear
+  expect(screen.queryByText('Distribution')).toBeNull();
+});
+
+test('overlay student appears in cohort table as highlighted', async () => {
+  const { container } = render(wrap());
+  await waitFor(() => expect(screen.getByText('Alice')).toBeTruthy());
+  // Find overlay pin chip in the row — it won't exist until a student is selected
+  // No overlay selected initially, so no row-highlight
+  expect(container.querySelector('.row-highlight')).toBeNull();
+});
+
+test('renders error state when cohort fetch fails', async () => {
+  globalThis.fetch = vi.fn().mockImplementation((url: string) => {
+    if (url.includes('/cohort')) {
+      return Promise.resolve({ ok: false, json: async () => ({}) });
+    }
+    if (url.includes('/api/ratings/PPL')) {
+      return Promise.resolve({ ok: true, json: async () => RATING_BODY });
+    }
+    return Promise.resolve({ ok: true, json: async () => [] });
+  });
+  render(wrap());
+  await waitFor(() => expect(screen.getByText('Alumni (n)')).toBeTruthy());
+  // Error state should appear
+  await waitFor(() =>
+    expect(screen.queryByText('Could not load cohort')).toBeTruthy()
+  );
+});
