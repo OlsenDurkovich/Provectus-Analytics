@@ -1,0 +1,96 @@
+import type {
+  Meta,
+  Kpi,
+  RatingBarPoint,
+  RatingsCompletedRow,
+  Heatmap,
+  ClientRow,
+  StudentDetail,
+  InstructorSummary,
+  InstructorDetail,
+  FlightRow,
+  FlightUpdate,
+  RangeKey,
+  MetricKey,
+  RatingCode,
+  Rating,
+} from './types';
+
+export class ApiError extends Error {
+  constructor(
+    public status: number,
+    public body: string,
+    message?: string,
+  ) {
+    super(message ?? `API error ${status}: ${body}`);
+    this.name = 'ApiError';
+  }
+}
+
+function buildQuery(params?: Record<string, string | undefined>): string {
+  if (!params) return '';
+  const pairs: [string, string][] = [];
+  for (const [k, v] of Object.entries(params)) {
+    if (v !== undefined && v !== null) pairs.push([k, String(v)]);
+  }
+  if (pairs.length === 0) return '';
+  return '?' + new URLSearchParams(pairs).toString();
+}
+
+async function get<T>(path: string, params?: Record<string, string | undefined>): Promise<T> {
+  const res = await fetch(path + buildQuery(params), {
+    headers: { Accept: 'application/json' },
+  });
+  if (!res.ok) throw new ApiError(res.status, await res.text());
+  return (await res.json()) as T;
+}
+
+async function post<T>(path: string, body?: unknown): Promise<T> {
+  const res = await fetch(path, {
+    method: 'POST',
+    headers: { 'Content-Type': 'application/json', Accept: 'application/json' },
+    body: body ? JSON.stringify(body) : undefined,
+  });
+  if (!res.ok) throw new ApiError(res.status, await res.text());
+  return (await res.json()) as T;
+}
+
+async function patchReq<T>(path: string, body: unknown): Promise<T> {
+  const res = await fetch(path, {
+    method: 'PATCH',
+    headers: { 'Content-Type': 'application/json', Accept: 'application/json' },
+    body: JSON.stringify(body),
+  });
+  if (!res.ok) throw new ApiError(res.status, await res.text());
+  return (await res.json()) as T;
+}
+
+export const client = {
+  getMeta: () => get<Meta>('/api/meta'),
+  getKpis: (range: RangeKey) => get<Kpi[]>('/api/kpis', { range }),
+  getRatingBars: (metric: MetricKey, range: RangeKey) =>
+    get<RatingBarPoint[]>('/api/ratings', { metric, range }),
+  getRating: (code: RatingCode, range: RangeKey) =>
+    get<Rating>(`/api/ratings/${code}`, { range }),
+  getRatingsCompleted: (range: RangeKey) =>
+    get<RatingsCompletedRow[]>('/api/ratings/completed', { range }),
+  getHeatmap: (range: RangeKey) => get<Heatmap>('/api/heatmap', { range }),
+  getClients: (range: RangeKey, rating?: RatingCode) =>
+    get<ClientRow[]>('/api/students', { range, rating }),
+  getStudent: (id: string) => get<StudentDetail>(`/api/students/${id}`),
+  getInstructors: () => get<InstructorSummary[]>('/api/instructors'),
+  getInstructor: (id: string) => get<InstructorDetail>(`/api/instructors/${id}`),
+  getFlights: (filter: {
+    instructor?: string;
+    client?: string;
+    ground?: string;
+    sort?: string;
+  }) => get<FlightRow[]>('/api/flights', filter),
+  updateFlight: (id: string, body: FlightUpdate) =>
+    patchReq<FlightRow>(`/api/flights/${id}`, body),
+  importFsp: () => post<{ imported: unknown; built: unknown }>('/api/import-fsp'),
+  rebuild: (synthetic = false) =>
+    post<{ built: unknown }>(`/api/rebuild${synthetic ? '?synthetic=true' : ''}`),
+};
+
+export type Client = typeof client;
