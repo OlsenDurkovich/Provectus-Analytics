@@ -27,7 +27,7 @@ if [ ! -d ".venv" ]; then
     python3 -m venv .venv
     source .venv/bin/activate
     pip install --upgrade pip --quiet
-    pip install -e ".[dashboard]" --quiet
+    pip install -e "." --quiet
     echo ""
     echo "  Done. Launching Provectus Analytics..."
     echo ""
@@ -35,12 +35,14 @@ else
     source .venv/bin/activate
 fi
 
-# ---- Open the browser shortly after the server starts -----------------------
-# Wait a couple seconds for Dash to bind to the port, then open.
-( sleep 2 && open "http://127.0.0.1:8050" ) &
+PORT=8050
 
-# ---- Launch -----------------------------------------------------------------
-echo "  Provectus Analytics is running at http://127.0.0.1:8050"
+# ---- Open the browser shortly after the server starts -----------------------
+( sleep 2 && open "http://127.0.0.1:${PORT}" ) &
+
+# ---- Launch FastAPI via uvicorn ---------------------------------------------
+echo "  Provectus Analytics is running at http://127.0.0.1:${PORT}"
 echo "  To stop: close this window or press Ctrl+C."
 echo ""
-python3 app.py
+exec python3 -m uvicorn provectus_analytics.api.main:app \
+    --host 127.0.0.1 --port "${PORT}"
