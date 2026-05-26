@@ -17,13 +17,13 @@ import type {
 } from './types';
 
 export class ApiError extends Error {
-  constructor(
-    public status: number,
-    public body: string,
-    message?: string,
-  ) {
+  status: number;
+  body: string;
+  constructor(status: number, body: string, message?: string) {
     super(message ?? `API error ${status}: ${body}`);
     this.name = 'ApiError';
+    this.status = status;
+    this.body = body;
   }
 }
 
