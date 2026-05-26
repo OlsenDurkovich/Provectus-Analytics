@@ -90,6 +90,7 @@ export const useUpdateFlight = () => {
       qc.invalidateQueries({ queryKey: ['student'] });
       qc.invalidateQueries({ queryKey: ['kpis'] });
       qc.invalidateQueries({ queryKey: ['ratingBars'] });
+      qc.invalidateQueries({ queryKey: ['meta'] });
     },
   });
 };
