@@ -2,6 +2,7 @@ import { useMemo, useState } from 'react';
 import { Routes, Route, useLocation, useNavigate } from 'react-router-dom';
 import { Sidebar, NAV } from './components/Sidebar';
 import { Topbar } from './components/Topbar';
+import { CmdK } from './components/CmdK';
 import Overview from './routes/Overview';
 import RatingDetail from './routes/RatingDetail';
 import Student from './routes/Student';
@@ -11,6 +12,7 @@ import { useTheme } from './hooks/useTheme';
 import { useShortcuts } from './hooks/useShortcuts';
 import { usePersistedTab } from './hooks/usePersistedTab';
 import { useRange } from './hooks/useRange';
+import { useImportFsp, useRebuild } from './data/queries';
 
 function breadcrumbFor(pathname: string): string {
   for (const n of NAV) {
@@ -25,9 +27,11 @@ export default function App() {
   const navigate = useNavigate();
   const { theme, toggle: toggleTheme } = useTheme();
   const [collapsed, setCollapsed] = useState(false);
-  const [, setCmdkOpen] = useState(false);
+  const [cmdkOpen, setCmdkOpen] = useState(false);
   const [notifOpen, setNotifOpen] = useState(false);
   const { range, setRange } = useRange();
+  const importMut = useImportFsp();
+  const rebuildMut = useRebuild();
   usePersistedTab();
 
   const handlers = useMemo(
@@ -78,6 +82,15 @@ export default function App() {
           </Routes>
         </div>
       </div>
+      <CmdK
+        open={cmdkOpen}
+        onClose={() => setCmdkOpen(false)}
+        onNavigate={(path) => navigate(path)}
+        onSetRange={setRange}
+        onToggleTheme={toggleTheme}
+        onImport={() => importMut.mutate()}
+        onRebuild={(synthetic) => rebuildMut.mutate({ synthetic })}
+      />
     </div>
   );
 }
