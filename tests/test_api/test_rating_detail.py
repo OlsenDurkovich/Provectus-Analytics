@@ -35,3 +35,33 @@ def test_rating_detail_unknown_returns_404(tmp_path, monkeypatch):
     r = c.get("/api/ratings/XYZ")
     # Pydantic Literal validation rejects this at the route level (422)
     assert r.status_code in (404, 422)
+
+
+def test_rating_cohort_returns_list(tmp_path, monkeypatch):
+    c = _fresh(tmp_path, monkeypatch)
+    r = c.get("/api/ratings/PPL/cohort")
+    assert r.status_code == 200
+    body = r.json()
+    assert isinstance(body, list)
+    assert len(body) > 0
+    first = body[0]
+    assert "studentId" in first
+    assert "name" in first
+    assert "hours" in first
+    assert "cost" in first
+    assert "days" in first
+    assert first["hours"] > 0
+
+
+def test_rating_cohort_sorted_ascending_hours(tmp_path, monkeypatch):
+    c = _fresh(tmp_path, monkeypatch)
+    r = c.get("/api/ratings/PPL/cohort")
+    body = r.json()
+    hours = [m["hours"] for m in body]
+    assert hours == sorted(hours)
+
+
+def test_rating_cohort_invalid_code_returns_422(tmp_path, monkeypatch):
+    c = _fresh(tmp_path, monkeypatch)
+    r = c.get("/api/ratings/XYZ/cohort")
+    assert r.status_code == 422

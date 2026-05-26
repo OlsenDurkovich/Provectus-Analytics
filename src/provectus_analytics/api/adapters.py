@@ -318,6 +318,35 @@ def rating_detail(code: schemas.RatingCode) -> schemas.Rating:
     raise LookupError(f"rating not found: {code}")
 
 
+def rating_cohort(code: schemas.RatingCode) -> list[schemas.RatingCohortMember]:
+    conn = sqlite3.connect(web_data.DEFAULT_DB)
+    conn.row_factory = sqlite3.Row
+    try:
+        rows = conn.execute(
+            """SELECT e.student_id, s.fsp_display_name,
+                      m.cumulative_hours, m.cumulative_cost, m.days_from_rating_start
+               FROM milestones m
+               JOIN enrollments e USING (enrollment_id)
+               JOIN ratings r USING (rating_id)
+               JOIN students s USING (student_id)
+               WHERE m.milestone_name = 'checkride' AND r.code = ?
+               ORDER BY m.cumulative_hours""",
+            (code,),
+        ).fetchall()
+    finally:
+        conn.close()
+    return [
+        schemas.RatingCohortMember(
+            studentId=str(row["student_id"]),
+            name=row["fsp_display_name"] or "Unknown",
+            hours=float(row["cumulative_hours"] or 0),
+            cost=float(row["cumulative_cost"] or 0),
+            days=int(row["days_from_rating_start"] or 0),
+        )
+        for row in rows
+    ]
+
+
 def student_detail(student_id: str) -> schemas.StudentDetail:
     from .. import norms as _norms
 

@@ -50,6 +50,14 @@ class Rating(BaseModel):
     lowSample: bool = False
 
 
+class RatingCohortMember(BaseModel):
+    studentId: str
+    name: str
+    hours: float
+    cost: float
+    days: int
+
+
 class RatingBarPoint(BaseModel):
     code: RatingCode
     name: str
