@@ -3,6 +3,7 @@ import { Routes, Route, useLocation, useNavigate } from 'react-router-dom';
 import { Sidebar, NAV } from './components/Sidebar';
 import { Topbar } from './components/Topbar';
 import { CmdK } from './components/CmdK';
+import { ErrorBoundary } from './components/ErrorBoundary';
 import Overview from './routes/Overview';
 import RatingDetail from './routes/RatingDetail';
 import Student from './routes/Student';
@@ -78,13 +79,15 @@ export default function App() {
           showRangePicker={isOverview}
         />
         <div className="canvas">
-          <Routes>
-            <Route path="/" element={<Overview range={range} />} />
-            <Route path="/ratings/:code?" element={<RatingDetail range={range} />} />
-            <Route path="/students/:id?" element={<Student />} />
-            <Route path="/instructors/:id?" element={<Instructor />} />
-            <Route path="/flights" element={<Flights />} />
-          </Routes>
+          <ErrorBoundary>
+            <Routes>
+              <Route path="/" element={<Overview range={range} />} />
+              <Route path="/ratings/:code?" element={<RatingDetail range={range} />} />
+              <Route path="/students/:id?" element={<Student />} />
+              <Route path="/instructors/:id?" element={<Instructor />} />
+              <Route path="/flights" element={<Flights />} />
+            </Routes>
+          </ErrorBoundary>
         </div>
       </div>
       <CmdK
