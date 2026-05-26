@@ -9,6 +9,7 @@ description = "Analytics pipeline for Provectus flight training data (FSP + alum
 requires-python = ">=3.10"
 dependencies = [
     "pandas>=2.0",
+    "openpyxl>=3.1",
     "fastapi>=0.111",
     "uvicorn[standard]>=0.30",
 ]
