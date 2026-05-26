@@ -4,7 +4,7 @@ from __future__ import annotations
 from pathlib import Path
 
 from fastapi import FastAPI, Request
-from fastapi.responses import JSONResponse
+from fastapi.responses import FileResponse, JSONResponse
 from fastapi.staticfiles import StaticFiles
 
 from .routers import kpis as kpis_router
@@ -41,7 +41,24 @@ def create_app() -> FastAPI:
     app.include_router(students_router.router)
 
     if FRONTEND_DIST.exists():
-        app.mount("/", StaticFiles(directory=FRONTEND_DIST, html=True), name="frontend")
+        # Mount /assets explicitly so hashed JS/CSS bundles are served directly.
+        app.mount(
+            "/assets",
+            StaticFiles(directory=FRONTEND_DIST / "assets"),
+            name="assets",
+        )
+        index_html = FRONTEND_DIST / "index.html"
+
+        # SPA fallback: any non-API path that doesn't match a real file in dist/
+        # gets index.html so react-router can resolve it client-side.
+        @app.get("/{full_path:path}", include_in_schema=False)
+        def spa_fallback(full_path: str):
+            if full_path.startswith("api/"):
+                return JSONResponse(status_code=404, content={"detail": "Not Found"})
+            candidate = FRONTEND_DIST / full_path
+            if full_path and candidate.is_file():
+                return FileResponse(candidate)
+            return FileResponse(index_html)
 
     return app
 
