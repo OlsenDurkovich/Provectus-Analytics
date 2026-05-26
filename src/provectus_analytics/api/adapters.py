@@ -370,6 +370,95 @@ def _norm_acclass(v) -> schemas.AcClass:
     return v if v in _ACCLASS_VALUES else "SE_BASIC"
 
 
+def _flight_by_id(flight_id: int) -> schemas.FlightRow | None:
+    conn = sqlite3.connect(web_data.DEFAULT_DB)
+    try:
+        row = conn.execute(
+            """SELECT f.flight_id, f.flight_date, f.client_raw, f.instructor,
+                      f.reservation_type, f.billing_category, f.aircraft_class,
+                      f.is_ground_lesson, f.length_hrs,
+                      COALESCE(
+                          (SELECT SUM(amount) FROM invoices i WHERE i.flight_id = f.flight_id),
+                          0
+                      ) AS cost
+               FROM flights f
+               WHERE f.flight_id = ?""",
+            (flight_id,),
+        ).fetchone()
+    finally:
+        conn.close()
+    if not row:
+        return None
+    (
+        fid,
+        date,
+        client,
+        instructor,
+        rtype,
+        billing,
+        acclass,
+        is_ground,
+        hours,
+        cost,
+    ) = row
+    return schemas.FlightRow(
+        id=str(fid),
+        date=date or "",
+        client=client or "",
+        instructor=instructor or "",
+        type=rtype or "Dual flight training",
+        billing=_norm_billing(billing),
+        acClass=_norm_acclass(acclass),
+        ground="Ground (1)" if is_ground else "Flight (0)",
+        hours=float(hours or 0),
+        cost=float(cost or 0),
+    )
+
+
+def update_flight(flight_id: str, patch: schemas.FlightUpdate) -> schemas.FlightRow:
+    from .. import ingest, milestones, partition
+
+    try:
+        fid_int = int(flight_id)
+    except (TypeError, ValueError) as exc:
+        raise LookupError(f"flight {flight_id}") from exc
+
+    conn = sqlite3.connect(web_data.DEFAULT_DB)
+    conn.row_factory = sqlite3.Row
+    try:
+        exists = conn.execute(
+            "SELECT 1 FROM flights WHERE flight_id = ?", (fid_int,)
+        ).fetchone()
+        if not exists:
+            raise LookupError(f"flight {flight_id}")
+        if patch.value is None:
+            ingest.clear_flight_override(conn, fid_int, patch.field)
+            # Clear semantics: reset to a sentinel that mirrors "no override".
+            # is_ground_lesson is NOT NULL (default 0); other fields are nullable.
+            sentinel = 0 if patch.field == "is_ground_lesson" else None
+            conn.execute(
+                f"UPDATE flights SET {patch.field} = ? WHERE flight_id = ?",
+                (sentinel, fid_int),
+            )
+        else:
+            raw = patch.value
+            if patch.field == "is_ground_lesson":
+                raw = 1 if bool(raw) else 0
+            ingest.set_flight_override(conn, fid_int, patch.field, raw)
+            ingest.apply_overrides(conn)
+        partition.partition_flights(conn)
+        milestones.compute_milestones(conn)
+        conn.commit()
+    finally:
+        conn.close()
+    web_data.clear_caches()
+
+    row = _flight_by_id(fid_int)
+    if row is None:
+        raise LookupError(f"flight {flight_id}")
+    return row
+
+
 def flights(filter: dict) -> list[schemas.FlightRow]:
     conn = sqlite3.connect(web_data.DEFAULT_DB)
     try:
