@@ -22,6 +22,7 @@ from .routers import kpis as kpis_router
 from .routers import meta as meta_router
 from .routers import ratings as ratings_router
 from .routers import students as students_router
+from .routers import upload as upload_router
 
 REPO_ROOT = Path(__file__).resolve().parents[3]
 FRONTEND_DIST = REPO_ROOT / "frontend" / "dist"
@@ -81,6 +82,7 @@ def create_app() -> FastAPI:
     app.include_router(students_router.router,    dependencies=protected)
     app.include_router(instructors_router.router, dependencies=protected)
     app.include_router(flights_router.router,     dependencies=protected)
+    app.include_router(upload_router.router,      dependencies=protected)
 
     if FRONTEND_DIST.exists():
         # Mount /assets explicitly so hashed JS/CSS bundles are served directly.

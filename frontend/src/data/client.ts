@@ -95,6 +95,14 @@ export const client = {
   importFsp: () => post<{ imported: unknown; built: unknown }>('/api/import-fsp'),
   rebuild: (synthetic = false) =>
     post<{ built: unknown }>(`/api/rebuild${synthetic ? '?synthetic=true' : ''}`),
+  uploadFsp: async (files: { flight_detail?: File; invoice_detail?: File }) => {
+    const form = new FormData();
+    if (files.flight_detail) form.append('flight_detail', files.flight_detail);
+    if (files.invoice_detail) form.append('invoice_detail', files.invoice_detail);
+    const res = await authFetch('/api/upload/fsp', { method: 'POST', body: form });
+    if (!res.ok) throw new ApiError(res.status, await res.text());
+    return (await res.json()) as { saved: unknown; built: unknown };
+  },
 };
 
 export type Client = typeof client;

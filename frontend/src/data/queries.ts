@@ -144,3 +144,14 @@ export const useRebuild = () => {
     },
   });
 };
+
+export const useUploadFsp = () => {
+  const qc = useQueryClient();
+  return useMutation({
+    mutationFn: (files: { flight_detail?: File; invoice_detail?: File }) =>
+      client.uploadFsp(files),
+    onSuccess: () => {
+      void qc.invalidateQueries();
+    },
+  });
+};

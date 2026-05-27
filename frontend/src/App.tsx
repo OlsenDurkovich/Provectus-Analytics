@@ -16,6 +16,7 @@ import { usePersistedTab } from './hooks/usePersistedTab';
 import { useRange } from './hooks/useRange';
 import { useImportFsp, useRebuild } from './data/queries';
 import { useAuth } from './auth/AuthContext';
+import { UploadDialog } from './components/UploadDialog';
 
 function breadcrumbFor(pathname: string): string {
   for (const n of NAV) {
@@ -50,6 +51,7 @@ function Shell({ user, logout, theme, toggleTheme }: ShellProps) {
   const [collapsed, setCollapsed] = useState(false);
   const [cmdkOpen, setCmdkOpen] = useState(false);
   const [notifOpen, setNotifOpen] = useState(false);
+  const [uploadOpen, setUploadOpen] = useState(false);
   const { range, setRange } = useRange();
   const importMut = useImportFsp();
   const rebuildMut = useRebuild();
@@ -78,6 +80,7 @@ function Shell({ user, logout, theme, toggleTheme }: ShellProps) {
     <div className={'app ' + (collapsed ? 'sidebar-collapsed' : '')}>
       <Sidebar
         collapsed={collapsed}
+        onUpload={() => setUploadOpen(true)}
         onImport={() => importMut.mutate()}
         onRebuild={(synthetic) => rebuildMut.mutate({ synthetic })}
         importPending={importMut.isPending}
@@ -92,7 +95,7 @@ function Shell({ user, logout, theme, toggleTheme }: ShellProps) {
           onOpenCmdK={() => setCmdkOpen(true)}
           theme={theme}
           onThemeToggle={toggleTheme}
-          onImport={() => importMut.mutate()}
+          onImport={() => setUploadOpen(true)}
           importPending={importMut.isPending}
           notifOpen={notifOpen}
           setNotifOpen={setNotifOpen}
@@ -118,9 +121,10 @@ function Shell({ user, logout, theme, toggleTheme }: ShellProps) {
         onNavigate={(path) => navigate(path)}
         onSetRange={setRange}
         onToggleTheme={toggleTheme}
-        onImport={() => importMut.mutate()}
+        onImport={() => setUploadOpen(true)}
         onRebuild={(synthetic) => rebuildMut.mutate({ synthetic })}
       />
+      <UploadDialog open={uploadOpen} onClose={() => setUploadOpen(false)} />
     </div>
   );
 }
