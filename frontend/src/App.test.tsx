@@ -1,17 +1,29 @@
 import { render, screen } from '@testing-library/react';
 import { MemoryRouter } from 'react-router-dom';
 import { QueryClient, QueryClientProvider } from '@tanstack/react-query';
-import { vi } from 'vitest';
+import { vi, beforeEach } from 'vitest';
 import App from './App';
+import { AuthProvider } from './auth/AuthContext';
 
 function mockMetaFetch() {
-  globalThis.fetch = vi.fn().mockResolvedValue({
-    ok: true,
-    json: async () => ({
-      mode: 'synthetic',
-      liveClientCount: 0,
-      dataState: { flights: 0, invoices: 0, students: 0, surveys: 0, overrides: 0 },
-    }),
+  globalThis.fetch = vi.fn().mockImplementation((url: string) => {
+    if (typeof url === 'string' && url.includes('/api/auth/me')) {
+      return Promise.resolve({
+        ok: true,
+        json: async () => ({
+          user_id: 1, email: 'test@example.com',
+          role: 'admin', is_active: true,
+        }),
+      });
+    }
+    return Promise.resolve({
+      ok: true,
+      json: async () => ({
+        mode: 'synthetic',
+        liveClientCount: 0,
+        dataState: { flights: 0, invoices: 0, students: 0, surveys: 0, overrides: 0 },
+      }),
+    });
   });
 }
 
@@ -20,11 +32,26 @@ function renderAt(path: string) {
   return render(
     <QueryClientProvider client={qc}>
       <MemoryRouter initialEntries={[path]}>
-        <App />
+        <AuthProvider>
+          <App />
+        </AuthProvider>
       </MemoryRouter>
     </QueryClientProvider>,
   );
 }
+
+beforeEach(() => {
+  // Pre-seed localStorage so AuthProvider hydrates an authenticated session.
+  localStorage.setItem('pv_auth_access', 'fake-access');
+  localStorage.setItem('pv_auth_refresh', 'fake-refresh');
+  localStorage.setItem(
+    'pv_auth_user',
+    JSON.stringify({
+      user_id: 1, email: 'test@example.com',
+      role: 'admin', is_active: true,
+    }),
+  );
+});
 
 test('renders sidebar nav with all five tabs', () => {
   mockMetaFetch();
