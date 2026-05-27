@@ -17,6 +17,11 @@ REPO_ROOT = Path(__file__).resolve().parents[3]
 DEFAULT_DB = REPO_ROOT / "provectus.db"
 FSP_EXPORTS_DIR = REPO_ROOT / "FSP Exports"
 
+# Alumni survey file paths. Real responses live in alumni_survey.xlsx (Google
+# Forms export); synthetic dataset uses the CSV variant for tests.
+REAL_SURVEY_XLSX = REPO_ROOT / "alumni_survey.xlsx"
+SYNTHETIC_SURVEY_CSV = REPO_ROOT / "synthetic_alumni_survey.csv"
+
 RATING_ORDER = ["PPL", "IFR", "COM", "AMEL", "CFI", "CFII", "MEI"]
 RATING_DISPLAY = {
     "PPL":  "Private Pilot",
@@ -106,11 +111,13 @@ def build_db(db_path: Path = DEFAULT_DB, force_synthetic: bool = False) -> dict:
         # match_status='auto_from_flights' so reconcile.reconcile() can upgrade
         # them later when real survey responses land.
         result["students_auto"] = ingest.auto_populate_students_from_flights(conn)
-        # NOTE: synthetic_alumni_survey.csv is intentionally NOT loaded when
-        # real flights are present — it pollutes the cohort with fake students
-        # whose names don't match real FSP clients, producing milestones with
-        # synthetic dates but zero hours/cost. Real surveys will be loaded
-        # here once they arrive.
+        # Load real alumni survey responses if present. Synthetic CSV is never
+        # loaded in real mode — its names won't match real FSP clients and would
+        # pollute the cohort with milestones that have no flight hours.
+        if REAL_SURVEY_XLSX.exists():
+            result["surveys"] = ingest.ingest_survey_xlsx(conn, REAL_SURVEY_XLSX)
+        else:
+            result["surveys"] = 0
         # Re-apply any manual overrides from prior sessions
         result["overrides_applied"] = ingest.apply_overrides(conn)
     else:
@@ -126,7 +133,7 @@ def build_db(db_path: Path = DEFAULT_DB, force_synthetic: bool = False) -> dict:
             REPO_ROOT / "synthetic_fsp_clients.csv",
             REPO_ROOT / "synthetic_fsp_reservations.csv",
             REPO_ROOT / "synthetic_fsp_invoices.csv",
-            REPO_ROOT / "synthetic_alumni_survey.csv",
+            SYNTHETIC_SURVEY_CSV,
         )
         result = {"mode": "synthetic"}
 
