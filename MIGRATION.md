@@ -40,45 +40,33 @@ This doc captures: what we're shipping, what changed from the original plan afte
 
 ---
 
-## Execution order
+## Status snapshot (end of overnight session)
 
-```
-Phase 10 (data layer)        — feat/phase-10-data-fixes  (in progress)
-  10.1 loader fallback
-  10.2 real survey ingest (XLSX + date normalization)
-  10.3 FSP native label column
-  → pytest, commit, leave on local branch
+All five branches shipped locally — no pushes yet (per user preference).
+Five feature branches chained off main; merge order matches the table below.
 
-Phase 11 (auth)              — feat/phase-11-auth
-  11.1 fastapi-users + sqlalchemy + SECRET_KEY env
-  11.2 login/logout/refresh endpoints, slowapi rate limit
-  11.3 protect all routers with current_active_user dep
-  11.4 .env.example + .gitignore
-  → pytest, commit
+| Branch                       | What's in it                                            | Status |
+|---|---|---|
+| `feat/phase-10-data-fixes`   | Real `alumni_survey.xlsx` ingest, FSP `rating_label`    | ✅ committed |
+| `feat/phase-11-auth`         | JWT auth backend + login UI gate                        | ✅ committed |
+| `feat/phase-12-upload`       | POST /api/upload/fsp + upload dialog                    | ✅ committed |
+| `feat/phase-13-railway`      | Env-driven paths, WAL, Dockerfile, railway.toml         | ✅ committed |
+| `feat/phase-14-hardening`    | CORS lock, security headers, pip-audit pass             | ✅ committed |
 
-Phase 12 (upload)            — feat/phase-12-upload
-  12.1 POST /api/upload/fsp multipart endpoint, MIME + size validation
-  12.2 frontend file picker replaces sidebar "Import FSP" button
-  → pytest, commit
+Test stats at the end of Phase 14:
+- Backend: 111 passing
+- Frontend: 76 passing
+- tsc -b clean
+- vite build clean
+- pip-audit -r requirements.txt: no known vulnerabilities
 
-Phase 13 (Railway prep)      — feat/phase-13-railway ✅ shipped locally
-  13.0 DB_PATH + PORT env-driven in code        ✅
-  13.1 PRAGMA journal_mode=WAL on init          ✅
-  13.2 multi-stage Dockerfile                    ✅
-  13.3 railway.toml                              ✅
-  13.4 .dockerignore                             ✅
-  13.5 volume mount docs at /data                ✅ (see below)
-  → local docker build + run smoke test pending  ⏳ (docker not run in this session)
-
-Phase 14 (hardening)         — feat/phase-14-hardening
-  14.1 CORSMiddleware locked to prod origin via env
-  14.2 security-headers middleware
-  14.3 pip-audit pass
-  14.4 debug=False default
-  → commit
-```
-
-All branches off `main`, committed locally, pushed manually by user.
+Things left for the user to do (cannot do without them):
+1. `git push -u origin <branch>` for each branch (manual push per CLAUDE.md).
+2. Open PRs in the desired merge order (10 → 11 → 12 → 13 → 14).
+3. On Railway: create project, add volume mounted at `/data`, set the env
+   vars listed in the table below, deploy.
+4. Optional: smoke-test `docker build .` locally before pushing — wasn't
+   exercised in this session.
 
 ---
 
