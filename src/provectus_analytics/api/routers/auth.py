@@ -6,7 +6,7 @@ short access-token TTL (15min) bounds the risk.
 from __future__ import annotations
 
 from fastapi import APIRouter, Depends, HTTPException, Request, status
-from pydantic import BaseModel, EmailStr, Field
+from pydantic import BaseModel, Field
 
 from ... import db as _db
 from ...auth import deps, tokens, users
@@ -18,7 +18,11 @@ router = APIRouter(prefix="/api/auth", tags=["auth"])
 
 
 class LoginRequest(BaseModel):
-    email: EmailStr
+    # `str` not EmailStr — we don't want to expose whether an email is
+    # well-formed vs whether credentials match (information leak), and the
+    # strict validator rejects perfectly usable corporate TLDs (.local, etc.).
+    # users.authenticate handles missing/wrong credentials uniformly.
+    email: str = Field(min_length=1)
     password: str = Field(min_length=1)
 
 
