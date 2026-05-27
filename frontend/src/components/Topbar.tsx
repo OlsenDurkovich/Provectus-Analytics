@@ -18,6 +18,8 @@ type Props = {
   notifOpen: boolean;
   setNotifOpen: (open: boolean) => void;
   showRangePicker?: boolean;
+  userEmail?: string | null;
+  onLogout?: () => void;
 };
 
 export function Topbar({
@@ -33,6 +35,8 @@ export function Topbar({
   notifOpen,
   setNotifOpen,
   showRangePicker = true,
+  userEmail = null,
+  onLogout,
 }: Props) {
   const meta = useMeta();
   const isLive = meta.data?.mode === 'real';
@@ -145,6 +149,17 @@ export function Topbar({
       >
         <Icon name={theme === 'dark' ? 'sun' : 'moon'} size={14} />
       </button>
+
+      {userEmail && onLogout && (
+        <button
+          className="btn btn-outline"
+          onClick={onLogout}
+          title={`Sign out ${userEmail}`}
+          type="button"
+        >
+          Sign out
+        </button>
+      )}
 
       <div ref={notifRef} style={{ position: 'relative' }}>
         <button

@@ -1,3 +1,4 @@
+import { authFetch } from '../auth/authFetch';
 import type {
   Meta,
   Kpi,
@@ -39,7 +40,7 @@ function buildQuery(params?: Record<string, string | undefined>): string {
 }
 
 async function get<T>(path: string, params?: Record<string, string | undefined>): Promise<T> {
-  const res = await fetch(path + buildQuery(params), {
+  const res = await authFetch(path + buildQuery(params), {
     headers: { Accept: 'application/json' },
   });
   if (!res.ok) throw new ApiError(res.status, await res.text());
@@ -47,7 +48,7 @@ async function get<T>(path: string, params?: Record<string, string | undefined>)
 }
 
 async function post<T>(path: string, body?: unknown): Promise<T> {
-  const res = await fetch(path, {
+  const res = await authFetch(path, {
     method: 'POST',
     headers: { 'Content-Type': 'application/json', Accept: 'application/json' },
     body: body ? JSON.stringify(body) : undefined,
@@ -57,7 +58,7 @@ async function post<T>(path: string, body?: unknown): Promise<T> {
 }
 
 async function patchReq<T>(path: string, body: unknown): Promise<T> {
-  const res = await fetch(path, {
+  const res = await authFetch(path, {
     method: 'PATCH',
     headers: { 'Content-Type': 'application/json', Accept: 'application/json' },
     body: JSON.stringify(body),

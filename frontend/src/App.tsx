@@ -9,11 +9,13 @@ import RatingDetail from './routes/RatingDetail';
 import Student from './routes/Student';
 import Instructor from './routes/Instructor';
 import Flights from './routes/Flights';
+import Login from './routes/Login';
 import { useTheme } from './hooks/useTheme';
 import { useShortcuts } from './hooks/useShortcuts';
 import { usePersistedTab } from './hooks/usePersistedTab';
 import { useRange } from './hooks/useRange';
 import { useImportFsp, useRebuild } from './data/queries';
+import { useAuth } from './auth/AuthContext';
 
 function breadcrumbFor(pathname: string): string {
   for (const n of NAV) {
@@ -24,9 +26,27 @@ function breadcrumbFor(pathname: string): string {
 }
 
 export default function App() {
+  const { status, user, logout } = useAuth();
+  const { theme, toggle: toggleTheme } = useTheme();
+
+  // Theme has to be wired even on the login page so the form respects light/dark.
+  if (status === 'unauthenticated') {
+    return <Login />;
+  }
+
+  return <Shell user={user} logout={logout} theme={theme} toggleTheme={toggleTheme} />;
+}
+
+type ShellProps = {
+  user: ReturnType<typeof useAuth>['user'];
+  logout: ReturnType<typeof useAuth>['logout'];
+  theme: ReturnType<typeof useTheme>['theme'];
+  toggleTheme: ReturnType<typeof useTheme>['toggle'];
+};
+
+function Shell({ user, logout, theme, toggleTheme }: ShellProps) {
   const location = useLocation();
   const navigate = useNavigate();
-  const { theme, toggle: toggleTheme } = useTheme();
   const [collapsed, setCollapsed] = useState(false);
   const [cmdkOpen, setCmdkOpen] = useState(false);
   const [notifOpen, setNotifOpen] = useState(false);
@@ -77,6 +97,8 @@ export default function App() {
           notifOpen={notifOpen}
           setNotifOpen={setNotifOpen}
           showRangePicker={isOverview}
+          userEmail={user?.email ?? null}
+          onLogout={logout}
         />
         <div className="canvas">
           <ErrorBoundary>
