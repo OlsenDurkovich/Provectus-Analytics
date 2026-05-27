@@ -182,6 +182,67 @@ def ingest_survey(conn: sqlite3.Connection, survey_csv: Path) -> int:
     return len(rows)
 
 
+# Columns in the alumni survey XLSX that hold rating-boundary dates (datetime
+# in Excel, but partition.py expects "Month YYYY" strings — same format the
+# synthetic CSV uses).
+_SURVEY_MONTH_COLUMNS = {
+    "PPL training start", "First solo", "XC solos complete", "PPL checkride",
+    "IFR training start", "XC PIC complete", "IFR checkride",
+    "ASEL COM start", "ASEL COM checkride",
+    "AMEL start", "AMEL checkride",
+    "CFI start", "CFI checkride",
+    "CFII start", "CFII checkride",
+    "MEI start", "MEI checkride",
+}
+
+
+def _normalize_survey_cell(col: str, value):
+    """Coerce one XLSX cell into the string shape downstream consumers expect.
+
+    - Timestamp     → 'M/D/YYYY H:MM:SS' (matches synthetic CSV)
+    - Date columns  → 'Month YYYY'        (matches synthetic CSV → partition.py)
+    - Anything else → str() or ''         (Yes/No/freeform passthrough)
+    """
+    if value is None:
+        return ""
+    if col == "Timestamp" and hasattr(value, "strftime"):
+        return value.strftime("%-m/%-d/%Y %-H:%M:%S")
+    if col in _SURVEY_MONTH_COLUMNS and hasattr(value, "strftime"):
+        return value.strftime("%B %Y")
+    return str(value).strip()
+
+
+def ingest_survey_xlsx(conn: sqlite3.Connection, xlsx_path: Path) -> int:
+    """Ingest a Google-Form-exported alumni survey XLSX.
+
+    The real survey has identical column names to the synthetic CSV, but
+    Excel stores dates as datetime objects. Normalize to strings so the
+    existing reconcile + partition logic works unchanged.
+    """
+    wb = _load_workbook(xlsx_path)
+    ws = wb.active
+    headers = [str(c.value).strip() if c.value else "" for c in
+               next(ws.iter_rows(min_row=1, max_row=1))]
+
+    rows_to_insert = []
+    for row in ws.iter_rows(min_row=2, values_only=True):
+        if all(v is None for v in row):
+            continue
+        normalized = {h: _normalize_survey_cell(h, v) for h, v in zip(headers, row)}
+        # Require a name OR an email to count as a real response.
+        if not normalized.get("Full name") and not normalized.get("Email"):
+            continue
+        rows_to_insert.append((normalized.get("Timestamp"), json.dumps(normalized)))
+
+    conn.executemany(
+        """INSERT INTO surveys (student_id, submitted_at, raw_response)
+           VALUES (NULL, ?, ?)""",
+        rows_to_insert,
+    )
+    conn.commit()
+    return len(rows_to_insert)
+
+
 def ingest_all(
     conn: sqlite3.Connection,
     clients_csv: Path,
@@ -242,6 +303,42 @@ def _load_workbook(xlsx_path: Path):
     return openpyxl.load_workbook(xlsx_path, data_only=True)
 
 
+# FSP doesn't currently export a per-flight rating label, but if/when it does
+# (or if an Ops team adds a sidecar column), these are the header names we'll
+# accept. Normalized to upper-case for case-insensitive matching.
+_RATING_LABEL_HEADERS = {"RATING", "RATING LABEL", "COURSE", "PROGRAM"}
+
+# Canonical rating codes we recognize.
+_KNOWN_RATING_LABELS = {"PPL", "IFR", "COM", "AMEL", "CFI", "CFII", "MEI"}
+
+# Map common synonyms to canonical codes.
+_RATING_LABEL_SYNONYMS = {
+    "ASEL COM": "COM", "COMMERCIAL": "COM", "COMMERCIAL SE": "COM",
+    "PRIVATE": "PPL", "PRIVATE PILOT": "PPL",
+    "INSTRUMENT": "IFR",
+    "MULTI": "AMEL", "MULTI-ENGINE": "AMEL", "MULTI ENGINE": "AMEL",
+}
+
+
+def _normalize_rating_label(value) -> str | None:
+    """Map a freeform rating tag to our canonical code, or None."""
+    s = _str(value)
+    if not s:
+        return None
+    upper = s.upper()
+    if upper in _KNOWN_RATING_LABELS:
+        return upper
+    return _RATING_LABEL_SYNONYMS.get(upper)
+
+
+def _find_rating_label_header(headers: list[str]) -> str | None:
+    """Return the actual header name to read rating labels from, if any."""
+    for h in headers:
+        if h.upper() in _RATING_LABEL_HEADERS:
+            return h
+    return None
+
+
 def ingest_flight_detail_xlsx(conn: sqlite3.Connection, xlsx_path: Path) -> dict[str, int]:
     """Incremental ingest of FSP Flight Detail XLSX → flights table.
 
@@ -258,6 +355,7 @@ def ingest_flight_detail_xlsx(conn: sqlite3.Connection, xlsx_path: Path) -> dict
     ws = wb.active
     headers = [str(c.value).strip() if c.value else "" for c in
                next(ws.iter_rows(min_row=1, max_row=1))]
+    rating_header = _find_rating_label_header(headers)
 
     inserted = updated = skipped = 0
 
@@ -287,6 +385,8 @@ def ingest_flight_detail_xlsx(conn: sqlite3.Connection, xlsx_path: Path) -> dict
         res_type = _str(rd.get("Type")) or "Dual Flight Training"
         status = _str(rd.get("Status")) or "Completed"
         instructor = _str(rd.get("Instructor"))
+        rating_label = (_normalize_rating_label(rd.get(rating_header))
+                        if rating_header else None)
 
         # Does this reservation already exist?
         existing = conn.execute(
@@ -300,42 +400,69 @@ def ingest_flight_detail_xlsx(conn: sqlite3.Connection, xlsx_path: Path) -> dict
                        fsp_reservation, fsp_flight_num, flight_date, length_hrs,
                        reservation_type, status, client_raw, aircraft_tail, aircraft_make,
                        aircraft_model, aircraft_class, instructor,
-                       hobbs_hours, billing_category, is_ground_lesson
-                   ) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)""",
+                       hobbs_hours, billing_category, is_ground_lesson, rating_label
+                   ) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)""",
                 (
                     res_num, flight_num, flight_date, 0.0,
                     res_type, status, client_raw, tail, make,
                     model, ac_class, instructor,
-                    hobbs, billing_cat, is_ground,
+                    hobbs, billing_cat, is_ground, rating_label,
                 ),
             )
             inserted += 1
         else:
             # Refresh FSP-sourced fields. Overrides will re-stomp the values
             # they care about after apply_overrides() runs.
-            conn.execute(
-                """UPDATE flights SET
-                       fsp_flight_num   = ?,
-                       flight_date      = ?,
-                       reservation_type = ?,
-                       status           = ?,
-                       client_raw       = ?,
-                       aircraft_tail    = ?,
-                       aircraft_make    = ?,
-                       aircraft_model   = ?,
-                       aircraft_class   = ?,
-                       instructor       = ?,
-                       hobbs_hours      = ?,
-                       billing_category = ?,
-                       is_ground_lesson = ?
-                   WHERE fsp_reservation = ?""",
-                (
-                    flight_num, flight_date, res_type, status, client_raw,
-                    tail, make, model, ac_class, instructor,
-                    hobbs, billing_cat, is_ground,
-                    res_num,
-                ),
-            )
+            # Preserve a previously-set rating_label only if FSP didn't supply one.
+            if rating_label is None:
+                conn.execute(
+                    """UPDATE flights SET
+                           fsp_flight_num   = ?,
+                           flight_date      = ?,
+                           reservation_type = ?,
+                           status           = ?,
+                           client_raw       = ?,
+                           aircraft_tail    = ?,
+                           aircraft_make    = ?,
+                           aircraft_model   = ?,
+                           aircraft_class   = ?,
+                           instructor       = ?,
+                           hobbs_hours      = ?,
+                           billing_category = ?,
+                           is_ground_lesson = ?
+                       WHERE fsp_reservation = ?""",
+                    (
+                        flight_num, flight_date, res_type, status, client_raw,
+                        tail, make, model, ac_class, instructor,
+                        hobbs, billing_cat, is_ground,
+                        res_num,
+                    ),
+                )
+            else:
+                conn.execute(
+                    """UPDATE flights SET
+                           fsp_flight_num   = ?,
+                           flight_date      = ?,
+                           reservation_type = ?,
+                           status           = ?,
+                           client_raw       = ?,
+                           aircraft_tail    = ?,
+                           aircraft_make    = ?,
+                           aircraft_model   = ?,
+                           aircraft_class   = ?,
+                           instructor       = ?,
+                           hobbs_hours      = ?,
+                           billing_category = ?,
+                           is_ground_lesson = ?,
+                           rating_label     = ?
+                       WHERE fsp_reservation = ?""",
+                    (
+                        flight_num, flight_date, res_type, status, client_raw,
+                        tail, make, model, ac_class, instructor,
+                        hobbs, billing_cat, is_ground, rating_label,
+                        res_num,
+                    ),
+                )
             updated += 1
 
     conn.commit()
@@ -546,6 +673,7 @@ _OVERRIDABLE_COLUMNS = {
     "billing_category": _to_str,
     "aircraft_class":   _to_str,
     "reservation_type": _to_str,
+    "rating_label":     _to_str,   # manual per-flight rating attribution
 }
 
 

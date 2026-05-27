@@ -33,6 +33,23 @@ dist/
 output/
 FSP Exports/
 
+# Real alumni survey responses (PII — name, email, training timeline).
+# Synthetic equivalent (synthetic_alumni_survey.csv) stays checked in for tests.
+alumni_survey.xlsx
+
+# Ruflo MCP local state
+agentdb.rvf
+agentdb.rvf.lock
+
+# Local Python virtualenvs (additional patterns)
+.venv_ci/
+
+# Designer / non-code source bundles
+design_handoff_provectus_analytics/
+
+# Root-level node_modules (frontend/node_modules already covered above)
+/node_modules/
+
 # Frontend
 frontend/node_modules/
 frontend/dist/

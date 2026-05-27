@@ -5,7 +5,7 @@ Python analytics web app pulling data from Flight Schedule Pro (FSP) to measure 
 **The roadmap is the source of truth — read it first:** `ROADMAP.md` in this folder.
 
 ## Current phase
-Phase 3 — alumni outreach (boss priority). Pipeline + dashboard are built against synthetic data; waiting on real survey responses to swap in live data. Phases 1–8.6 + Phase 9 (Claude-in-Chrome automation) + Phase 9.5 (incremental ingest + per-flight override surface) complete.
+**Website migration (Phases 10–14)** — moving from local `.command` launcher to a hosted Railway deployment with auth. Working doc: [MIGRATION.md](MIGRATION.md). Pipeline + dashboard are built against synthetic data; real alumni survey responses are landing now (Phase 10.2). Phases 1–8.6 + Phase 9 (Claude-in-Chrome automation) + Phase 9.5 (incremental ingest + per-flight override surface) complete.
 
 ## Key context (already locked, don't re-litigate)
 - Ratings covered: PPL, IFR, ASEL COM, AMEL, CFI, CFII, MEI.
@@ -18,4 +18,4 @@ Phase 3 — alumni outreach (boss priority). Pipeline + dashboard are built agai
 - Be brief, no filler or trailing summaries.
 - Flag guesses explicitly.
 - GitHub pushes are manual — confirm before `git push`.
-- Web framework locked: **Dash** (replaced original Streamlit MVP in Phase 8.5). Launch with `python app.py`. Design system lives in `assets/styles.css` with CSS variables for dark/light themes.
+- Web framework: **FastAPI + Vite + React 19 + TypeScript** (replaced Dash in Phase 10, May 2026). Backend factory at `src/provectus_analytics/api/main.py`; frontend under `frontend/`. Launch locally via `Provectus.command` (double-click) or `python -m uvicorn provectus_analytics.api.main:app`. Frontend dev server: `cd frontend && npm run dev`. Production build: `cd frontend && npm run build` (output served by FastAPI via `StaticFiles` + SPA fallback).

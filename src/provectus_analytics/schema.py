@@ -67,7 +67,8 @@ DDL = [
         billing_category TEXT,                  -- AMEL|MEI|CFI|CFII|PRIMARY|MISC|NONE (null = synthetic/unknown)
         is_ground_lesson INTEGER NOT NULL DEFAULT 0,  -- 1 if no aircraft + no Hobbs
         enrollment_id    INTEGER REFERENCES enrollments(enrollment_id),  -- set by partitioner; null = unattributed
-        partition_notes  TEXT                   -- e.g. 'resolved via SE/ME tiebreaker'
+        partition_notes  TEXT,                  -- e.g. 'resolved via SE/ME tiebreaker'
+        rating_label     TEXT                   -- optional FSP-native or manual rating tag (PPL/IFR/COM/AMEL/CFI/CFII/MEI); when set, partition uses this directly
     )
     """,
     """
