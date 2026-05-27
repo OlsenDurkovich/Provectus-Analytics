@@ -212,7 +212,7 @@ def partition_flights(conn: sqlite3.Connection) -> dict[str, int]:
 
     flights = list(conn.execute(
         """SELECT flight_id, student_id, flight_date, reservation_type, status,
-                  aircraft_class, billing_category
+                  aircraft_class, billing_category, rating_label
            FROM flights"""
     ))
 
@@ -274,6 +274,24 @@ def partition_flights(conn: sqlite3.Connection) -> dict[str, int]:
             e for e in student_enrolls
             if e["start_date"] <= fl["flight_date"] <= e["checkride_date"]
         ]
+
+        # Priority 0: an explicit rating_label trumps everything else. Picks the
+        # matching enrollment regardless of date window (e.g. for back-dated
+        # corrections) — falls through to date-window logic only if no match.
+        rl = fl["rating_label"]
+        if rl:
+            label_matches = [e for e in student_enrolls if e["rating_code"] == rl]
+            if label_matches:
+                label_matches.sort(key=lambda e: e["start_date"])
+                conn.execute(
+                    "UPDATE flights SET enrollment_id = ?, partition_notes = ? "
+                    "WHERE flight_id = ?",
+                    (label_matches[0]["enrollment_id"],
+                     f"rating_label={rl} → direct attribution",
+                     fl["flight_id"]),
+                )
+                stats["attributed"] += 1
+                continue
 
         if not candidates:
             stats["unattributed"] += 1

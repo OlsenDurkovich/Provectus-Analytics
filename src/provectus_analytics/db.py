@@ -109,6 +109,15 @@ def _migrate_enrollments(conn: sqlite3.Connection) -> None:
     conn.commit()
 
 
+def _migrate_flights_add_rating_label(conn: sqlite3.Connection) -> None:
+    """Add flights.rating_label if it doesn't exist yet (Phase 10.3)."""
+    cols = {row[1] for row in conn.execute("PRAGMA table_info(flights)").fetchall()}
+    if "rating_label" in cols:
+        return
+    conn.execute("ALTER TABLE flights ADD COLUMN rating_label TEXT")
+    conn.commit()
+
+
 def open_or_create(db_path: str | Path) -> sqlite3.Connection:
     """Open DB at db_path, creating tables/indexes that don't exist yet.
 
@@ -125,6 +134,7 @@ def open_or_create(db_path: str | Path) -> sqlite3.Connection:
     )
     conn.commit()
     _migrate_enrollments(conn)  # forward-only: no-op if already on new schema
+    _migrate_flights_add_rating_label(conn)
     return conn
 
 
