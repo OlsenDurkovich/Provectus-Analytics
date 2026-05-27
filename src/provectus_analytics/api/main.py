@@ -1,9 +1,11 @@
 """FastAPI app factory + uvicorn entry."""
 from __future__ import annotations
 
+import os
 from pathlib import Path
 
 from fastapi import Depends, FastAPI, Request
+from fastapi.middleware.cors import CORSMiddleware
 from fastapi.responses import FileResponse, JSONResponse
 from fastapi.staticfiles import StaticFiles
 from slowapi import _rate_limit_exceeded_handler
@@ -23,6 +25,7 @@ from .routers import meta as meta_router
 from .routers import ratings as ratings_router
 from .routers import students as students_router
 from .routers import upload as upload_router
+from .security_headers import SecurityHeadersMiddleware
 
 REPO_ROOT = Path(__file__).resolve().parents[3]
 FRONTEND_DIST = REPO_ROOT / "frontend" / "dist"
@@ -43,12 +46,46 @@ def _bootstrap_auth() -> None:
         conn.close()
 
 
+def _allowed_origins() -> list[str]:
+    """Comma-separated CORS_ALLOWED_ORIGINS env var → list.
+
+    Dev default allows localhost on the common Vite/React ports; prod must
+    set the real origin explicitly. Same-origin requests (the SPA hitting
+    /api/* on the same host) don't need CORS at all, so an empty list is
+    fine when frontend + backend ship as one container.
+    """
+    raw = os.getenv("CORS_ALLOWED_ORIGINS")
+    if raw is not None:
+        return [s.strip() for s in raw.split(",") if s.strip()]
+    if auth_settings.is_prod:
+        return []  # same-origin only by default
+    return ["http://localhost:5173", "http://127.0.0.1:5173",
+            "http://localhost:8050", "http://127.0.0.1:8050"]
+
+
 def create_app() -> FastAPI:
     app = FastAPI(
         title="Provectus Analytics",
         docs_url="/api/docs",
         openapi_url="/api/openapi.json",
+        # Explicit — FastAPI default is False, but be loud about it. Stack
+        # traces in prod responses would leak SQL / file paths.
+        debug=False,
     )
+
+    # Security headers on every response (Phase 14).
+    app.add_middleware(SecurityHeadersMiddleware, hsts=auth_settings.is_prod)
+
+    # CORS — locked to env in prod, dev-friendly when PROVECTUS_ENV != prod.
+    origins = _allowed_origins()
+    if origins:
+        app.add_middleware(
+            CORSMiddleware,
+            allow_origins=origins,
+            allow_credentials=True,
+            allow_methods=["GET", "POST", "PATCH", "DELETE", "OPTIONS"],
+            allow_headers=["Authorization", "Content-Type"],
+        )
 
     # Rate limiting (auth login). Limiter is module-level so route decorators
     # can reference it at import time.

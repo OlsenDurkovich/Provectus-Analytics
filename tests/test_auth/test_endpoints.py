@@ -65,10 +65,13 @@ def test_login_unknown_email_returns_401(client):
     assert r.status_code == 401
 
 
-def test_login_invalid_email_format_returns_422(client):
+def test_login_does_not_validate_email_format(client):
+    """We deliberately accept any string on /login so the validator can't
+    leak whether an email is well-formed vs whether the password matched.
+    Garbage input still gets 401, not 422."""
     r = client.post("/api/auth/login",
                     json={"email": "not-an-email", "password": "anything"})
-    assert r.status_code == 422
+    assert r.status_code == 401
 
 
 def test_protected_route_without_token_returns_401(client):
