@@ -8,10 +8,18 @@ from .schema import DDL, RATING_SEED
 
 
 def connect(db_path: str | Path) -> sqlite3.Connection:
-    """Open a SQLite connection with sensible defaults."""
+    """Open a SQLite connection with sensible defaults.
+
+    WAL mode lets readers and a single writer work concurrently — critical
+    when a long-running rebuild would otherwise block the API serving pages.
+    journal_mode is per-database (sticks across opens), so this is effectively
+    a one-time set; running it on every connect is cheap and idempotent.
+    """
     conn = sqlite3.connect(db_path)
     conn.row_factory = sqlite3.Row
     conn.execute("PRAGMA foreign_keys = ON")
+    conn.execute("PRAGMA journal_mode = WAL")
+    conn.execute("PRAGMA synchronous = NORMAL")
     return conn
 
 

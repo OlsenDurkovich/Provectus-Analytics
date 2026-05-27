@@ -1,0 +1,74 @@
+# Mirrors .gitignore plus a few build-time-only artifacts. Keeps the
+# Dockerfile context small and prevents accidental PII inclusion.
+
+# Python
+__pycache__/
+*.py[cod]
+*.egg-info/
+.pytest_cache/
+.coverage
+.venv/
+.venv_ci/
+venv/
+build/
+
+# Editor / OS
+.DS_Store
+*.swp
+.vscode/
+.idea/
+.claude/
+
+# Excel lock files
+.~lock.*#
+~$*
+
+# Local SQLite (DB lives on the Railway volume, not in the image)
+*.db
+*.db-journal
+*.db-wal
+*.db-shm
+*.sqlite
+*.sqlite3
+
+# Generated outputs
+output/
+dist/
+frontend/dist/
+frontend/node_modules/
+node_modules/
+
+# Real alumni data (PII) — uploaded to the volume at runtime
+alumni_survey.xlsx
+FSP Exports/
+
+# Local env + auth secrets
+.env
+.env.local
+
+# Ruflo MCP local state
+agentdb.rvf
+agentdb.rvf.lock
+
+# Design source
+design_handoff_provectus_analytics/
+
+# Tests aren't needed in the image
+tests/
+
+# Docs / non-runtime files
+*.md
+docs/
+Read Me First.pdf
+
+# Don't recurse into git
+.git/
+.gitignore
+
+# CI venvs
+.venv_ci/
+
+# Frontend test-only files (already excluded via node_modules + dist above,
+# but be explicit about test helpers that wouldn't be reached by the build)
+**/*.test.ts
+**/*.test.tsx

@@ -61,13 +61,14 @@ Phase 12 (upload)            — feat/phase-12-upload
   12.2 frontend file picker replaces sidebar "Import FSP" button
   → pytest, commit
 
-Phase 13 (Railway prep)      — feat/phase-13-railway
-  13.0 DB_PATH + PORT env-driven in code
-  13.1 PRAGMA journal_mode=WAL on init
-  13.2 multi-stage Dockerfile (node:20 → python:3.12-slim)
-  13.3 railway.toml
-  13.4 volume mount docs at /data
-  → local docker build + run smoke test, commit
+Phase 13 (Railway prep)      — feat/phase-13-railway ✅ shipped locally
+  13.0 DB_PATH + PORT env-driven in code        ✅
+  13.1 PRAGMA journal_mode=WAL on init          ✅
+  13.2 multi-stage Dockerfile                    ✅
+  13.3 railway.toml                              ✅
+  13.4 .dockerignore                             ✅
+  13.5 volume mount docs at /data                ✅ (see below)
+  → local docker build + run smoke test pending  ⏳ (docker not run in this session)
 
 Phase 14 (hardening)         — feat/phase-14-hardening
   14.1 CORSMiddleware locked to prod origin via env
@@ -80,6 +81,27 @@ Phase 14 (hardening)         — feat/phase-14-hardening
 All branches off `main`, committed locally, pushed manually by user.
 
 ---
+
+## Railway setup (Phase 13 — what the user does in the dashboard)
+
+Container ships with these env defaults (set in Dockerfile):
+
+| Env var            | Default                       | What to override |
+|---|---|---|
+| `DB_PATH`          | `/data/provectus.db`          | leave as-is on Railway |
+| `FSP_EXPORTS_DIR`  | `/data/fsp-exports`           | leave as-is on Railway |
+| `REAL_SURVEY_PATH` | `/data/alumni_survey.xlsx`    | leave as-is on Railway |
+| `PROVECTUS_ENV`    | `prod`                        | leave as-is on Railway |
+| `PORT`             | 8080 (Railway injects)        | Railway sets automatically |
+
+User must set these in the Railway dashboard → Variables:
+
+- `SECRET_KEY` — generate with `python -c "import secrets; print(secrets.token_urlsafe(64))"`. **Required** when `PROVECTUS_ENV=prod`; the app will refuse to start without it.
+- `INITIAL_ADMIN_EMAIL` + `INITIAL_ADMIN_PASSWORD` — only used on first startup when the users table is empty. The boot path will seed a single admin user and never touch the table again. Safe to leave set or unset thereafter.
+
+Volume mount: add a Railway volume of any size (1 GB is plenty), mount path `/data`. The volume survives redeploys; the container's working tree does not.
+
+Healthcheck: `GET /api/healthz` returns 200 unauthenticated; `railway.toml` is already wired to it.
 
 ## Open questions for the morning
 
