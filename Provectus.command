@@ -35,7 +35,7 @@ else
     source .venv/bin/activate
 fi
 
-PORT=8050
+PORT="${PORT:-8050}"
 
 # ---- Open the browser shortly after the server starts -----------------------
 ( sleep 2 && open "http://127.0.0.1:${PORT}" ) &
@@ -44,5 +44,6 @@ PORT=8050
 echo "  Provectus Analytics is running at http://127.0.0.1:${PORT}"
 echo "  To stop: close this window or press Ctrl+C."
 echo ""
+HOST="${HOST:-127.0.0.1}"
 exec python3 -m uvicorn provectus_analytics.api.main:app \
-    --host 127.0.0.1 --port "${PORT}"
+    --host "${HOST}" --port "${PORT}"

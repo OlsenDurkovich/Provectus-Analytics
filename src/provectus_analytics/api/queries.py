@@ -5,6 +5,7 @@ Functions are LRU-cached on (db_path, args); call `clear_caches()` after rebuild
 """
 from __future__ import annotations
 
+import os
 import sqlite3
 from functools import lru_cache
 from pathlib import Path
@@ -14,12 +15,17 @@ import pandas as pd
 from .. import db as _db, ingest, reconcile, partition, guesstimate, milestones, norms
 
 REPO_ROOT = Path(__file__).resolve().parents[3]
-DEFAULT_DB = REPO_ROOT / "provectus.db"
-FSP_EXPORTS_DIR = REPO_ROOT / "FSP Exports"
+
+# Storage paths are env-driven so Railway (and any other container host) can
+# point them at a persistent volume mounted at /data without code changes.
+# Defaults preserve the existing local-dev layout.
+DEFAULT_DB = Path(os.getenv("DB_PATH", str(REPO_ROOT / "provectus.db")))
+FSP_EXPORTS_DIR = Path(os.getenv("FSP_EXPORTS_DIR", str(REPO_ROOT / "FSP Exports")))
 
 # Alumni survey file paths. Real responses live in alumni_survey.xlsx (Google
 # Forms export); synthetic dataset uses the CSV variant for tests.
-REAL_SURVEY_XLSX = REPO_ROOT / "alumni_survey.xlsx"
+# The real survey path is env-driven for the same reason as DB_PATH.
+REAL_SURVEY_XLSX = Path(os.getenv("REAL_SURVEY_PATH", str(REPO_ROOT / "alumni_survey.xlsx")))
 SYNTHETIC_SURVEY_CSV = REPO_ROOT / "synthetic_alumni_survey.csv"
 
 RATING_ORDER = ["PPL", "IFR", "COM", "AMEL", "CFI", "CFII", "MEI"]
