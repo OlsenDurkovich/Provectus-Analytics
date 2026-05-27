@@ -30,6 +30,7 @@ const DEFAULT_PINNED: PinnedReport[] = [
 
 type Props = {
   collapsed: boolean;
+  onUpload?: () => void;
   onImport?: () => void;
   onRebuild?: (synthetic: boolean) => void;
   importPending?: boolean;
@@ -38,6 +39,7 @@ type Props = {
 
 export function Sidebar({
   collapsed,
+  onUpload,
   onImport,
   onRebuild,
   importPending = false,
@@ -112,21 +114,34 @@ export function Sidebar({
 
       <div className="sidebar-spacer" />
 
-      {!collapsed && (onImport || onRebuild) && (
+      {!collapsed && (onUpload || onImport || onRebuild) && (
         <div className="sidebar-section">
           <div className="sidebar-section-label">Data actions</div>
+          {onUpload && (
+            <button
+              type="button"
+              className="nav-item"
+              onClick={onUpload}
+            >
+              <span className="nav-item-icon">
+                <Icon name="download" size={14} />
+              </span>
+              <span className="nav-item-label">Upload FSP</span>
+            </button>
+          )}
           {onImport && (
             <button
               type="button"
               className="nav-item"
               onClick={onImport}
               disabled={importPending}
+              title="Pick up FSP exports from ~/Downloads (local dev only)"
             >
               <span className="nav-item-icon">
                 <Icon name="download" size={14} />
               </span>
               <span className="nav-item-label">
-                {importPending ? 'Importing…' : 'Import FSP'}
+                {importPending ? 'Importing…' : 'Import from Downloads'}
               </span>
             </button>
           )}

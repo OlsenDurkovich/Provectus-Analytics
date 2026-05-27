@@ -85,19 +85,23 @@ def build_db(db_path: Path = DEFAULT_DB, force_synthetic: bool = False) -> dict:
     if use_real:
         conn = _db.open_or_create(db_path)
         # Purge any stale synthetic rows from prior synthetic-mode runs so the
-        # cohort norms / Student / Instructor pages don't mix the two.
+        # cohort norms / Student / Instructor pages don't mix the two. The
+        # order respects FK constraints: derived rows first, then invoices
+        # (which FK into flights + students), then synthetic flights, then the
+        # synthetic students themselves. ingest_invoice_xlsx repopulates
+        # invoices below; ingest_flight_detail_xlsx repopulates flights.
         # Flights with hobbs_hours IS NULL AND billing_category IS NULL are the
         # synthetic shape; real flights always have at least one of them.
+        conn.execute("DELETE FROM milestones")
+        # flights.enrollment_id FKs into enrollments; null it before the delete.
+        conn.execute("UPDATE flights SET enrollment_id = NULL, partition_notes = NULL")
+        conn.execute("DELETE FROM enrollments")
+        conn.execute("DELETE FROM surveys")
+        conn.execute("DELETE FROM invoices")
         conn.execute(
             "DELETE FROM flights "
             "WHERE hobbs_hours IS NULL AND billing_category IS NULL"
         )
-        # The synthetic students/surveys/enrollments/milestones are derived; the
-        # cleanest reset is to clear them entirely. Real surveys will repopulate
-        # students once they arrive.
-        conn.execute("DELETE FROM milestones")
-        conn.execute("DELETE FROM enrollments")
-        conn.execute("DELETE FROM surveys")
         conn.execute("DELETE FROM students "
                      "WHERE fsp_client_id LIKE 'synth%' OR fsp_client_id IS NULL")
         conn.commit()
