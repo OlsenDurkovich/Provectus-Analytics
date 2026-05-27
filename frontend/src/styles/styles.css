@@ -1601,3 +1601,81 @@ table.dt {
   border-top: 1px dashed var(--border);
   color: var(--fg-dim);
 }
+
+/* ── Login page (Phase 11) ────────────────────────────────────────────── */
+.login-page {
+  min-height: 100vh;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  background: var(--bg);
+  padding: 24px;
+}
+.login-card {
+  width: 100%;
+  max-width: 360px;
+  background: var(--bg-elev);
+  border: 1px solid var(--border);
+  border-radius: 12px;
+  padding: 32px 28px;
+  display: flex;
+  flex-direction: column;
+  gap: 16px;
+  box-shadow: 0 8px 32px rgba(0, 0, 0, 0.18);
+}
+.login-brand {
+  font-size: 18px;
+  font-weight: 600;
+  color: var(--fg);
+  letter-spacing: -0.01em;
+}
+.login-sub {
+  font-size: 13px;
+  color: var(--fg-muted);
+  margin-bottom: 6px;
+}
+.login-field {
+  display: flex;
+  flex-direction: column;
+  gap: 6px;
+}
+.login-field > span {
+  font-size: 12px;
+  color: var(--fg-muted);
+  font-weight: 500;
+}
+.login-field input {
+  height: 36px;
+  padding: 0 12px;
+  border-radius: 8px;
+  border: 1px solid var(--border);
+  background: var(--bg);
+  color: var(--fg);
+  font-size: 14px;
+  font-family: inherit;
+  transition: border-color var(--t), background var(--t);
+}
+.login-field input:focus {
+  outline: none;
+  border-color: var(--accent);
+  background: var(--bg-elev-2, var(--bg-elev));
+}
+.login-error {
+  font-size: 13px;
+  color: var(--danger, #e5484d);
+  background: color-mix(in srgb, var(--danger, #e5484d) 10%, transparent);
+  border: 1px solid color-mix(in srgb, var(--danger, #e5484d) 30%, transparent);
+  border-radius: 6px;
+  padding: 8px 10px;
+}
+.login-submit {
+  height: 36px;
+  justify-content: center;
+  margin-top: 4px;
+  font-size: 13px;
+  font-weight: 500;
+}
+.login-submit:disabled {
+  opacity: 0.6;
+  cursor: not-allowed;
+}
