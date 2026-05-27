@@ -37,6 +37,11 @@ FSP Exports/
 # Synthetic equivalent (synthetic_alumni_survey.csv) stays checked in for tests.
 alumni_survey.xlsx
 
+# Local env (auth secret, admin creds). Template lives in .env.example.
+.env
+.env.local
+.env.*.local
+
 # Ruflo MCP local state
 agentdb.rvf
 agentdb.rvf.lock
