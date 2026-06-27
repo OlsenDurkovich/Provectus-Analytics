@@ -15,8 +15,6 @@ type Props = {
   onThemeToggle: () => void;
   onImport: () => void;
   importPending?: boolean;
-  notifOpen: boolean;
-  setNotifOpen: (open: boolean) => void;
   showRangePicker?: boolean;
   userEmail?: string | null;
   onLogout?: () => void;
@@ -32,8 +30,6 @@ export function Topbar({
   onThemeToggle,
   onImport,
   importPending = false,
-  notifOpen,
-  setNotifOpen,
   showRangePicker = true,
   userEmail = null,
   onLogout,
@@ -44,20 +40,16 @@ export function Topbar({
 
   const [dpopOpen, setDpopOpen] = useState(false);
   const dpopRef = useRef<HTMLDivElement>(null);
-  const notifRef = useRef<HTMLDivElement>(null);
 
   useEffect(() => {
     function onDoc(e: MouseEvent) {
       if (dpopRef.current && !dpopRef.current.contains(e.target as Node)) {
         setDpopOpen(false);
       }
-      if (notifRef.current && !notifRef.current.contains(e.target as Node)) {
-        setNotifOpen(false);
-      }
     }
     document.addEventListener('mousedown', onDoc);
     return () => document.removeEventListener('mousedown', onDoc);
-  }, [setNotifOpen]);
+  }, []);
 
   return (
     <header className="topbar">
@@ -161,31 +153,6 @@ export function Topbar({
         </button>
       )}
 
-      <div ref={notifRef} style={{ position: 'relative' }}>
-        <button
-          className="btn btn-icon notif-btn"
-          onClick={() => setNotifOpen(!notifOpen)}
-          title="Notifications"
-          type="button"
-        >
-          <Icon name="bell" size={14} />
-        </button>
-        {notifOpen && (
-          <div className="notif-pop">
-            <div className="notif-head">
-              <h4>Notifications</h4>
-            </div>
-            <div className="notif-list">
-              <div className="empty" style={{ padding: '24px 12px' }}>
-                <div className="empty-title">All caught up</div>
-                <div className="empty-sub">
-                  Notifications will surface here when wired to a real feed.
-                </div>
-              </div>
-            </div>
-          </div>
-        )}
-      </div>
     </header>
   );
 }

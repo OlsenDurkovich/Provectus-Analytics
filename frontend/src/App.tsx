@@ -50,7 +50,6 @@ function Shell({ user, logout, theme, toggleTheme }: ShellProps) {
   const navigate = useNavigate();
   const [collapsed, setCollapsed] = useState(false);
   const [cmdkOpen, setCmdkOpen] = useState(false);
-  const [notifOpen, setNotifOpen] = useState(false);
   const [uploadOpen, setUploadOpen] = useState(false);
   const { range, setRange } = useRange();
   const importMut = useImportFsp();
@@ -97,8 +96,6 @@ function Shell({ user, logout, theme, toggleTheme }: ShellProps) {
           onThemeToggle={toggleTheme}
           onImport={() => setUploadOpen(true)}
           importPending={importMut.isPending}
-          notifOpen={notifOpen}
-          setNotifOpen={setNotifOpen}
           showRangePicker={isOverview}
           userEmail={user?.email ?? null}
           onLogout={logout}
