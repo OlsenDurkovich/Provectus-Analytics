@@ -225,6 +225,8 @@ Deployment is done; the app is live on synthetic data. The following is the work
   - *Per-account logins* — each person gets their own credentials, not a shared password.
   - *Roles & permissions* — e.g. admin (full access + user management + flight overrides) vs viewer (read-only dashboards). Needed before granting instructors or wider access.
   - *Code pointers:* backend auth lives in `src/provectus_analytics/auth/` — `users.py` (`create_user`, `authenticate`, `get_user_by_email`, `count_users`, `seed_initial_admin`, `ensure_users_table` — the users table schema is here), `deps.py` (`current_active_user` + `current_admin_user` already exist, so admin-role scaffolding is partly built — check for an `is_admin` flag on the user row), `tokens.py` (JWT), `passwords.py` (bcrypt). Auth endpoints: `api/routers/auth.py`. Multiple-logins likely needs a new admin-only "create user" route + a frontend admin screen. Frontend auth/login UI: `frontend/src/auth/`.
+  - *Progress (2026-06-27):* the sidebar account chip now displays the signed-in user (email + role) — per-account *display* is done. Still pending: admin-driven account creation, multiple users, and role enforcement.
+
 ### P2 — Medium
 
 - **Color scheme / branding pass** — align the palette with Provectus branding; matters especially for the public-facing transparency view.
@@ -239,6 +241,7 @@ Deployment is done; the app is live on synthetic data. The following is the work
 
 - ✅ **Clean up dead buttons** (2026-06-27) — audited every control; only the notifications bell was non-functional (placeholder, no feed). Removed the bell, the orphaned `NotificationsPopover.tsx`, the `notifOpen` plumbing, and dead `notif-*` CSS. Everything else was already wired. tsc + build clean, 76/76 frontend tests pass.
 - ✅ **Auto-seed DB on empty at startup** (2026-06-27) — shipped as `feat(api): auto-seed analytics DB on startup if empty`; a fresh or wiped `/data` volume now self-heals instead of showing empty charts.
+- ✅ **Sidebar user chip tied to login** (2026-06-27) — the bottom sidebar chip was hardcoded ("PA / Provectus Aviation / Internal analytics"); now shows the signed-in user (initials from email, email, role) from data already on the login. Also removed two dead "switcher" chevrons (workspace header + user chip). First concrete slice of User & access management — account *display* is live; account *creation* + role enforcement still pending.
 
 ---
 
