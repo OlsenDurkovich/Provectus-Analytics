@@ -224,7 +224,9 @@ Deployment is done; the app is live on synthetic data. The following is the work
   - *Multiple logins* — let an admin create additional user accounts; today only the single seeded admin exists.
   - *Per-account logins* — each person gets their own credentials, not a shared password.
   - *Roles & permissions* — e.g. admin (full access + user management + flight overrides) vs viewer (read-only dashboards). Needed before granting instructors or wider access.
+  - *Code pointers:* backend auth lives in `src/provectus_analytics/auth/` — `users.py` (`create_user`, `authenticate`, `get_user_by_email`, `count_users`, `seed_initial_admin`, `ensure_users_table` — the users table schema is here), `deps.py` (`current_active_user` + `current_admin_user` already exist, so admin-role scaffolding is partly built — check for an `is_admin` flag on the user row), `tokens.py` (JWT), `passwords.py` (bcrypt). Auth endpoints: `api/routers/auth.py`. Multiple-logins likely needs a new admin-only "create user" route + a frontend admin screen. Frontend auth/login UI: `frontend/src/auth/`.
 - **Clean up dead buttons** — audit the UI for controls that currently do nothing; either wire each to real functionality or remove it. (Reads as unfinished right now.)
+  - *Code pointers:* UI controls live in `frontend/src/components/` (`Sidebar.tsx`, `Topbar.tsx`, `NotificationsPopover.tsx`, `OverrideMenu.tsx`, `UploadDialog.tsx`, `CmdK.tsx`) and `frontend/src/routes/`. Fast way to find dead ones: grep for `onClick` handlers that are empty/no-op, and buttons with no handler at all.
 
 ### P2 — Medium
 
