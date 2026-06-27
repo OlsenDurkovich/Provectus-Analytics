@@ -15,7 +15,7 @@ from slowapi.middleware import SlowAPIMiddleware
 from .. import db as _db
 from ..auth import ensure_users_table, seed_initial_admin
 from ..auth.config import settings as auth_settings
-from ..auth.deps import current_active_user
+from ..auth.deps import current_active_user, current_admin_user
 from ..auth.rate_limit import limiter
 from .routers import auth as auth_router
 from .routers import flights as flights_router
@@ -25,6 +25,7 @@ from .routers import meta as meta_router
 from .routers import ratings as ratings_router
 from .routers import students as students_router
 from .routers import upload as upload_router
+from .routers import users as users_router
 from .security_headers import SecurityHeadersMiddleware
 
 REPO_ROOT = Path(__file__).resolve().parents[3]
@@ -133,15 +134,19 @@ def create_app() -> FastAPI:
     # auth router (logout, me) declare their own auth dependency.
     app.include_router(auth_router.router)
 
-    # All data routers require an authenticated user.
+    # Read-only data routers: any authenticated user (admin/instructor/viewer).
     protected = [Depends(current_active_user)]
     app.include_router(meta_router.router,        dependencies=protected)
     app.include_router(kpis_router.router,        dependencies=protected)
     app.include_router(ratings_router.router,     dependencies=protected)
     app.include_router(students_router.router,    dependencies=protected)
     app.include_router(instructors_router.router, dependencies=protected)
-    app.include_router(flights_router.router,     dependencies=protected)
-    app.include_router(upload_router.router,      dependencies=protected)
+
+    # Admin-only: user management, the Flights override surface, and FSP uploads.
+    admin_only = [Depends(current_admin_user)]
+    app.include_router(users_router.router,       dependencies=admin_only)
+    app.include_router(flights_router.router,     dependencies=admin_only)
+    app.include_router(upload_router.router,      dependencies=admin_only)
 
     if FRONTEND_DIST.exists():
         # Mount /assets explicitly so hashed JS/CSS bundles are served directly.
