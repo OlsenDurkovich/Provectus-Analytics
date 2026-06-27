@@ -31,6 +31,27 @@ REPO_ROOT = Path(__file__).resolve().parents[3]
 FRONTEND_DIST = REPO_ROOT / "frontend" / "dist"
 
 
+def _bootstrap_data() -> None:
+    """Seed the analytics DB on first boot if it's missing or empty.
+
+    The DB file is gitignored (absent from the image) and lives on a runtime
+    volume, so a fresh deploy starts with no data and the dashboard renders
+    empty. ensure_db() builds it from real FSP exports if present, else the
+    bundled synthetic CSVs — and only when empty, so restarts never clobber an
+    existing dataset. Runs BEFORE _bootstrap_auth() because the synthetic
+    rebuild overwrites the whole DB file, which would otherwise wipe the freshly
+    created users table. Failures are logged, never fatal: the app still boots.
+    """
+    from . import queries as web_data  # local import — queries imports schema
+    try:
+        web_data.ensure_db()
+    except Exception:
+        import logging
+        logging.getLogger("uvicorn.error").exception(
+            "analytics DB auto-seed failed; dashboard may render empty"
+        )
+
+
 def _bootstrap_auth() -> None:
     """One-time setup at startup: ensure users table + optional admin seed."""
     from . import queries as web_data  # local import — queries imports schema
@@ -93,6 +114,7 @@ def create_app() -> FastAPI:
     app.add_exception_handler(RateLimitExceeded, _rate_limit_exceeded_handler)
     app.add_middleware(SlowAPIMiddleware)
 
+    _bootstrap_data()  # must precede _bootstrap_auth (synthetic build overwrites the DB file)
     _bootstrap_auth()
 
     @app.get("/api/healthz")
