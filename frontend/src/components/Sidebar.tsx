@@ -28,14 +28,6 @@ export const NAV: NavItem[] = [
   { key: 'flights', label: 'Flights', icon: 'plane', kbd: 'F', path: '/flights' },
 ];
 
-type PinnedReport = { name: string; dot: string };
-const DEFAULT_PINNED: PinnedReport[] = [
-  { name: 'PPL cost trend', dot: '#6E56F8' },
-  { name: 'IFR vs cohort', dot: '#3DD68C' },
-  { name: 'CFI throughput', dot: '#22D3EE' },
-  { name: 'Q2 ops summary', dot: '#F59E0B' },
-];
-
 type Props = {
   collapsed: boolean;
   user?: StoredUser | null;
@@ -100,28 +92,6 @@ export function Sidebar({
             {!collapsed && <span className="nav-item-kbd">{n.kbd}</span>}
           </NavLink>
         ))}
-      </div>
-
-      <div className="sidebar-section">
-        <div className="sidebar-section-label">Pinned reports</div>
-        <div className="pinned-list">
-          {DEFAULT_PINNED.map((p) => (
-            <button key={p.name} className="pinned-item" type="button">
-              <span className="pinned-dot" style={{ background: p.dot }} />
-              <span className="nav-item-label">{p.name}</span>
-            </button>
-          ))}
-          {!collapsed && (
-            <button
-              className="pinned-item"
-              style={{ color: 'var(--fg-dim)' }}
-              type="button"
-            >
-              <Icon name="plus" size={12} />
-              <span className="nav-item-label">Pin a report</span>
-            </button>
-          )}
-        </div>
       </div>
 
       <div className="sidebar-spacer" />

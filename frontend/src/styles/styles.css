@@ -237,27 +237,6 @@ input { font-family: inherit; color: inherit; }
 
 .sidebar-spacer { flex: 1; }
 
-.pinned-list { display: flex; flex-direction: column; gap: 1px; }
-.pinned-item {
-  display: flex;
-  align-items: center;
-  gap: 8px;
-  padding: 5px 8px;
-  border-radius: 6px;
-  font-size: 12.5px;
-  color: var(--fg-muted);
-  cursor: pointer;
-  white-space: nowrap;
-  overflow: hidden;
-}
-.pinned-item:hover { background: var(--bg-elev); color: var(--fg); }
-.pinned-dot {
-  width: 6px;
-  height: 6px;
-  border-radius: 50%;
-  flex-shrink: 0;
-}
-
 .user-menu {
   padding: 8px;
   border-top: 1px solid var(--border);
