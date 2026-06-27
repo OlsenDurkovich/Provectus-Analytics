@@ -16,6 +16,7 @@ import type {
   RatingCode,
   Rating,
   RatingCohortMember,
+  UserRow,
 } from './types';
 
 export class ApiError extends Error {
@@ -67,6 +68,16 @@ async function patchReq<T>(path: string, body: unknown): Promise<T> {
   return (await res.json()) as T;
 }
 
+// For endpoints that return 204 No Content (e.g. change-password).
+async function postNoContent(path: string, body?: unknown): Promise<void> {
+  const res = await authFetch(path, {
+    method: 'POST',
+    headers: { 'Content-Type': 'application/json' },
+    body: body ? JSON.stringify(body) : undefined,
+  });
+  if (!res.ok) throw new ApiError(res.status, await res.text());
+}
+
 export const client = {
   getMeta: () => get<Meta>('/api/meta'),
   getKpis: (range: RangeKey) => get<Kpi[]>('/api/kpis', { range }),
@@ -103,6 +114,14 @@ export const client = {
     if (!res.ok) throw new ApiError(res.status, await res.text());
     return (await res.json()) as { saved: unknown; built: unknown };
   },
+  // User & access management (admin-only on the server).
+  listUsers: () => get<UserRow[]>('/api/users'),
+  createUser: (body: { email: string; password: string; role: string }) =>
+    post<UserRow>('/api/users', body),
+  updateUser: (id: number, body: { role?: string; is_active?: boolean }) =>
+    patchReq<UserRow>(`/api/users/${id}`, body),
+  changePassword: (body: { current_password: string; new_password: string }) =>
+    postNoContent('/api/auth/change-password', body),
 };
 
 export type Client = typeof client;

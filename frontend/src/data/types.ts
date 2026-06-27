@@ -171,3 +171,12 @@ export interface Meta {
   liveClientCount: number;
   dataState: DataState;
 }
+
+export type UserRole = 'admin' | 'instructor' | 'viewer';
+
+export interface UserRow {
+  user_id: number;
+  email: string;
+  role: string;
+  is_active: boolean;
+}

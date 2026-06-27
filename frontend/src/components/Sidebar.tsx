@@ -13,11 +13,12 @@ function initialsFromEmail(email: string): string {
 }
 
 type NavItem = {
-  key: 'overview' | 'rating' | 'student' | 'instructor' | 'flights';
+  key: 'overview' | 'rating' | 'student' | 'instructor' | 'flights' | 'users';
   label: string;
   icon: IconName;
   kbd: string;
   path: string;
+  adminOnly?: boolean;
 };
 
 export const NAV: NavItem[] = [
@@ -25,7 +26,8 @@ export const NAV: NavItem[] = [
   { key: 'rating', label: 'Rating detail', icon: 'metrics', kbd: 'R', path: '/ratings' },
   { key: 'student', label: 'Student', icon: 'users', kbd: 'S', path: '/students' },
   { key: 'instructor', label: 'Instructor', icon: 'star', kbd: 'I', path: '/instructors' },
-  { key: 'flights', label: 'Flights', icon: 'plane', kbd: 'F', path: '/flights' },
+  { key: 'flights', label: 'Flights', icon: 'plane', kbd: 'F', path: '/flights', adminOnly: true },
+  { key: 'users', label: 'Users', icon: 'users', kbd: 'U', path: '/users', adminOnly: true },
 ];
 
 type Props = {
@@ -48,6 +50,7 @@ export function Sidebar({
   rebuildPending = false,
 }: Props) {
   const meta = useMeta();
+  const isAdmin = user?.role === 'admin';
   const userEmail = user?.email ?? '';
   const userInitials = userEmail ? initialsFromEmail(userEmail) : 'PA';
   const roleLabel = user?.role
@@ -78,7 +81,7 @@ export function Sidebar({
 
       <div className="sidebar-section">
         <div className="sidebar-section-label">Analytics</div>
-        {NAV.map((n) => (
+        {NAV.filter((n) => !n.adminOnly || isAdmin).map((n) => (
           <NavLink
             key={n.key}
             to={n.path}
