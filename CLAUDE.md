@@ -5,7 +5,7 @@ Python analytics web app pulling data from Flight Schedule Pro (FSP) to measure 
 **The roadmap is the source of truth — read it first:** `ROADMAP.md` in this folder.
 
 ## Current phase
-**Website migration (Phases 10–14)** — moving from local `.command` launcher to a hosted Railway deployment with auth. Working doc: [MIGRATION.md](MIGRATION.md). Pipeline + dashboard are built against synthetic data; real alumni survey responses are landing now (Phase 10.2). Phases 1–8.6 + Phase 9 (Claude-in-Chrome automation) + Phase 9.5 (incremental ingest + per-flight override surface) complete.
+**Railway deployment + real-data load.** The Phase 10–14 website-migration *code* is done: all five phases (real-survey ingest, JWT auth, upload endpoint, Railway/Docker/WAL config, security hardening) are merged into `main` and pushed (PRs #3,#8,#4,#5,#6). Docker build smoke-tested 2026-06-27 (both stages replicated clean; `npm ci` pin applied). Working doc: [MIGRATION.md](MIGRATION.md). **What's left is not code:** (1) provision Railway in the dashboard (volume at `/data`, set `SECRET_KEY` + initial-admin env vars, deploy); (2) custom domain; (3) load real `alumni_survey.xlsx` — it currently holds ~20 synthetic-shaped rows, real responses still landing (waiting on Seanna Glatzel). Pipeline/dashboard still run on synthetic data until then. Phases 1–9.7 complete.
 
 ## Key context (already locked, don't re-litigate)
 - Ratings covered: PPL, IFR, ASEL COM, AMEL, CFI, CFII, MEI.
