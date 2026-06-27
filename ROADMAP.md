@@ -4,6 +4,8 @@
 
 ## Status snapshot (2026-05-25)
 
+> **Update 2026-06-27 — LIVE.** Deployed on Railway at https://provectusanalytics.com (custom domain + HTTPS), serving synthetic data. Website-migration code (Phases 10–14) merged to `main`; Docker build verified. Remaining work is in the prioritized **Post-launch backlog** below. Ops/deploy details in MIGRATION.md.
+
 - **Phase 1 (schema) — done.** Metrics + milestones locked, see below.
 - **Phase 2 (FSP discovery) — done.** Reporting Hub is the data path. No Training Hub at Provectus, so no course/enrollment data in FSP. API path investigated but deferred (no subscription).
 - **Phase 3 (alumni data collection) — plan written, awaiting boss sign-off + outreach send.** See `ALUMNI_DATA_COLLECTION_PLAN.md`. Synthetic test data substituting until real responses arrive — see `SYNTHETIC_DATA_README.md`.
@@ -204,6 +206,35 @@ Plan: `docs/superpowers/plans/2026-05-25-dash-to-react-rewrite.md`
 ### Phase 10 — Public transparency view
 
 Anonymized public page: "the average PPL at Provectus costs $X and takes Y hours, P25–P75 band shown." Marketing asset. Flows from the same data store, conditional on alumni having opted in via the consent checkbox in Phase 3.
+
+---
+
+## Post-launch backlog (prioritized) — added 2026-06-27
+
+Deployment is done; the app is live on synthetic data. The following is the working to-do, ordered by urgency.
+
+### P0 — Now (blocking / time-sensitive)
+
+- **Boss upgrades Railway to the Hobby plan** before the 30-day / $5 trial credit runs out, or the live site pauses.
+- **Load real alumni survey data** (Phase 10.2) — still on synthetic data; waiting on Seanna Glatzel's responses. Upload the real `alumni_survey.xlsx` via the in-app upload once received.
+
+### P1 — High (do soon)
+
+- **User & access management** (covers three related requests):
+  - *Multiple logins* — let an admin create additional user accounts; today only the single seeded admin exists.
+  - *Per-account logins* — each person gets their own credentials, not a shared password.
+  - *Roles & permissions* — e.g. admin (full access + user management + flight overrides) vs viewer (read-only dashboards). Needed before granting instructors or wider access.
+- **Clean up dead buttons** — audit the UI for controls that currently do nothing; either wire each to real functionality or remove it. (Reads as unfinished right now.)
+
+### P2 — Medium
+
+- **Color scheme / branding pass** — align the palette with Provectus branding; matters especially for the public-facing transparency view.
+- **Auto-seed DB on empty at startup** — code hardening so a wiped volume self-recovers. Currently the DB was seeded manually on the volume; it survives redeploys but not a volume reset. Fix: guarded `build_db()`-on-empty call in `api/main.py` startup.
+
+### P3 — Later
+
+- **Public transparency view** (existing Phase 10 below) — anonymized public cost page; depends on real data + opt-in consent.
+- **`www` subdomain** — redirect `www.provectusanalytics.com` → root (needs Hobby plan; trial caps custom domains at 1).
 
 ---
 
