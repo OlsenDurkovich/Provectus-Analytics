@@ -79,6 +79,7 @@ function Shell({ user, logout, theme, toggleTheme }: ShellProps) {
     <div className={'app ' + (collapsed ? 'sidebar-collapsed' : '')}>
       <Sidebar
         collapsed={collapsed}
+        user={user}
         onUpload={() => setUploadOpen(true)}
         onImport={() => importMut.mutate()}
         onRebuild={(synthetic) => rebuildMut.mutate({ synthetic })}

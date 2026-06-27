@@ -3,6 +3,14 @@
 import { NavLink } from 'react-router-dom';
 import { Icon, type IconName } from './Icon';
 import { useMeta } from '../data/queries';
+import type { StoredUser } from '../auth/storage';
+
+function initialsFromEmail(email: string): string {
+  const local = (email.split('@')[0] || email).trim();
+  const parts = local.split(/[.\-_+]/).filter(Boolean);
+  const raw = parts.length >= 2 ? parts[0][0] + parts[1][0] : local.slice(0, 2);
+  return raw.toUpperCase() || 'U';
+}
 
 type NavItem = {
   key: 'overview' | 'rating' | 'student' | 'instructor' | 'flights';
@@ -30,6 +38,7 @@ const DEFAULT_PINNED: PinnedReport[] = [
 
 type Props = {
   collapsed: boolean;
+  user?: StoredUser | null;
   onUpload?: () => void;
   onImport?: () => void;
   onRebuild?: (synthetic: boolean) => void;
@@ -39,6 +48,7 @@ type Props = {
 
 export function Sidebar({
   collapsed,
+  user = null,
   onUpload,
   onImport,
   onRebuild,
@@ -46,6 +56,11 @@ export function Sidebar({
   rebuildPending = false,
 }: Props) {
   const meta = useMeta();
+  const userEmail = user?.email ?? '';
+  const userInitials = userEmail ? initialsFromEmail(userEmail) : 'PA';
+  const roleLabel = user?.role
+    ? user.role.charAt(0).toUpperCase() + user.role.slice(1)
+    : 'Internal analytics';
   const ds = meta.data?.dataState ?? {
     flights: 0,
     invoices: 0,
@@ -67,9 +82,6 @@ export function Sidebar({
             Analytics · {clientCount > 0 ? `${clientCount} clients` : 'synthetic'}
           </div>
         </div>
-        <span className="workspace-chevron">
-          <Icon name="chevronUpDown" size={14} />
-        </span>
       </div>
 
       <div className="sidebar-section">
@@ -190,17 +202,12 @@ export function Sidebar({
       )}
 
       <div className="user-menu">
-        <div className="user-avatar">PA</div>
+        <div className="user-avatar">{userInitials}</div>
         {!collapsed && (
-          <>
-            <div style={{ flex: 1, minWidth: 0 }}>
-              <div className="user-name">Provectus Aviation</div>
-              <div className="user-email">Internal analytics</div>
-            </div>
-            <span style={{ color: 'var(--fg-dim)' }}>
-              <Icon name="chevronUpDown" size={14} />
-            </span>
-          </>
+          <div style={{ flex: 1, minWidth: 0 }}>
+            <div className="user-name">{userEmail || 'Not signed in'}</div>
+            <div className="user-email">{roleLabel}</div>
+          </div>
         )}
       </div>
     </aside>
