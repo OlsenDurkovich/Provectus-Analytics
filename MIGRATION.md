@@ -40,33 +40,35 @@ This doc captures: what we're shipping, what changed from the original plan afte
 
 ---
 
-## Status snapshot (end of overnight session)
+## Status snapshot (updated 2026-06-26)
 
-All five branches shipped locally — no pushes yet (per user preference).
-Five feature branches chained off main; merge order matches the table below.
+**All five migration phases are merged into `main` and pushed to GitHub.** The
+"branches awaiting push" state below is historical — superseded. `git log` on
+`main` (in sync with `origin/main`) shows all five PRs landed:
 
-| Branch                       | What's in it                                            | Status |
+| Phase / PR                   | What shipped                                            | Status |
 |---|---|---|
-| `feat/phase-10-data-fixes`   | Real `alumni_survey.xlsx` ingest, FSP `rating_label`    | ✅ committed |
-| `feat/phase-11-auth`         | JWT auth backend + login UI gate                        | ✅ committed |
-| `feat/phase-12-upload`       | POST /api/upload/fsp + upload dialog                    | ✅ committed |
-| `feat/phase-13-railway`      | Env-driven paths, WAL, Dockerfile, railway.toml         | ✅ committed |
-| `feat/phase-14-hardening`    | CORS lock, security headers, pip-audit pass             | ✅ committed |
+| Phase 10 (#3)                | Real `alumni_survey.xlsx` ingest, FSP `rating_label`    | ✅ merged to main |
+| Phase 11 (#8)                | JWT auth backend + login UI gate                        | ✅ merged to main |
+| Phase 12 (#4)                | POST /api/upload/fsp + browser upload dialog            | ✅ merged to main |
+| Phase 13 (#5)                | Env-driven paths, WAL, Dockerfile, railway.toml         | ✅ merged to main |
+| Phase 14 (#6)                | CORS lock, security headers, env-locked CORS            | ✅ merged to main |
 
-Test stats at the end of Phase 14:
-- Backend: 111 passing
-- Frontend: 76 passing
-- tsc -b clean
-- vite build clean
-- pip-audit -r requirements.txt: no known vulnerabilities
+Code migration (Phases 10–14) is therefore **complete in the repo**. What's
+left is provisioning + real-world validation, none of which is a code change I
+can finish without the user:
 
-Things left for the user to do (cannot do without them):
-1. `git push -u origin <branch>` for each branch (manual push per CLAUDE.md).
-2. Open PRs in the desired merge order (10 → 11 → 12 → 13 → 14).
-3. On Railway: create project, add volume mounted at `/data`, set the env
-   vars listed in the table below, deploy.
-4. Optional: smoke-test `docker build .` locally before pushing — wasn't
-   exercised in this session.
+1. **Railway provisioning (manual, in dashboard):** create project, add a
+   volume mounted at `/data`, set the env vars in the table below, deploy.
+2. **Smoke-test `docker build .` locally** — never exercised in any session.
+3. **Custom domain** `analytics.provectusaviation.com` — punted to user.
+4. **Real alumni data (Phase 10.2):** `alumni_survey.xlsx` currently holds
+   ~20 synthetic-shaped rows (Alex Martinez, Jamie Chen, …), not real
+   responses. Real responses still landing (waiting on Seanna Glatzel per
+   project notes). Cohort norms stay synthetic until real rows replace these.
+
+_Pre-migration test stats (end of Phase 14 session): backend 111, frontend 76,
+tsc/vite/pip-audit clean._
 
 ---
 

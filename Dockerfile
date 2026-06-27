@@ -8,10 +8,11 @@
 FROM node:20-bookworm-slim AS frontend
 WORKDIR /app/frontend
 
-# Lockfile-less install — package.json drives versions. If we ever check in
-# package-lock.json, swap to `npm ci`.
-COPY frontend/package.json ./
-RUN npm install --no-audit --no-fund
+# Reproducible install from the committed lockfile (package-lock.json).
+# npm ci installs exact pinned versions and fails if lockfile and
+# package.json disagree — better for deterministic deploys than npm install.
+COPY frontend/package.json frontend/package-lock.json ./
+RUN npm ci --no-audit --no-fund
 
 COPY frontend/ ./
 RUN npm run build
