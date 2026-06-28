@@ -220,16 +220,12 @@ Deployment is done; the app is live on synthetic data. The following is the work
 
 ### P1 — High (do soon)
 
-- **User & access management** (covers three related requests):
-  - *Multiple logins* — let an admin create additional user accounts; today only the single seeded admin exists.
-  - *Per-account logins* — each person gets their own credentials, not a shared password.
-  - *Roles & permissions* — e.g. admin (full access + user management + flight overrides) vs viewer (read-only dashboards). Needed before granting instructors or wider access.
-  - *Code pointers:* backend auth lives in `src/provectus_analytics/auth/` — `users.py` (`create_user`, `authenticate`, `get_user_by_email`, `count_users`, `seed_initial_admin`, `ensure_users_table` — the users table schema is here), `deps.py` (`current_active_user` + `current_admin_user` already exist, so admin-role scaffolding is partly built — check for an `is_admin` flag on the user row), `tokens.py` (JWT), `passwords.py` (bcrypt). Auth endpoints: `api/routers/auth.py`. Multiple-logins likely needs a new admin-only "create user" route + a frontend admin screen. Frontend auth/login UI: `frontend/src/auth/`.
-  - *Progress (2026-06-27):* the sidebar account chip now displays the signed-in user (email + role) — per-account *display* is done. Still pending: admin-driven account creation, multiple users, and role enforcement.
+- **User & access management — SHIPPED** (branch `feat/user-access-management`, pushed 2026-06-27, **awaiting PR/merge**; full details in Done). Roles admin/instructor/viewer, admin user-management UI + API, self-service password change, role-based gating, last-admin guard.
+  - *Remaining follow-up — instructor data scoping:* make the `instructor` role see only their own students (link a user account to an FSP instructor identity, then filter the `students`/`instructors` queries). Not built. Spec: `docs/2026-06-27-user-access-management-spec.md`.
 
 ### P2 — Medium
 
-- **Color scheme / branding pass** — align the palette with Provectus branding; matters especially for the public-facing transparency view.
+- **Color scheme / branding pass — accent SHIPPED** (branch `feat/brand-color`, pushed 2026-06-27, **awaiting merge**): UI accent swapped purple→logo green (light `#1B5E3F`, dark `#1F8A5B`), both themes. *Remaining:* the **chart-data palette** (PPL series color, 'hours' metric, heatmap scale) is still purple — finish it for full on-brand consistency. *Code:* `frontend/src/components/charts/*`, `ClientsTable.tsx`, `RatingsList.tsx`, `RatingBars.tsx`.
 - **"Remember my login" / stay signed in** — persist the session so users aren't logged out on refresh or return visits. Likely a longer-lived refresh token + persistent (rather than in-memory/session) storage of it, gated by a "Remember me" checkbox on the login form. *Code:* token lifetimes in `src/provectus_analytics/auth/tokens.py`; login form + token storage in `frontend/src/auth/`.
 
 ### P3 — Later
@@ -239,6 +235,8 @@ Deployment is done; the app is live on synthetic data. The following is the work
 
 ### Done
 
+- ✅ **User & access management** (2026-06-27, branch `feat/user-access-management`, pushed, awaiting merge) — three roles admin/instructor/viewer (retired legacy `boss`, migrates boss→admin), admin-only `/api/users` (list/create/patch) + Users admin screen, self-service `/api/auth/change-password`, last-admin guard, `flights`+`upload` routers gated to admin. Backend 128 / frontend 80 tests pass; tsc + build clean. (Follow-up: instructor data scoping — see P1.)
+- ✅ **Brand accent color** (2026-06-27, branch `feat/brand-color`, pushed, awaiting merge) — UI accent purple→Provectus logo green in both themes + accent-derived chrome. Chart-data palette deferred (see P2).
 - ✅ **Clean up dead buttons** (2026-06-27) — audited every control; only the notifications bell was non-functional (placeholder, no feed). Removed the bell, the orphaned `NotificationsPopover.tsx`, the `notifOpen` plumbing, and dead `notif-*` CSS. Everything else was already wired. tsc + build clean, 76/76 frontend tests pass.
 - ✅ **Auto-seed DB on empty at startup** (2026-06-27) — shipped as `feat(api): auto-seed analytics DB on startup if empty`; a fresh or wiped `/data` volume now self-heals instead of showing empty charts.
 - ✅ **Sidebar user chip tied to login** (2026-06-27) — the bottom sidebar chip was hardcoded ("PA / Provectus Aviation / Internal analytics"); now shows the signed-in user (initials from email, email, role) from data already on the login. Also removed two dead "switcher" chevrons (workspace header + user chip). First concrete slice of User & access management — account *display* is live; account *creation* + role enforcement still pending.
