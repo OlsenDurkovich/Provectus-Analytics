@@ -58,10 +58,20 @@ def _quartiles(vals: list[float]) -> tuple[float, float, float]:
     return min(s), med, max(s)
 
 
-def compute_rating_norms(conn: sqlite3.Connection) -> list[RatingNorm]:
-    """Return one RatingNorm per rating that has at least one checkride milestone."""
+def compute_rating_norms(
+    conn: sqlite3.Connection, consented_only: bool = False
+) -> list[RatingNorm]:
+    """Return one RatingNorm per rating that has at least one checkride milestone.
+
+    When ``consented_only`` is True, restrict to students who opted in to the
+    public/marketing use of their data (``students.consent_marketing = 1``).
+    Used for the public transparency view. The flag only toggles fixed SQL —
+    no user input is interpolated.
+    """
+    consent_join = "JOIN students s USING (student_id)" if consented_only else ""
+    consent_where = "AND s.consent_marketing = 1" if consented_only else ""
     rows = list(conn.execute(
-        """SELECT r.code AS rating,
+        f"""SELECT r.code AS rating,
                   m.cumulative_flights AS flights,
                   m.cumulative_hours   AS hours,
                   m.cumulative_cost    AS cost,
@@ -69,7 +79,8 @@ def compute_rating_norms(conn: sqlite3.Connection) -> list[RatingNorm]:
            FROM milestones m
            JOIN enrollments e USING (enrollment_id)
            JOIN ratings     r USING (rating_id)
-           WHERE m.milestone_name = 'checkride'"""
+           {consent_join}
+           WHERE m.milestone_name = 'checkride' {consent_where}"""
     ))
 
     by_rating: dict[str, dict[str, list]] = {}

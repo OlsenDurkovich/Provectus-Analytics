@@ -180,3 +180,22 @@ export interface UserRow {
   role: string;
   is_active: boolean;
 }
+
+export interface PublicRatingNorm {
+  code: string;
+  label: string;
+  n: number;
+  low_sample: boolean;
+  median_cost: number;
+  p25_cost: number;
+  p75_cost: number;
+  median_hours: number;
+  p25_hours: number;
+  p75_hours: number;
+  median_days: number;
+}
+
+export interface PublicTransparency {
+  data_mode: 'real' | 'synthetic';
+  ratings: PublicRatingNorm[];
+}

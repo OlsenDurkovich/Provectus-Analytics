@@ -188,3 +188,5 @@ export const useChangePassword = () =>
     mutationFn: (body: { current_password: string; new_password: string }) =>
       client.changePassword(body),
   });
+export const usePublicTransparency = () =>
+  useQuery({ queryKey: ['publicTransparency'], queryFn: client.getPublicTransparency });

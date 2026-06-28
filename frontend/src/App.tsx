@@ -11,6 +11,7 @@ import Instructor from './routes/Instructor';
 import Flights from './routes/Flights';
 import Users from './routes/Users';
 import Login from './routes/Login';
+import PublicTransparency from './routes/PublicTransparency';
 import { useTheme } from './hooks/useTheme';
 import { useShortcuts } from './hooks/useShortcuts';
 import { usePersistedTab } from './hooks/usePersistedTab';
@@ -31,6 +32,12 @@ function breadcrumbFor(pathname: string): string {
 export default function App() {
   const { status, user, logout, isAdmin } = useAuth();
   const { theme, toggle: toggleTheme } = useTheme();
+  const location = useLocation();
+
+  // Public, unauthenticated marketing page — bypasses the auth gate entirely.
+  if (location.pathname.startsWith('/transparency')) {
+    return <PublicTransparency />;
+  }
 
   // Theme has to be wired even on the login page so the form respects light/dark.
   if (status === 'unauthenticated') {
