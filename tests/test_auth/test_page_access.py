@@ -102,9 +102,13 @@ def test_setting_role_reapplies_page_preset(client):
     admin = _tok(client, "admin@example.com", "adminpassword")
     vid = _viewer_id(client, admin)
     client.patch(f"/api/users/{vid}", headers=_h(admin), json={"pages": ["overview"]})
-    r = client.patch(f"/api/users/{vid}", headers=_h(admin), json={"role": "instructor"})
+    # Re-applying a full-access role (viewer) restores every page.
+    r = client.patch(f"/api/users/{vid}", headers=_h(admin), json={"role": "viewer"})
     assert r.status_code == 200
     assert sorted(r.json()["pages"]) == sorted(ALL_PAGES)
+    # A scoped role (instructor) re-applies to NO dashboard pages.
+    r = client.patch(f"/api/users/{vid}", headers=_h(admin), json={"role": "instructor"})
+    assert r.status_code == 200 and r.json()["pages"] == []
 
 
 def test_invalid_page_rejected(client):
