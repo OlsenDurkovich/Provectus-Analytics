@@ -220,22 +220,24 @@ Deployment is done; the app is live on synthetic data. The following is the work
 
 ### P1 — High (do soon)
 
-- **User & access management — SHIPPED** (branch `feat/user-access-management`, pushed 2026-06-27, **awaiting PR/merge**; full details in Done). Roles admin/instructor/viewer, admin user-management UI + API, self-service password change, role-based gating, last-admin guard.
-  - *Remaining follow-up — instructor data scoping:* make the `instructor` role see only their own students (link a user account to an FSP instructor identity, then filter the `students`/`instructors` queries). Not built. Spec: `docs/2026-06-27-user-access-management-spec.md`.
+- **User & access management — DONE, MERGED + DEPLOYED** (2026-06-27, PRs #9–#13). Roles admin/instructor/viewer, admin user-management UI + API, self-service password change, last-admin guard — PLUS **per-user page access** (admins tick exactly which pages each user sees; enforced server-side via `require_page()`, not just UI) and **admin password reset**. Verified live on provectusanalytics.com. Specs: `docs/2026-06-27-user-access-management-spec.md`, `docs/2026-06-27-per-user-access-spec.md`.
+  - *Remaining follow-up — instructor data scoping:* make the `instructor` role see only their own students (link a user account to an FSP instructor identity, then filter the `students`/`instructors` queries). Not built. NOTE the honest caveat from the per-user spec: page access controls which pages/endpoints a user reaches, not a per-field data wall (Overview surfaces some student cost), so true field-level isolation is a separate redesign.
 
 ### P2 — Medium
 
-- **Color scheme / branding pass — SHIPPED** (accent: `feat/brand-color`, pushed; heatmap: `feat/chart-palette`, committed — both awaiting merge). UI accent purple→logo green (light `#1B5E3F`, dark `#1F8A5B`) + the activity-heatmap single-hue scale→green. **Design decision (2026-06-27, Olsen):** the *categorical* palettes — the 7 per-rating colors and the 3-metric colors — are intentionally left multi-color. Greening them would collide with the existing green (`#3DD68C`) and hurt rating distinguishability, so this is considered complete. A full categorical-palette redesign around green is a separate design exercise only if ever wanted.
+- **Color scheme / branding pass — DONE, MERGED + DEPLOYED** (accent: `feat/brand-color`; heatmap: `feat/chart-palette`). UI accent purple→logo green (light `#1B5E3F`, dark `#1F8A5B`) + the activity-heatmap single-hue scale→green. **Design decision (2026-06-27, Olsen):** the *categorical* palettes — the 7 per-rating colors and the 3-metric colors — are intentionally left multi-color. Greening them would collide with the existing green (`#3DD68C`) and hurt rating distinguishability, so this is considered complete. A full categorical-palette redesign around green is a separate design exercise only if ever wanted.
 - **"Remember my login" / stay signed in** — persist the session so users aren't logged out on refresh or return visits. Likely a longer-lived refresh token + persistent (rather than in-memory/session) storage of it, gated by a "Remember me" checkbox on the login form. *Code:* token lifetimes in `src/provectus_analytics/auth/tokens.py`; login form + token storage in `frontend/src/auth/`.
 
 ### P3 — Later
 
-- **Public transparency view — SHIPPED** (`feat/public-transparency`) — see Done.
+- **Public transparency view — DONE, MERGED + DEPLOYED** (`feat/public-transparency`) — see Done.
 - **`www` subdomain — DONE** (2026-06-27) — see Done.
 
-_(P3 is now clear; remaining open work is the P0 external blockers and the optional follow-ups noted above.)_
+_(P3 is clear. All five 2026-06-27 feature branches — user-access, brand-color, chart-palette, public-transparency, per-user-access — are merged to `main` and deployed. Remaining open work is the P0 external blockers + the optional follow-ups noted above: instructor data scoping, "remember my login", full categorical chart-palette redesign.)_
 
 ### Done
+
+- ✅ **Per-user page access + admin settings + password reset** (2026-06-27, PR #13, merged + deployed) — admins set exactly which pages each user sees via checkboxes on the Users screen; roles act as presets; enforced **server-side** with a `require_page()` dependency (per-endpoint on ratings/students; `meta` stays open). Adds `users.pages` column + migration, `/me`/users API return `pages`+`is_admin`, PATCH accepts `pages` + admin `new_password` reset. Frontend: `canSee()` gating of sidebar + routes, NoAccess fallback, per-user settings UI. Backend +9 tests, frontend +2; verified live. Caveat: page access gates pages/endpoints, not per-field data.
 
 - ✅ **Public transparency view** (2026-06-27, branch `feat/public-transparency`, committed, awaiting push + merge) — public unauthenticated `/transparency` page + `GET /api/public/transparency`. Consent-filtered aggregate norms (median + P25/P75 for cost/hours/days), no PII, low-sample caveats, and a `data_mode` banner that labels synthetic sample data until real responses land. Backed by `norms.compute_rating_norms(consented_only=True)`. Backend +4 tests, frontend +2; full suites green.
 - ✅ **`www` subdomain** (2026-06-27) — `www.provectusanalytics.com` added as a Railway custom domain + Cloudflare DNS (CNAME `www`→`h2drb6o0.up.railway.app`, DNS-only; TXT `_railway-verify.www`). Serves the app once Railway issues the cert (verifying). No repo change. Both apex and www serve the app; a www→apex redirect was deemed unnecessary.
