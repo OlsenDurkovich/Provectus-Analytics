@@ -8,7 +8,7 @@ function cellBg(v: number, max: number): string {
   if (max <= 0) return 'var(--bg-elev-2)';
   const norm = v / max;
   if (norm < 0.06) return 'var(--bg-elev-2)';
-  return `rgba(110, 86, 248, ${0.12 + norm * 0.72})`;
+  return `rgba(31, 138, 91,${0.12 + norm * 0.72})`;
 }
 
 export function Heatmap({ rows, buckets }: Props) {
@@ -45,7 +45,7 @@ export function Heatmap({ rows, buckets }: Props) {
               key={i}
               style={{
                 background:
-                  i === 0 ? 'var(--bg-elev-2)' : `rgba(110, 86, 248, ${0.12 + v * 0.72})`,
+                  i === 0 ? 'var(--bg-elev-2)' : `rgba(31, 138, 91,${0.12 + v * 0.72})`,
               }}
             />
           ))}
