@@ -27,6 +27,7 @@ type AuthContextValue = {
   user: StoredUser | null;
   status: AuthStatus;
   isAdmin: boolean;
+  isStudent: boolean;
   canSee: (page: string) => boolean;
   login: (email: string, password: string) => Promise<void>;
   logout: () => Promise<void>;
@@ -116,8 +117,9 @@ export function AuthProvider({ children }: { children: ReactNode }) {
 
   const value = useMemo(() => {
     const isAdmin = user?.is_admin ?? false;
+    const isStudent = user?.role === 'student';
     const canSee = (page: string) => isAdmin || (user?.pages?.includes(page) ?? false);
-    return { user, status, isAdmin, canSee, login, logout };
+    return { user, status, isAdmin, isStudent, canSee, login, logout };
   }, [user, status, login, logout]);
   return <AuthContext.Provider value={value}>{children}</AuthContext.Provider>;
 }

@@ -10,6 +10,7 @@ import Student from './routes/Student';
 import Instructor from './routes/Instructor';
 import Flights from './routes/Flights';
 import Users from './routes/Users';
+import MyTraining from './routes/MyTraining';
 import Login from './routes/Login';
 import PublicTransparency from './routes/PublicTransparency';
 import { useTheme } from './hooks/useTheme';
@@ -30,7 +31,7 @@ function breadcrumbFor(pathname: string): string {
 }
 
 export default function App() {
-  const { status, user, logout, isAdmin, canSee } = useAuth();
+  const { status, user, logout, isAdmin, isStudent, canSee } = useAuth();
   const { theme, toggle: toggleTheme } = useTheme();
   const location = useLocation();
 
@@ -48,6 +49,7 @@ export default function App() {
     <Shell
       user={user}
       isAdmin={isAdmin}
+      isStudent={isStudent}
       canSee={canSee}
       logout={logout}
       theme={theme}
@@ -67,13 +69,14 @@ function NoAccess() {
 type ShellProps = {
   user: ReturnType<typeof useAuth>['user'];
   isAdmin: boolean;
+  isStudent: boolean;
   canSee: (page: string) => boolean;
   logout: ReturnType<typeof useAuth>['logout'];
   theme: ReturnType<typeof useTheme>['theme'];
   toggleTheme: ReturnType<typeof useTheme>['toggle'];
 };
 
-function Shell({ user, isAdmin, canSee, logout, theme, toggleTheme }: ShellProps) {
+function Shell({ user, isAdmin, isStudent, canSee, logout, theme, toggleTheme }: ShellProps) {
   const location = useLocation();
   const navigate = useNavigate();
   const [collapsed, setCollapsed] = useState(false);
@@ -93,7 +96,10 @@ function Shell({ user, isAdmin, canSee, logout, theme, toggleTheme }: ShellProps
     ['students', '/students'],
     ['instructors', '/instructors'],
   ];
-  const firstAllowedPath = DASH_PAGES.find(([p]) => canSee(p))?.[1] ?? null;
+  // Students have no dashboard pages — their home is the My-training view.
+  const firstAllowedPath = isStudent
+    ? '/my-training'
+    : (DASH_PAGES.find(([p]) => canSee(p))?.[1] ?? null);
 
   const handlers = useMemo(
     () => ({
@@ -119,6 +125,7 @@ function Shell({ user, isAdmin, canSee, logout, theme, toggleTheme }: ShellProps
       <Sidebar
         collapsed={collapsed}
         user={user}
+        isStudent={isStudent}
         onUpload={isAdmin ? () => setUploadOpen(true) : undefined}
         onImport={isAdmin ? () => importMut.mutate() : undefined}
         onRebuild={isAdmin ? (synthetic) => rebuildMut.mutate({ synthetic }) : undefined}
@@ -182,6 +189,10 @@ function Shell({ user, isAdmin, canSee, logout, theme, toggleTheme }: ShellProps
               <Route
                 path="/users"
                 element={isAdmin ? <Users /> : <Navigate to={firstAllowedPath ?? '/'} replace />}
+              />
+              <Route
+                path="/my-training"
+                element={isStudent ? <MyTraining /> : <Navigate to={firstAllowedPath ?? '/'} replace />}
               />
             </Routes>
           </ErrorBoundary>

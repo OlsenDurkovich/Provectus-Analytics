@@ -128,7 +128,7 @@ function StudentBody({ detail }: { detail: StudentDetail }) {
   );
 }
 
-function JourneyTimeline({ timeline }: { timeline: StudentTimelinePoint[] }) {
+export function JourneyTimeline({ timeline }: { timeline: StudentTimelinePoint[] }) {
   const spans = timeline.map((t) => spanMs(t.start, t.end));
   const startMs = Math.min(...spans.map((s) => s.startMs));
   const endMs = Math.max(...spans.map((s) => s.endMs));

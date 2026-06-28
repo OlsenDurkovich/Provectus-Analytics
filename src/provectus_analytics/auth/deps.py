@@ -61,6 +61,21 @@ def current_admin_user(user: users.User = Depends(current_active_user)) -> users
     return user
 
 
+def current_student(user: users.User = Depends(current_active_user)) -> users.User:
+    """Allow only a `student`-role account that's actually linked to a record.
+
+    Guards the `/api/me/training` endpoint: a student with no link, or any
+    non-student, gets 403. The endpoint then serves *only* `user.student_id`,
+    so a student can never read another person's data by tampering with input.
+    """
+    if user.role != "student" or user.student_id is None:
+        raise HTTPException(
+            status_code=status.HTTP_403_FORBIDDEN,
+            detail="This endpoint is only for student accounts linked to a record",
+        )
+    return user
+
+
 def require_page(*pages: str):
     """Dependency factory: allow the request iff the user is an admin OR holds
     at least one of the named pages.

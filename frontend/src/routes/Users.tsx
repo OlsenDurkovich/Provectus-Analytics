@@ -1,11 +1,11 @@
 // Admin-only user management. The API enforces admin access + page access too;
 // App.tsx guards the route so non-admins are redirected away.
 import { useState, type FormEvent, type CSSProperties } from 'react';
-import { useUsers, useCreateUser, useUpdateUser } from '../data/queries';
+import { useUsers, useCreateUser, useUpdateUser, useStudentRecords } from '../data/queries';
 import { ApiError } from '../data/client';
-import { ALL_PAGES, type UserRole, type UserRow } from '../data/types';
+import { ALL_PAGES, type StudentRecord, type UserRole, type UserRow } from '../data/types';
 
-const ROLES: UserRole[] = ['admin', 'instructor', 'viewer'];
+const ROLES: UserRole[] = ['admin', 'instructor', 'viewer', 'student'];
 
 function humanizeError(err: unknown): string {
   if (err instanceof ApiError) {
@@ -39,16 +39,19 @@ type UpdateBody = {
   is_active?: boolean;
   pages?: string[];
   new_password?: string;
+  student_id?: number | null;
 };
 
 function UserCard({
   u,
   onPatch,
   busy,
+  records,
 }: {
   u: UserRow;
   onPatch: (id: number, body: UpdateBody) => void;
   busy: boolean;
+  records: StudentRecord[];
 }) {
   const [pw, setPw] = useState('');
 
@@ -80,30 +83,59 @@ function UserCard({
         </div>
       </div>
 
-      <div>
-        <div style={{ fontSize: 12, color: 'var(--fg-dim)', marginBottom: 6 }}>Pages this user can see</div>
-        <div style={{ display: 'flex', gap: 16, flexWrap: 'wrap' }}>
-          {ALL_PAGES.map((p) => (
-            <label
-              key={p.key}
-              style={{ display: 'flex', alignItems: 'center', gap: 6, fontSize: 13, opacity: u.is_admin ? 0.6 : 1 }}
-            >
-              <input
-                type="checkbox"
-                checked={u.is_admin || u.pages.includes(p.key)}
-                disabled={u.is_admin || busy}
-                onChange={() => togglePage(p.key)}
-              />
-              {p.label}
-            </label>
-          ))}
-        </div>
-        {u.is_admin && (
-          <div style={{ fontSize: 11, color: 'var(--fg-dim)', marginTop: 4 }}>
-            Admins can see every page and manage users.
+      {u.role === 'student' ? (
+        <div>
+          <div style={{ fontSize: 12, color: 'var(--fg-dim)', marginBottom: 6 }}>
+            Linked training record
           </div>
-        )}
-      </div>
+          <select
+            style={{ ...input, maxWidth: 280 }}
+            value={u.student_id ?? ''}
+            disabled={busy}
+            onChange={(e) =>
+              e.target.value && onPatch(u.user_id, { student_id: Number(e.target.value) })
+            }
+          >
+            <option value="" disabled>
+              {u.student_id == null ? 'Pick a student…' : 'Change linked student…'}
+            </option>
+            {records.map((r) => (
+              <option key={r.student_id} value={r.student_id}>
+                {r.name}
+                {r.email ? ` · ${r.email}` : ''}
+              </option>
+            ))}
+          </select>
+          <div style={{ fontSize: 11, color: 'var(--fg-dim)', marginTop: 4 }}>
+            Student accounts see only their own training — no other pages or people.
+          </div>
+        </div>
+      ) : (
+        <div>
+          <div style={{ fontSize: 12, color: 'var(--fg-dim)', marginBottom: 6 }}>Pages this user can see</div>
+          <div style={{ display: 'flex', gap: 16, flexWrap: 'wrap' }}>
+            {ALL_PAGES.map((p) => (
+              <label
+                key={p.key}
+                style={{ display: 'flex', alignItems: 'center', gap: 6, fontSize: 13, opacity: u.is_admin ? 0.6 : 1 }}
+              >
+                <input
+                  type="checkbox"
+                  checked={u.is_admin || u.pages.includes(p.key)}
+                  disabled={u.is_admin || busy}
+                  onChange={() => togglePage(p.key)}
+                />
+                {p.label}
+              </label>
+            ))}
+          </div>
+          {u.is_admin && (
+            <div style={{ fontSize: 11, color: 'var(--fg-dim)', marginTop: 4 }}>
+              Admins can see every page and manage users.
+            </div>
+          )}
+        </div>
+      )}
 
       <div style={{ display: 'flex', gap: 8, alignItems: 'center' }}>
         <input
@@ -134,23 +166,36 @@ export default function Users() {
   const users = useUsers();
   const createUser = useCreateUser();
   const updateUser = useUpdateUser();
+  const studentRecords = useStudentRecords();
+  const records = studentRecords.data ?? [];
 
   const [email, setEmail] = useState('');
   const [password, setPassword] = useState('');
   const [role, setRole] = useState<UserRole>('viewer');
+  const [studentId, setStudentId] = useState<string>('');
   const [createError, setCreateError] = useState<string | null>(null);
   const [rowError, setRowError] = useState<string | null>(null);
 
   const submit = (e: FormEvent) => {
     e.preventDefault();
     setCreateError(null);
+    if (role === 'student' && !studentId) {
+      setCreateError('Pick which student record this account belongs to.');
+      return;
+    }
     createUser.mutate(
-      { email, password, role },
+      {
+        email,
+        password,
+        role,
+        student_id: role === 'student' ? Number(studentId) : undefined,
+      },
       {
         onSuccess: () => {
           setEmail('');
           setPassword('');
           setRole('viewer');
+          setStudentId('');
         },
         onError: (err) => setCreateError(humanizeError(err)),
       },
@@ -168,7 +213,8 @@ export default function Users() {
       <p style={{ color: 'var(--fg-dim, #888)', marginTop: 0, fontSize: 13 }}>
         Manage accounts, roles, and exactly which pages each person can see. The
         role sets a starting point; tick or untick pages to fine-tune. Admins
-        always have full access.
+        always have full access. A <strong>student</strong> account is linked to
+        one training record and sees only its own data.
       </p>
 
       <form onSubmit={submit} style={{ display: 'grid', gap: 10, maxWidth: 380, margin: '20px 0 28px' }}>
@@ -188,6 +234,24 @@ export default function Users() {
             <option key={r} value={r}>{r}</option>
           ))}
         </select>
+        {role === 'student' && (
+          <select
+            style={input}
+            value={studentId}
+            onChange={(e) => setStudentId(e.target.value)}
+            required
+          >
+            <option value="" disabled>
+              {studentRecords.isLoading ? 'Loading students…' : 'Link to student record…'}
+            </option>
+            {records.map((r) => (
+              <option key={r.student_id} value={r.student_id}>
+                {r.name}
+                {r.email ? ` · ${r.email}` : ''}
+              </option>
+            ))}
+          </select>
+        )}
         {createError && <div style={{ color: 'var(--danger, #e5484d)', fontSize: 13 }}>{createError}</div>}
         <button className="btn btn-outline" type="submit" disabled={createUser.isPending}>
           {createUser.isPending ? 'Adding…' : 'Add user'}
@@ -202,7 +266,7 @@ export default function Users() {
       {users.data && (
         <div style={{ display: 'grid', gap: 12 }}>
           {users.data.map((u: UserRow) => (
-            <UserCard key={u.user_id} u={u} onPatch={patch} busy={updateUser.isPending} />
+            <UserCard key={u.user_id} u={u} onPatch={patch} busy={updateUser.isPending} records={records} />
           ))}
         </div>
       )}

@@ -17,6 +17,7 @@ import type {
   Rating,
   RatingCohortMember,
   UserRow,
+  StudentRecord,
   PublicTransparency,
 } from './types';
 
@@ -94,6 +95,8 @@ export const client = {
   getClients: (range: RangeKey, rating?: RatingCode) =>
     get<ClientRow[]>('/api/students', { range, rating }),
   getStudent: (id: string) => get<StudentDetail>(`/api/students/${id}`),
+  // Student-role self-service: serves only the caller's own linked record.
+  getMyTraining: () => get<StudentDetail>('/api/me/training'),
   getInstructors: () => get<InstructorSummary[]>('/api/instructors'),
   getInstructor: (id: string) => get<InstructorDetail>(`/api/instructors/${id}`),
   getFlights: (filter: {
@@ -117,11 +120,18 @@ export const client = {
   },
   // User & access management (admin-only on the server).
   listUsers: () => get<UserRow[]>('/api/users'),
-  createUser: (body: { email: string; password: string; role: string }) =>
+  listStudentRecords: () => get<StudentRecord[]>('/api/users/student-records'),
+  createUser: (body: { email: string; password: string; role: string; student_id?: number | null }) =>
     post<UserRow>('/api/users', body),
   updateUser: (
     id: number,
-    body: { role?: string; is_active?: boolean; pages?: string[]; new_password?: string },
+    body: {
+      role?: string;
+      is_active?: boolean;
+      pages?: string[];
+      new_password?: string;
+      student_id?: number | null;
+    },
   ) => patchReq<UserRow>(`/api/users/${id}`, body),
   changePassword: (body: { current_password: string; new_password: string }) =>
     postNoContent('/api/auth/change-password', body),

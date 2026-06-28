@@ -43,6 +43,7 @@ class UserOut(BaseModel):
     is_active: bool
     pages: list[str]
     is_admin: bool
+    student_id: int | None = None
 
 
 def _build_token_pair(user_id: int) -> TokenPair:
@@ -106,6 +107,7 @@ def me(user: users.User = Depends(deps.current_active_user)) -> UserOut:
         is_active=user.is_active,
         pages=list(user.pages),
         is_admin=user.is_admin,
+        student_id=user.student_id,
     )
 
 

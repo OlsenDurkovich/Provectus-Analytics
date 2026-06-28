@@ -172,7 +172,15 @@ export interface Meta {
   dataState: DataState;
 }
 
-export type UserRole = 'admin' | 'instructor' | 'viewer';
+export type UserRole = 'admin' | 'instructor' | 'viewer' | 'student';
+
+// A training record an admin can link a student account to (mirror of the
+// users router StudentRecord).
+export interface StudentRecord {
+  student_id: number;
+  name: string;
+  email: string | null;
+}
 
 // Toggleable dashboard pages (mirror of auth/users.py ALL_PAGES).
 export type PageKey = 'overview' | 'ratings' | 'students' | 'instructors';
@@ -190,6 +198,7 @@ export interface UserRow {
   is_active: boolean;
   pages: string[];
   is_admin: boolean;
+  student_id?: number | null;
 }
 
 export interface PublicRatingNorm {
