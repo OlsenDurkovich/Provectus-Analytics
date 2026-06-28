@@ -13,12 +13,13 @@ function initialsFromEmail(email: string): string {
 }
 
 type NavItem = {
-  key: 'overview' | 'rating' | 'student' | 'instructor' | 'flights' | 'users';
+  key: 'overview' | 'rating' | 'student' | 'instructor' | 'flights' | 'users' | 'mytraining';
   label: string;
   icon: IconName;
   kbd: string;
   path: string;
   adminOnly?: boolean;
+  studentOnly?: boolean;
   // For dashboard pages: the page-access key that controls visibility.
   page?: 'overview' | 'ratings' | 'students' | 'instructors';
 };
@@ -30,11 +31,13 @@ export const NAV: NavItem[] = [
   { key: 'instructor', label: 'Instructor', icon: 'star', kbd: 'I', path: '/instructors', page: 'instructors' },
   { key: 'flights', label: 'Flights', icon: 'plane', kbd: 'F', path: '/flights', adminOnly: true },
   { key: 'users', label: 'Users', icon: 'users', kbd: 'U', path: '/users', adminOnly: true },
+  { key: 'mytraining', label: 'My training', icon: 'overview', kbd: 'T', path: '/my-training', studentOnly: true },
 ];
 
 type Props = {
   collapsed: boolean;
   user?: StoredUser | null;
+  isStudent?: boolean;
   onUpload?: () => void;
   onImport?: () => void;
   onRebuild?: (synthetic: boolean) => void;
@@ -45,6 +48,7 @@ type Props = {
 export function Sidebar({
   collapsed,
   user = null,
+  isStudent = false,
   onUpload,
   onImport,
   onRebuild,
@@ -77,14 +81,22 @@ export function Sidebar({
         <div className="workspace-label">
           <div className="workspace-name">Provectus Aviation</div>
           <div className="workspace-plan">
-            Analytics · {clientCount > 0 ? `${clientCount} clients` : 'synthetic'}
+            {isStudent
+              ? 'Student portal'
+              : `Analytics · ${clientCount > 0 ? `${clientCount} clients` : 'synthetic'}`}
           </div>
         </div>
       </div>
 
       <div className="sidebar-section">
         <div className="sidebar-section-label">Analytics</div>
-        {NAV.filter((n) => (n.adminOnly ? isAdmin : !n.page || canSee(n.page))).map((n) => (
+        {NAV.filter((n) =>
+          n.adminOnly
+            ? isAdmin
+            : n.studentOnly
+              ? isStudent
+              : !isStudent && (!n.page || canSee(n.page)),
+        ).map((n) => (
           <NavLink
             key={n.key}
             to={n.path}
@@ -151,7 +163,7 @@ export function Sidebar({
         </div>
       )}
 
-      {!collapsed && (
+      {!collapsed && !isStudent && (
         <div className="data-state">
           <div className="data-state-label">Data state</div>
           <div className="data-state-row">

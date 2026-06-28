@@ -89,6 +89,12 @@ export const useStudent = (id: string | undefined) =>
     enabled: !!id,
   });
 
+export const useMyTraining = () =>
+  useQuery({
+    queryKey: ['me', 'training'],
+    queryFn: () => client.getMyTraining(),
+  });
+
 export const useInstructors = () =>
   useQuery({ queryKey: queryKeys.instructors, queryFn: client.getInstructors });
 
@@ -161,10 +167,17 @@ export const useUploadFsp = () => {
 export const useUsers = () =>
   useQuery({ queryKey: ['users'], queryFn: client.listUsers });
 
+export const useStudentRecords = (enabled = true) =>
+  useQuery({
+    queryKey: ['users', 'student-records'],
+    queryFn: client.listStudentRecords,
+    enabled,
+  });
+
 export const useCreateUser = () => {
   const qc = useQueryClient();
   return useMutation({
-    mutationFn: (body: { email: string; password: string; role: string }) =>
+    mutationFn: (body: { email: string; password: string; role: string; student_id?: number | null }) =>
       client.createUser(body),
     onSuccess: () => {
       void qc.invalidateQueries({ queryKey: ['users'] });
@@ -180,7 +193,13 @@ export const useUpdateUser = () => {
       patch,
     }: {
       id: number;
-      patch: { role?: string; is_active?: boolean; pages?: string[]; new_password?: string };
+      patch: {
+        role?: string;
+        is_active?: boolean;
+        pages?: string[];
+        new_password?: string;
+        student_id?: number | null;
+      };
     }) => client.updateUser(id, patch),
     onSuccess: () => {
       void qc.invalidateQueries({ queryKey: ['users'] });

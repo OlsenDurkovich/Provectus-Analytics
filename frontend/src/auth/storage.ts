@@ -10,6 +10,7 @@ export type StoredUser = {
   is_active: boolean;
   pages: string[];
   is_admin: boolean;
+  student_id?: number | null;
 };
 
 const KEY_ACCESS = 'pv_auth_access';

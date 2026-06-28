@@ -4,11 +4,17 @@ Lives in the same SQLite database as the analytics tables — there's no
 operational reason to split them for a small-team app.
 
 Access model (2026-06-27):
-  - role: admin | instructor | viewer (admin = full capabilities).
+  - role: admin | instructor | viewer | student (admin = full capabilities).
   - pages: per-user set of dashboard pages the user may see, a subset of
     ALL_PAGES. Roles act as presets (setting a role re-applies its default
     page set); admins can then tweak per user. Flights/upload/user-management
     are admin *capabilities*, not page toggles, so they're not in ALL_PAGES.
+  - student: a self-service account scoped to ONE person's own training data.
+    Students get an EMPTY page set (none of the internal dashboard pages) and
+    are instead linked to a single `student_id`; they can only reach
+    `/api/me/training`, which serves their own record. The empty page set means
+    every `require_page()`-gated endpoint already returns 403 for them, so no
+    extra blocking is needed.
 """
 from __future__ import annotations
 
@@ -19,8 +25,8 @@ from typing import Literal
 
 from .passwords import hash_password, verify_password
 
-Role = Literal["admin", "instructor", "viewer"]
-VALID_ROLES: frozenset[str] = frozenset({"admin", "instructor", "viewer"})
+Role = Literal["admin", "instructor", "viewer", "student"]
+VALID_ROLES: frozenset[str] = frozenset({"admin", "instructor", "viewer", "student"})
 
 # Toggleable dashboard pages (in canonical order). Flights is NOT here — it's
 # the override surface, an admin-only capability.
@@ -29,8 +35,11 @@ _DEFAULT_PAGES_CSV = ",".join(ALL_PAGES)
 
 
 def default_pages_for_role(role: str) -> tuple[str, ...]:
-    """Preset page set for a role. All roles start with every dashboard page;
-    admins then restrict per user as desired."""
+    """Preset page set for a role. Internal roles start with every dashboard
+    page (admins then restrict per user); the `student` role gets NO dashboard
+    pages — students only ever see their own training via `/api/me/training`."""
+    if role == "student":
+        return ()
     return ALL_PAGES
 
 
@@ -54,6 +63,7 @@ CREATE TABLE IF NOT EXISTS users (
     is_active        INTEGER NOT NULL DEFAULT 1,
     role             TEXT NOT NULL DEFAULT 'viewer',
     pages            TEXT NOT NULL DEFAULT '{_DEFAULT_PAGES_CSV}',
+    student_id       INTEGER,
     created_at       TEXT NOT NULL
 )
 """
@@ -66,10 +76,17 @@ class User:
     is_active: bool
     role: Role
     pages: tuple[str, ...] = ALL_PAGES
+    # Set only for `student`-role accounts: the students.student_id this login
+    # is allowed to see. None for every internal role.
+    student_id: int | None = None
 
     @property
     def is_admin(self) -> bool:
         return self.role == "admin"
+
+    @property
+    def is_student(self) -> bool:
+        return self.role == "student"
 
     @classmethod
     def from_row(cls, row: sqlite3.Row) -> "User":
@@ -80,6 +97,11 @@ class User:
             is_active=bool(row["is_active"]),
             role=row["role"],
             pages=_csv_to_pages(row["pages"]) if "pages" in keys else ALL_PAGES,
+            student_id=(
+                row["student_id"]
+                if "student_id" in keys and row["student_id"] is not None
+                else None
+            ),
         )
 
 
@@ -89,6 +111,7 @@ def ensure_users_table(conn: sqlite3.Connection) -> None:
     conn.commit()
     _migrate_legacy_roles(conn)
     _migrate_pages_column(conn)
+    _migrate_student_id_column(conn)
 
 
 def _migrate_legacy_roles(conn: sqlite3.Connection) -> None:
@@ -105,11 +128,21 @@ def _migrate_pages_column(conn: sqlite3.Connection) -> None:
             f"ALTER TABLE users ADD COLUMN pages TEXT NOT NULL "
             f"DEFAULT '{_DEFAULT_PAGES_CSV}'"
         )
+    # Backfill genuinely-missing page sets — but NOT students, whose empty page
+    # set is intentional (they see only their own training, no dashboard pages).
     conn.execute(
         f"UPDATE users SET pages = '{_DEFAULT_PAGES_CSV}' "
-        f"WHERE pages IS NULL OR pages = ''"
+        f"WHERE (pages IS NULL OR pages = '') AND role != 'student'"
     )
     conn.commit()
+
+
+def _migrate_student_id_column(conn: sqlite3.Connection) -> None:
+    """Add the nullable `student_id` link column to pre-existing DBs."""
+    cols = {r["name"] for r in conn.execute("PRAGMA table_info(users)")}
+    if "student_id" not in cols:
+        conn.execute("ALTER TABLE users ADD COLUMN student_id INTEGER")
+        conn.commit()
 
 
 def _now_iso() -> str:
@@ -122,10 +155,13 @@ def create_user(
     password: str,
     role: Role = "viewer",
     is_active: bool = True,
+    student_id: int | None = None,
 ) -> User:
     """Create a new user. Raises ValueError on duplicate email or bad input.
 
     Pages are seeded from the role preset; an admin can adjust them afterward.
+    `student_id` is only meaningful for the `student` role (it links the login
+    to one training record); it's ignored / forced None for every other role.
     """
     email = email.strip().lower()
     if not email or "@" not in email:
@@ -134,12 +170,13 @@ def create_user(
         raise ValueError(f"role must be one of {sorted(VALID_ROLES)}")
     if len(password) < 8:
         raise ValueError("password must be at least 8 characters")
+    linked = student_id if role == "student" else None
     pages_csv = _pages_to_csv(default_pages_for_role(role))
     try:
         cur = conn.execute(
-            """INSERT INTO users (email, hashed_password, is_active, role, pages, created_at)
-               VALUES (?, ?, ?, ?, ?, ?)""",
-            (email, hash_password(password), 1 if is_active else 0, role, pages_csv, _now_iso()),
+            """INSERT INTO users (email, hashed_password, is_active, role, pages, student_id, created_at)
+               VALUES (?, ?, ?, ?, ?, ?, ?)""",
+            (email, hash_password(password), 1 if is_active else 0, role, pages_csv, linked, _now_iso()),
         )
     except sqlite3.IntegrityError as exc:
         raise ValueError(f"user with email {email!r} already exists") from exc
@@ -220,7 +257,9 @@ def set_user_role(conn: sqlite3.Connection, user_id: int, role: Role) -> User:
     """Update a user's role AND re-apply that role's page preset.
 
     Refuses to remove the last active admin. Callers that also want custom
-    pages should call set_user_pages afterward.
+    pages should call set_user_pages afterward. Switching to a non-student role
+    clears any student link (it's only meaningful for `student`); callers that
+    want to (re)link a student account should call set_user_student_link next.
     """
     if role not in VALID_ROLES:
         raise ValueError(f"role must be one of {sorted(VALID_ROLES)}")
@@ -228,9 +267,37 @@ def set_user_role(conn: sqlite3.Connection, user_id: int, role: Role) -> User:
         raise LookupError(f"no user with id {user_id}")
     if _would_remove_last_admin(conn, user_id, new_role=role):
         raise ValueError("cannot remove the last active admin")
+    if role == "student":
+        # Keep any existing link; just reset role + (empty) page preset.
+        conn.execute(
+            "UPDATE users SET role = ?, pages = ? WHERE user_id = ?",
+            (role, _pages_to_csv(default_pages_for_role(role)), user_id),
+        )
+    else:
+        conn.execute(
+            "UPDATE users SET role = ?, pages = ?, student_id = NULL WHERE user_id = ?",
+            (role, _pages_to_csv(default_pages_for_role(role)), user_id),
+        )
+    conn.commit()
+    return get_user_by_id(conn, user_id)
+
+
+def set_user_student_link(
+    conn: sqlite3.Connection, user_id: int, student_id: int
+) -> User:
+    """Link a `student`-role account to the training record it may view.
+
+    Refuses if the account isn't a student (the link is meaningless otherwise).
+    Existence of the student_id in the analytics tables is validated at the API
+    layer, which has the analytics DB handle.
+    """
+    user = get_user_by_id(conn, user_id)
+    if user is None:
+        raise LookupError(f"no user with id {user_id}")
+    if user.role != "student":
+        raise ValueError("only student accounts can be linked to a student record")
     conn.execute(
-        "UPDATE users SET role = ?, pages = ? WHERE user_id = ?",
-        (role, _pages_to_csv(default_pages_for_role(role)), user_id),
+        "UPDATE users SET student_id = ? WHERE user_id = ?", (student_id, user_id)
     )
     conn.commit()
     return get_user_by_id(conn, user_id)

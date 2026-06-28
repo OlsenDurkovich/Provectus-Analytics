@@ -21,6 +21,7 @@ from .routers import auth as auth_router
 from .routers import flights as flights_router
 from .routers import instructors as instructors_router
 from .routers import kpis as kpis_router
+from .routers import me as me_router
 from .routers import meta as meta_router
 from .routers import public as public_router
 from .routers import ratings as ratings_router
@@ -146,6 +147,9 @@ def create_app() -> FastAPI:
     # (see those modules) on top of this router-level auth backstop.
     protected = [Depends(current_active_user)]
     app.include_router(meta_router.router,        dependencies=protected)
+    # /api/me/training — the only data endpoint a student account can reach;
+    # the endpoint's own current_student dep restricts it to their own record.
+    app.include_router(me_router.router,          dependencies=protected)
     app.include_router(kpis_router.router,        dependencies=[Depends(require_page("overview"))])
     app.include_router(ratings_router.router,     dependencies=protected)
     app.include_router(students_router.router,    dependencies=protected)
