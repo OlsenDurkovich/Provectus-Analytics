@@ -225,16 +225,21 @@ Deployment is done; the app is live on synthetic data. The following is the work
 
 ### P2 — Medium
 
-- **Color scheme / branding pass — accent SHIPPED** (branch `feat/brand-color`, pushed 2026-06-27, **awaiting merge**): UI accent swapped purple→logo green (light `#1B5E3F`, dark `#1F8A5B`), both themes. *Remaining:* the **chart-data palette** (PPL series color, 'hours' metric, heatmap scale) is still purple — finish it for full on-brand consistency. *Code:* `frontend/src/components/charts/*`, `ClientsTable.tsx`, `RatingsList.tsx`, `RatingBars.tsx`.
+- **Color scheme / branding pass — SHIPPED** (accent: `feat/brand-color`, pushed; heatmap: `feat/chart-palette`, committed — both awaiting merge). UI accent purple→logo green (light `#1B5E3F`, dark `#1F8A5B`) + the activity-heatmap single-hue scale→green. **Design decision (2026-06-27, Olsen):** the *categorical* palettes — the 7 per-rating colors and the 3-metric colors — are intentionally left multi-color. Greening them would collide with the existing green (`#3DD68C`) and hurt rating distinguishability, so this is considered complete. A full categorical-palette redesign around green is a separate design exercise only if ever wanted.
 - **"Remember my login" / stay signed in** — persist the session so users aren't logged out on refresh or return visits. Likely a longer-lived refresh token + persistent (rather than in-memory/session) storage of it, gated by a "Remember me" checkbox on the login form. *Code:* token lifetimes in `src/provectus_analytics/auth/tokens.py`; login form + token storage in `frontend/src/auth/`.
 
 ### P3 — Later
 
-- **Public transparency view** (existing Phase 10 below) — anonymized public cost page; depends on real data + opt-in consent.
-- **`www` subdomain** — redirect `www.provectusanalytics.com` → root (needs Hobby plan; trial caps custom domains at 1).
+- **Public transparency view — SHIPPED** (`feat/public-transparency`) — see Done.
+- **`www` subdomain — DONE** (2026-06-27) — see Done.
+
+_(P3 is now clear; remaining open work is the P0 external blockers and the optional follow-ups noted above.)_
 
 ### Done
 
+- ✅ **Public transparency view** (2026-06-27, branch `feat/public-transparency`, committed, awaiting push + merge) — public unauthenticated `/transparency` page + `GET /api/public/transparency`. Consent-filtered aggregate norms (median + P25/P75 for cost/hours/days), no PII, low-sample caveats, and a `data_mode` banner that labels synthetic sample data until real responses land. Backed by `norms.compute_rating_norms(consented_only=True)`. Backend +4 tests, frontend +2; full suites green.
+- ✅ **`www` subdomain** (2026-06-27) — `www.provectusanalytics.com` added as a Railway custom domain + Cloudflare DNS (CNAME `www`→`h2drb6o0.up.railway.app`, DNS-only; TXT `_railway-verify.www`). Serves the app once Railway issues the cert (verifying). No repo change. Both apex and www serve the app; a www→apex redirect was deemed unnecessary.
+- ✅ **Chart heatmap → brand green** (2026-06-27, branch `feat/chart-palette`, committed, awaiting push + merge) — activity-heatmap single-hue scale recolored purple→green. Categorical rating/metric palettes intentionally left (see P2 decision).
 - ✅ **User & access management** (2026-06-27, branch `feat/user-access-management`, pushed, awaiting merge) — three roles admin/instructor/viewer (retired legacy `boss`, migrates boss→admin), admin-only `/api/users` (list/create/patch) + Users admin screen, self-service `/api/auth/change-password`, last-admin guard, `flights`+`upload` routers gated to admin. Backend 128 / frontend 80 tests pass; tsc + build clean. (Follow-up: instructor data scoping — see P1.)
 - ✅ **Brand accent color** (2026-06-27, branch `feat/brand-color`, pushed, awaiting merge) — UI accent purple→Provectus logo green in both themes + accent-derived chrome. Chart-data palette deferred (see P2).
 - ✅ **Clean up dead buttons** (2026-06-27) — audited every control; only the notifications bell was non-functional (placeholder, no feed). Removed the bell, the orphaned `NotificationsPopover.tsx`, the `notifOpen` plumbing, and dead `notif-*` CSS. Everything else was already wired. tsc + build clean, 76/76 frontend tests pass.
