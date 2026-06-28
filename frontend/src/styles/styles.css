@@ -11,9 +11,9 @@
   --fg-muted: #A1A1A1;
   --fg-dim: #6B6B6B;
   --fg-faint: #4A4A4A;
-  --accent: #6E56F8;
-  --accent-faint: rgba(110, 86, 248, 0.12);
-  --accent-strong: #8775FF;
+  --accent: #1F8A5B;
+  --accent-faint: rgba(31, 138, 91, 0.14);
+  --accent-strong: #2BA56E;
   --positive: #3DD68C;
   --negative: #F87171;
   --grid: #1A1A1A;
@@ -36,9 +36,9 @@
   --fg-muted: #595959;
   --fg-dim: #8A8A8A;
   --fg-faint: #BFBFBF;
-  --accent: #6E56F8;
-  --accent-faint: rgba(110, 86, 248, 0.10);
-  --accent-strong: #5A42E0;
+  --accent: #1B5E3F;
+  --accent-faint: rgba(27, 94, 63, 0.10);
+  --accent-strong: #134A30;
   --positive: #16A34A;
   --negative: #DC2626;
   --grid: #F0F0EE;
@@ -131,7 +131,7 @@ input { font-family: inherit; color: inherit; }
 .workspace-logo {
   width: 28px; height: 28px;
   border-radius: 7px;
-  background: linear-gradient(135deg, #6E56F8 0%, #4F3FD9 100%);
+  background: linear-gradient(135deg, var(--accent) 0%, var(--accent-strong) 100%);
   flex-shrink: 0;
   display: grid;
   place-items: center;
@@ -956,9 +956,9 @@ table.dt {
   border-color: color-mix(in oklab, #3DD68C 22%, transparent);
 }
 .status-on-checkride {
-  background: color-mix(in oklab, #6E56F8 14%, transparent);
+  background: color-mix(in oklab, var(--accent) 14%, transparent);
   color: var(--accent-strong);
-  border-color: color-mix(in oklab, #6E56F8 28%, transparent);
+  border-color: color-mix(in oklab, var(--accent) 28%, transparent);
 }
 .status-completed {
   background: var(--bg-elev-2);
