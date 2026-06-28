@@ -155,3 +155,36 @@ export const useUploadFsp = () => {
     },
   });
 };
+
+// --- user & access management ---------------------------------------------
+
+export const useUsers = () =>
+  useQuery({ queryKey: ['users'], queryFn: client.listUsers });
+
+export const useCreateUser = () => {
+  const qc = useQueryClient();
+  return useMutation({
+    mutationFn: (body: { email: string; password: string; role: string }) =>
+      client.createUser(body),
+    onSuccess: () => {
+      void qc.invalidateQueries({ queryKey: ['users'] });
+    },
+  });
+};
+
+export const useUpdateUser = () => {
+  const qc = useQueryClient();
+  return useMutation({
+    mutationFn: ({ id, patch }: { id: number; patch: { role?: string; is_active?: boolean } }) =>
+      client.updateUser(id, patch),
+    onSuccess: () => {
+      void qc.invalidateQueries({ queryKey: ['users'] });
+    },
+  });
+};
+
+export const useChangePassword = () =>
+  useMutation({
+    mutationFn: (body: { current_password: string; new_password: string }) =>
+      client.changePassword(body),
+  });

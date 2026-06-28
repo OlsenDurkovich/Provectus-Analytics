@@ -103,3 +103,28 @@ def me(user: users.User = Depends(deps.current_active_user)) -> UserOut:
         role=user.role,
         is_active=user.is_active,
     )
+
+
+class ChangePasswordRequest(BaseModel):
+    current_password: str = Field(min_length=1)
+    new_password: str = Field(min_length=8)
+
+
+@router.post("/change-password", status_code=204)
+def change_password_endpoint(
+    body: ChangePasswordRequest,
+    user: users.User = Depends(deps.current_active_user),
+) -> None:
+    """Self-service password change for the logged-in user.
+
+    users.change_password raises ValueError (→400) on wrong current password
+    or a too-short new one; the app-level handler converts it.
+    """
+    conn = _db.connect(web_data.DEFAULT_DB)
+    try:
+        users.change_password(
+            conn, user.user_id, body.current_password, body.new_password
+        )
+    finally:
+        conn.close()
+    return None

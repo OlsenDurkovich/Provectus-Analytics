@@ -15,8 +15,10 @@ type Props = {
   onThemeToggle: () => void;
   onImport: () => void;
   importPending?: boolean;
+  showImport?: boolean;
   showRangePicker?: boolean;
   userEmail?: string | null;
+  onChangePassword?: () => void;
   onLogout?: () => void;
 };
 
@@ -30,8 +32,10 @@ export function Topbar({
   onThemeToggle,
   onImport,
   importPending = false,
+  showImport = true,
   showRangePicker = true,
   userEmail = null,
+  onChangePassword,
   onLogout,
 }: Props) {
   const meta = useMeta();
@@ -123,15 +127,17 @@ export function Topbar({
         </div>
       )}
 
-      <button
-        className="btn btn-outline"
-        onClick={onImport}
-        type="button"
-        disabled={importPending}
-      >
-        <Icon name="download" size={13} />
-        {importPending ? 'Importing…' : 'Import FSP'}
-      </button>
+      {showImport && (
+        <button
+          className="btn btn-outline"
+          onClick={onImport}
+          type="button"
+          disabled={importPending}
+        >
+          <Icon name="download" size={13} />
+          {importPending ? 'Importing…' : 'Import FSP'}
+        </button>
+      )}
 
       <button
         className="btn btn-icon"
@@ -141,6 +147,17 @@ export function Topbar({
       >
         <Icon name={theme === 'dark' ? 'sun' : 'moon'} size={14} />
       </button>
+
+      {onChangePassword && (
+        <button
+          className="btn btn-outline"
+          onClick={onChangePassword}
+          title="Change your password"
+          type="button"
+        >
+          Password
+        </button>
+      )}
 
       {userEmail && onLogout && (
         <button
