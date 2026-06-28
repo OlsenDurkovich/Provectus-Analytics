@@ -11,6 +11,7 @@ export default function Login() {
   const { login } = useAuth();
   const [email, setEmail] = useState('');
   const [password, setPassword] = useState('');
+  const [remember, setRemember] = useState(true);
   const [submitting, setSubmitting] = useState(false);
   const [error, setError] = useState<string | null>(null);
 
@@ -19,7 +20,7 @@ export default function Login() {
     setSubmitting(true);
     setError(null);
     try {
-      await login(email, password);
+      await login(email, password, remember);
     } catch (err) {
       if (err instanceof LoginFailure) {
         if (err.status === 401) setError('Invalid email or password.');
@@ -60,6 +61,15 @@ export default function Login() {
             onChange={(e) => setPassword(e.target.value)}
             required
           />
+        </label>
+
+        <label className="login-remember">
+          <input
+            type="checkbox"
+            checked={remember}
+            onChange={(e) => setRemember(e.target.checked)}
+          />
+          <span>Keep me signed in</span>
         </label>
 
         {error && <div className="login-error" role="alert">{error}</div>}

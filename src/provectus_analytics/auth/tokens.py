@@ -22,7 +22,7 @@ class TokenError(Exception):
     """Token is invalid, expired, or the wrong type."""
 
 
-def _encode(sub: int, typ: TokenType, lifetime: timedelta) -> str:
+def _encode(sub: int, typ: TokenType, lifetime: timedelta, extra: dict | None = None) -> str:
     now = datetime.now(timezone.utc)
     payload = {
         "sub": str(sub),
@@ -30,6 +30,8 @@ def _encode(sub: int, typ: TokenType, lifetime: timedelta) -> str:
         "iat": int(now.timestamp()),
         "exp": int((now + lifetime).timestamp()),
     }
+    if extra:
+        payload.update(extra)
     return jwt.encode(payload, settings.secret_key,
                       algorithm=settings.jwt_algorithm)
 
@@ -39,9 +41,24 @@ def make_access_token(user_id: int) -> str:
                    timedelta(minutes=settings.access_token_minutes))
 
 
-def make_refresh_token(user_id: int) -> str:
-    return _encode(user_id, "refresh",
-                   timedelta(days=settings.refresh_token_days))
+def make_refresh_token(user_id: int, remember: bool = False) -> str:
+    """Refresh token. A "remember me" session gets a longer lifetime and carries
+    a `rem` claim so the refresh endpoint can re-issue with the same lifetime."""
+    days = settings.refresh_token_long_days if remember else settings.refresh_token_days
+    return _encode(user_id, "refresh", timedelta(days=days), extra={"rem": remember})
+
+
+def refresh_token_remember(token: str) -> bool:
+    """Read the `rem` claim off a refresh token (False if absent/unreadable).
+
+    Best-effort: assumes the token has already passed decode_token validation;
+    decodes again only to inspect the claim."""
+    try:
+        payload = jwt.decode(token, settings.secret_key,
+                             algorithms=[settings.jwt_algorithm])
+    except jwt.InvalidTokenError:
+        return False
+    return bool(payload.get("rem", False))
 
 
 def decode_token(token: str, expected_type: TokenType) -> int:

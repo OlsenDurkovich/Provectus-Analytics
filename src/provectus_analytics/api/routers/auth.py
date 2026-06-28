@@ -24,6 +24,9 @@ class LoginRequest(BaseModel):
     # users.authenticate handles missing/wrong credentials uniformly.
     email: str = Field(min_length=1)
     password: str = Field(min_length=1)
+    # "Remember me" — issue a longer-lived refresh token so the session
+    # survives a longer absence. Defaults off (safer on shared machines).
+    remember: bool = False
 
 
 class TokenPair(BaseModel):
@@ -46,10 +49,10 @@ class UserOut(BaseModel):
     student_id: int | None = None
 
 
-def _build_token_pair(user_id: int) -> TokenPair:
+def _build_token_pair(user_id: int, remember: bool = False) -> TokenPair:
     return TokenPair(
         access_token=tokens.make_access_token(user_id),
-        refresh_token=tokens.make_refresh_token(user_id),
+        refresh_token=tokens.make_refresh_token(user_id, remember=remember),
     )
 
 
@@ -66,7 +69,7 @@ def login(request: Request, body: LoginRequest) -> TokenPair:
             status_code=status.HTTP_401_UNAUTHORIZED,
             detail="Invalid email or password",
         )
-    return _build_token_pair(user.user_id)
+    return _build_token_pair(user.user_id, remember=body.remember)
 
 
 @router.post("/refresh", response_model=TokenPair)
@@ -88,7 +91,9 @@ def refresh(body: RefreshRequest) -> TokenPair:
             status_code=status.HTTP_401_UNAUTHORIZED,
             detail="User does not exist or is inactive",
         )
-    return _build_token_pair(user.user_id)
+    # Preserve the "remember me" lifetime across silent refreshes.
+    remember = tokens.refresh_token_remember(body.refresh_token)
+    return _build_token_pair(user.user_id, remember=remember)
 
 
 @router.post("/logout", status_code=204)

@@ -40,6 +40,9 @@ class _Settings:
     jwt_algorithm: str = "HS256"
     access_token_minutes: int = 15
     refresh_token_days: int = 7
+    # "Remember me" sessions get a longer-lived refresh token so the user isn't
+    # bounced to the login screen after a week away.
+    refresh_token_long_days: int = 30
     login_rate_limit: str = "10/minute"
     initial_admin_email: str | None = None
     initial_admin_password: str | None = None

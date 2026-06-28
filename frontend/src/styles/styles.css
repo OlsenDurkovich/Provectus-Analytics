@@ -1605,6 +1605,21 @@ table.dt {
   border-color: var(--accent);
   background: var(--bg-elev-2, var(--bg-elev));
 }
+.login-remember {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  font-size: 13px;
+  color: var(--fg-muted);
+  cursor: pointer;
+  user-select: none;
+}
+.login-remember input {
+  width: 15px;
+  height: 15px;
+  accent-color: var(--accent);
+  cursor: pointer;
+}
 .login-error {
   font-size: 13px;
   color: var(--danger, #e5484d);

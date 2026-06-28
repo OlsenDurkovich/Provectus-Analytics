@@ -29,7 +29,7 @@ type AuthContextValue = {
   isAdmin: boolean;
   isStudent: boolean;
   canSee: (page: string) => boolean;
-  login: (email: string, password: string) => Promise<void>;
+  login: (email: string, password: string, remember?: boolean) => Promise<void>;
   logout: () => Promise<void>;
 };
 
@@ -82,18 +82,18 @@ export function AuthProvider({ children }: { children: ReactNode }) {
   // Subscribe to global auth-expired events from authFetch.
   useEffect(() => onAuthExpired(signOutLocal), [signOutLocal]);
 
-  const login = useCallback(async (email: string, password: string) => {
+  const login = useCallback(async (email: string, password: string, remember = false) => {
     const res = await fetch('/api/auth/login', {
       method: 'POST',
       headers: { 'Content-Type': 'application/json' },
-      body: JSON.stringify({ email, password }),
+      body: JSON.stringify({ email, password, remember }),
     });
     if (!res.ok) {
       const detail = await res.text().catch(() => '');
       throw new LoginFailure(res.status, detail || `Login failed (${res.status})`);
     }
     const body = (await res.json()) as { access_token: string; refresh_token: string };
-    setAuth(body.access_token, body.refresh_token);
+    setAuth(body.access_token, body.refresh_token, remember);
 
     // Fetch the user so the topbar can show role/email immediately.
     const meRes = await authFetch('/api/auth/me');
