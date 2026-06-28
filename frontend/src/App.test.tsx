@@ -13,6 +13,7 @@ function mockMetaFetch() {
         json: async () => ({
           user_id: 1, email: 'test@example.com',
           role: 'admin', is_active: true,
+          pages: ['overview', 'ratings', 'students', 'instructors'], is_admin: true,
         }),
       });
     }
@@ -49,6 +50,7 @@ beforeEach(() => {
     JSON.stringify({
       user_id: 1, email: 'test@example.com',
       role: 'admin', is_active: true,
+      pages: ['overview', 'ratings', 'students', 'instructors'], is_admin: true,
     }),
   );
 });

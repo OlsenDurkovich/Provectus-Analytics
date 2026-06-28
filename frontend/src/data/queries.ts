@@ -175,8 +175,13 @@ export const useCreateUser = () => {
 export const useUpdateUser = () => {
   const qc = useQueryClient();
   return useMutation({
-    mutationFn: ({ id, patch }: { id: number; patch: { role?: string; is_active?: boolean } }) =>
-      client.updateUser(id, patch),
+    mutationFn: ({
+      id,
+      patch,
+    }: {
+      id: number;
+      patch: { role?: string; is_active?: boolean; pages?: string[]; new_password?: string };
+    }) => client.updateUser(id, patch),
     onSuccess: () => {
       void qc.invalidateQueries({ queryKey: ['users'] });
     },

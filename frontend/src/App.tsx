@@ -30,7 +30,7 @@ function breadcrumbFor(pathname: string): string {
 }
 
 export default function App() {
-  const { status, user, logout, isAdmin } = useAuth();
+  const { status, user, logout, isAdmin, canSee } = useAuth();
   const { theme, toggle: toggleTheme } = useTheme();
   const location = useLocation();
 
@@ -48,6 +48,7 @@ export default function App() {
     <Shell
       user={user}
       isAdmin={isAdmin}
+      canSee={canSee}
       logout={logout}
       theme={theme}
       toggleTheme={toggleTheme}
@@ -55,15 +56,24 @@ export default function App() {
   );
 }
 
+function NoAccess() {
+  return (
+    <div style={{ padding: 24, color: 'var(--fg-dim)', fontSize: 14 }}>
+      You don’t have access to any pages yet. Ask an admin to grant you access.
+    </div>
+  );
+}
+
 type ShellProps = {
   user: ReturnType<typeof useAuth>['user'];
   isAdmin: boolean;
+  canSee: (page: string) => boolean;
   logout: ReturnType<typeof useAuth>['logout'];
   theme: ReturnType<typeof useTheme>['theme'];
   toggleTheme: ReturnType<typeof useTheme>['toggle'];
 };
 
-function Shell({ user, isAdmin, logout, theme, toggleTheme }: ShellProps) {
+function Shell({ user, isAdmin, canSee, logout, theme, toggleTheme }: ShellProps) {
   const location = useLocation();
   const navigate = useNavigate();
   const [collapsed, setCollapsed] = useState(false);
@@ -74,6 +84,16 @@ function Shell({ user, isAdmin, logout, theme, toggleTheme }: ShellProps) {
   const importMut = useImportFsp();
   const rebuildMut = useRebuild();
   usePersistedTab();
+
+  // First dashboard page this user can see — the redirect target when they
+  // land on a page they're not allowed to access.
+  const DASH_PAGES: [string, string][] = [
+    ['overview', '/'],
+    ['ratings', '/ratings'],
+    ['students', '/students'],
+    ['instructors', '/instructors'],
+  ];
+  const firstAllowedPath = DASH_PAGES.find(([p]) => canSee(p))?.[1] ?? null;
 
   const handlers = useMemo(
     () => ({
@@ -125,17 +145,43 @@ function Shell({ user, isAdmin, logout, theme, toggleTheme }: ShellProps) {
         <div className="canvas">
           <ErrorBoundary>
             <Routes>
-              <Route path="/" element={<Overview range={range} />} />
-              <Route path="/ratings/:code?" element={<RatingDetail range={range} />} />
-              <Route path="/students/:id?" element={<Student />} />
-              <Route path="/instructors/:id?" element={<Instructor />} />
+              <Route
+                path="/"
+                element={
+                  canSee('overview') ? (
+                    <Overview range={range} />
+                  ) : firstAllowedPath ? (
+                    <Navigate to={firstAllowedPath} replace />
+                  ) : (
+                    <NoAccess />
+                  )
+                }
+              />
+              <Route
+                path="/ratings/:code?"
+                element={
+                  canSee('ratings') ? (
+                    <RatingDetail range={range} />
+                  ) : (
+                    <Navigate to={firstAllowedPath ?? '/'} replace />
+                  )
+                }
+              />
+              <Route
+                path="/students/:id?"
+                element={canSee('students') ? <Student /> : <Navigate to={firstAllowedPath ?? '/'} replace />}
+              />
+              <Route
+                path="/instructors/:id?"
+                element={canSee('instructors') ? <Instructor /> : <Navigate to={firstAllowedPath ?? '/'} replace />}
+              />
               <Route
                 path="/flights"
-                element={isAdmin ? <Flights /> : <Navigate to="/" replace />}
+                element={isAdmin ? <Flights /> : <Navigate to={firstAllowedPath ?? '/'} replace />}
               />
               <Route
                 path="/users"
-                element={isAdmin ? <Users /> : <Navigate to="/" replace />}
+                element={isAdmin ? <Users /> : <Navigate to={firstAllowedPath ?? '/'} replace />}
               />
             </Routes>
           </ErrorBoundary>

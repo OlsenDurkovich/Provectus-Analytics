@@ -119,8 +119,10 @@ export const client = {
   listUsers: () => get<UserRow[]>('/api/users'),
   createUser: (body: { email: string; password: string; role: string }) =>
     post<UserRow>('/api/users', body),
-  updateUser: (id: number, body: { role?: string; is_active?: boolean }) =>
-    patchReq<UserRow>(`/api/users/${id}`, body),
+  updateUser: (
+    id: number,
+    body: { role?: string; is_active?: boolean; pages?: string[]; new_password?: string },
+  ) => patchReq<UserRow>(`/api/users/${id}`, body),
   changePassword: (body: { current_password: string; new_password: string }) =>
     postNoContent('/api/auth/change-password', body),
   // Public, unauthenticated — plain fetch (no bearer token).

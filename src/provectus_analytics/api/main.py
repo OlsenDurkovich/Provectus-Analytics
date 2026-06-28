@@ -15,7 +15,7 @@ from slowapi.middleware import SlowAPIMiddleware
 from .. import db as _db
 from ..auth import ensure_users_table, seed_initial_admin
 from ..auth.config import settings as auth_settings
-from ..auth.deps import current_active_user, current_admin_user
+from ..auth.deps import current_active_user, current_admin_user, require_page
 from ..auth.rate_limit import limiter
 from .routers import auth as auth_router
 from .routers import flights as flights_router
@@ -140,13 +140,16 @@ def create_app() -> FastAPI:
     # page). Returns only consent-filtered aggregate norms, no PII.
     app.include_router(public_router.router)
 
-    # All data routers require an authenticated user.
+    # Authenticated data routers. Page access is enforced per the user's
+    # `pages` set (admins bypass): meta is always needed by the shell; the
+    # ratings/students routers serve multiple pages so they gate per-endpoint
+    # (see those modules) on top of this router-level auth backstop.
     protected = [Depends(current_active_user)]
     app.include_router(meta_router.router,        dependencies=protected)
-    app.include_router(kpis_router.router,        dependencies=protected)
+    app.include_router(kpis_router.router,        dependencies=[Depends(require_page("overview"))])
     app.include_router(ratings_router.router,     dependencies=protected)
     app.include_router(students_router.router,    dependencies=protected)
-    app.include_router(instructors_router.router, dependencies=protected)
+    app.include_router(instructors_router.router, dependencies=[Depends(require_page("instructors"))])
 
     # Admin-only: user management, the Flights override surface, and FSP uploads.
     admin_only = [Depends(current_admin_user)]
