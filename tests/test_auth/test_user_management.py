@@ -95,12 +95,14 @@ def test_viewer_can_read_dashboards(client):
 
 def test_admin_creates_user_with_role(client):
     tok = _token(client, "admin@example.com", "adminpassword")
+    # viewer needs no link; instructor/student creation-with-link is covered in
+    # test_instructor_role.py / test_student_role.py.
     r = client.post("/api/users", headers=_auth(tok),
-                    json={"email": "newinstr@example.com", "password": "newpassword", "role": "instructor"})
+                    json={"email": "newviewer@example.com", "password": "newpassword", "role": "viewer"})
     assert r.status_code == 201
-    assert r.json()["role"] == "instructor"
+    assert r.json()["role"] == "viewer"
     # the new user can log in
-    assert _token(client, "newinstr@example.com", "newpassword")
+    assert _token(client, "newviewer@example.com", "newpassword")
 
 
 def test_create_duplicate_email_409(client):

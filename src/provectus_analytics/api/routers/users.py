@@ -23,6 +23,7 @@ class UserOut(BaseModel):
     pages: list[str]
     is_admin: bool
     student_id: int | None = None
+    instructor_name: str | None = None
 
 
 class StudentRecord(BaseModel):
@@ -32,28 +33,36 @@ class StudentRecord(BaseModel):
     email: str | None = None
 
 
+class InstructorRecord(BaseModel):
+    """A pickable instructor name, for linking an instructor account."""
+    name: str
+    students: int
+
+
 class CreateUserRequest(BaseModel):
     # `str` (not EmailStr) to stay consistent with the login endpoint and to
     # accept corporate TLDs; create_user does the real validation.
     email: str = Field(min_length=3)
     password: str = Field(min_length=8)
     role: str = "viewer"
-    student_id: int | None = None  # required (and only used) when role == student
+    student_id: int | None = None       # required (only used) when role == student
+    instructor_name: str | None = None  # required (only used) when role == instructor
 
 
 class UpdateUserRequest(BaseModel):
     role: str | None = None
     is_active: bool | None = None
     pages: list[str] | None = None
-    new_password: str | None = None  # admin reset (no current-password check)
-    student_id: int | None = None    # (re)link a student account to a record
+    new_password: str | None = None     # admin reset (no current-password check)
+    student_id: int | None = None       # (re)link a student account to a record
+    instructor_name: str | None = None  # (re)link an instructor account
 
 
 def _out(u: users.User) -> UserOut:
     return UserOut(
         user_id=u.user_id, email=u.email, role=u.role,
         is_active=u.is_active, pages=list(u.pages), is_admin=u.is_admin,
-        student_id=u.student_id,
+        student_id=u.student_id, instructor_name=u.instructor_name,
     )
 
 
@@ -65,6 +74,17 @@ def _assert_student_exists(conn, student_id: int) -> None:
     if row is None:
         raise HTTPException(
             status_code=422, detail=f"no student record with id {student_id}"
+        )
+
+
+def _assert_instructor_exists(conn, instructor_name: str) -> None:
+    """Reject a link to an instructor name that isn't in the flights data."""
+    row = conn.execute(
+        "SELECT 1 FROM flights WHERE instructor = ? LIMIT 1", (instructor_name,)
+    ).fetchone()
+    if row is None:
+        raise HTTPException(
+            status_code=422, detail=f"no instructor named {instructor_name!r}"
         )
 
 
@@ -81,6 +101,21 @@ def list_student_records() -> list[StudentRecord]:
             StudentRecord(student_id=r["student_id"], name=r["fsp_display_name"], email=r["email"])
             for r in rows
         ]
+    finally:
+        conn.close()
+
+
+@router.get("/instructor-records", response_model=list[InstructorRecord])
+def list_instructor_records() -> list[InstructorRecord]:
+    """Distinct instructor names (with student counts) for linking an account."""
+    conn = _db.connect(web_data.DEFAULT_DB)
+    try:
+        rows = conn.execute(
+            "SELECT instructor, COUNT(DISTINCT student_id) AS n FROM flights "
+            "WHERE instructor IS NOT NULL AND instructor != '' "
+            "GROUP BY instructor ORDER BY instructor"
+        ).fetchall()
+        return [InstructorRecord(name=r["instructor"], students=int(r["n"] or 0)) for r in rows]
     finally:
         conn.close()
 
@@ -105,10 +140,17 @@ def create_user_endpoint(body: CreateUserRequest) -> UserOut:
                     detail="a student account must be linked to a student record",
                 )
             _assert_student_exists(conn, body.student_id)
+        if body.role == "instructor":
+            if not body.instructor_name:
+                raise HTTPException(
+                    status_code=422,
+                    detail="an instructor account must be linked to an instructor",
+                )
+            _assert_instructor_exists(conn, body.instructor_name)
         try:
             user = users.create_user(
-                conn, body.email, body.password,
-                role=body.role, student_id=body.student_id,
+                conn, body.email, body.password, role=body.role,
+                student_id=body.student_id, instructor_name=body.instructor_name,
             )
         except ValueError as exc:
             # 409 for the duplicate-email case, 422 for everything else
@@ -134,11 +176,15 @@ def update_user_endpoint(user_id: int, body: UpdateUserRequest) -> UserOut:
     try:
         if body.student_id is not None:
             _assert_student_exists(conn, body.student_id)
+        if body.instructor_name is not None:
+            _assert_instructor_exists(conn, body.instructor_name)
         result = None
         if body.role is not None:
             result = users.set_user_role(conn, user_id, body.role)
         if body.student_id is not None:
             result = users.set_user_student_link(conn, user_id, body.student_id)
+        if body.instructor_name is not None:
+            result = users.set_user_instructor_link(conn, user_id, body.instructor_name)
         if body.pages is not None:
             result = users.set_user_pages(conn, user_id, body.pages)
         if body.is_active is not None:

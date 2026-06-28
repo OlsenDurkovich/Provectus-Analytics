@@ -76,6 +76,21 @@ def current_student(user: users.User = Depends(current_active_user)) -> users.Us
     return user
 
 
+def current_instructor(user: users.User = Depends(current_active_user)) -> users.User:
+    """Allow only an `instructor`-role account that's actually linked to a name.
+
+    Guards `/api/me/students`: a non-instructor or an unlinked instructor gets
+    403. The endpoint then serves only `user.instructor_name`'s students, so an
+    instructor can never read another instructor's roster via input tampering.
+    """
+    if user.role != "instructor" or not user.instructor_name:
+        raise HTTPException(
+            status_code=status.HTTP_403_FORBIDDEN,
+            detail="This endpoint is only for instructor accounts linked to an instructor",
+        )
+    return user
+
+
 def require_page(*pages: str):
     """Dependency factory: allow the request iff the user is an admin OR holds
     at least one of the named pages.

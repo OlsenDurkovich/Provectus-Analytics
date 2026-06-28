@@ -1,9 +1,13 @@
 // Admin-only user management. The API enforces admin access + page access too;
 // App.tsx guards the route so non-admins are redirected away.
 import { useState, type FormEvent, type CSSProperties } from 'react';
-import { useUsers, useCreateUser, useUpdateUser, useStudentRecords } from '../data/queries';
+import {
+  useUsers, useCreateUser, useUpdateUser, useStudentRecords, useInstructorRecords,
+} from '../data/queries';
 import { ApiError } from '../data/client';
-import { ALL_PAGES, type StudentRecord, type UserRole, type UserRow } from '../data/types';
+import {
+  ALL_PAGES, type InstructorRecord, type StudentRecord, type UserRole, type UserRow,
+} from '../data/types';
 
 const ROLES: UserRole[] = ['admin', 'instructor', 'viewer', 'student'];
 
@@ -40,6 +44,7 @@ type UpdateBody = {
   pages?: string[];
   new_password?: string;
   student_id?: number | null;
+  instructor_name?: string | null;
 };
 
 function UserCard({
@@ -47,11 +52,13 @@ function UserCard({
   onPatch,
   busy,
   records,
+  instructors,
 }: {
   u: UserRow;
   onPatch: (id: number, body: UpdateBody) => void;
   busy: boolean;
   records: StudentRecord[];
+  instructors: InstructorRecord[];
 }) {
   const [pw, setPw] = useState('');
 
@@ -108,6 +115,32 @@ function UserCard({
           </select>
           <div style={{ fontSize: 11, color: 'var(--fg-dim)', marginTop: 4 }}>
             Student accounts see only their own training — no other pages or people.
+          </div>
+        </div>
+      ) : u.role === 'instructor' ? (
+        <div>
+          <div style={{ fontSize: 12, color: 'var(--fg-dim)', marginBottom: 6 }}>
+            Linked instructor
+          </div>
+          <select
+            style={{ ...input, maxWidth: 280 }}
+            value={u.instructor_name ?? ''}
+            disabled={busy}
+            onChange={(e) =>
+              e.target.value && onPatch(u.user_id, { instructor_name: e.target.value })
+            }
+          >
+            <option value="" disabled>
+              {u.instructor_name == null ? 'Pick an instructor…' : 'Change linked instructor…'}
+            </option>
+            {instructors.map((r) => (
+              <option key={r.name} value={r.name}>
+                {r.name} · {r.students} students
+              </option>
+            ))}
+          </select>
+          <div style={{ fontSize: 11, color: 'var(--fg-dim)', marginTop: 4 }}>
+            Instructors see only their own students' progress — no cost, no other people.
           </div>
         </div>
       ) : (
@@ -168,11 +201,14 @@ export default function Users() {
   const updateUser = useUpdateUser();
   const studentRecords = useStudentRecords();
   const records = studentRecords.data ?? [];
+  const instructorRecords = useInstructorRecords();
+  const instructors = instructorRecords.data ?? [];
 
   const [email, setEmail] = useState('');
   const [password, setPassword] = useState('');
   const [role, setRole] = useState<UserRole>('viewer');
   const [studentId, setStudentId] = useState<string>('');
+  const [instructorName, setInstructorName] = useState<string>('');
   const [createError, setCreateError] = useState<string | null>(null);
   const [rowError, setRowError] = useState<string | null>(null);
 
@@ -183,12 +219,17 @@ export default function Users() {
       setCreateError('Pick which student record this account belongs to.');
       return;
     }
+    if (role === 'instructor' && !instructorName) {
+      setCreateError('Pick which instructor this account belongs to.');
+      return;
+    }
     createUser.mutate(
       {
         email,
         password,
         role,
         student_id: role === 'student' ? Number(studentId) : undefined,
+        instructor_name: role === 'instructor' ? instructorName : undefined,
       },
       {
         onSuccess: () => {
@@ -196,6 +237,7 @@ export default function Users() {
           setPassword('');
           setRole('viewer');
           setStudentId('');
+          setInstructorName('');
         },
         onError: (err) => setCreateError(humanizeError(err)),
       },
@@ -214,7 +256,8 @@ export default function Users() {
         Manage accounts, roles, and exactly which pages each person can see. The
         role sets a starting point; tick or untick pages to fine-tune. Admins
         always have full access. A <strong>student</strong> account is linked to
-        one training record and sees only its own data.
+        one training record; an <strong>instructor</strong> account is linked to
+        one instructor and sees only their own students' progress (no cost).
       </p>
 
       <form onSubmit={submit} style={{ display: 'grid', gap: 10, maxWidth: 380, margin: '20px 0 28px' }}>
@@ -252,6 +295,23 @@ export default function Users() {
             ))}
           </select>
         )}
+        {role === 'instructor' && (
+          <select
+            style={input}
+            value={instructorName}
+            onChange={(e) => setInstructorName(e.target.value)}
+            required
+          >
+            <option value="" disabled>
+              {instructorRecords.isLoading ? 'Loading instructors…' : 'Link to instructor…'}
+            </option>
+            {instructors.map((r) => (
+              <option key={r.name} value={r.name}>
+                {r.name} · {r.students} students
+              </option>
+            ))}
+          </select>
+        )}
         {createError && <div style={{ color: 'var(--danger, #e5484d)', fontSize: 13 }}>{createError}</div>}
         <button className="btn btn-outline" type="submit" disabled={createUser.isPending}>
           {createUser.isPending ? 'Adding…' : 'Add user'}
@@ -266,7 +326,7 @@ export default function Users() {
       {users.data && (
         <div style={{ display: 'grid', gap: 12 }}>
           {users.data.map((u: UserRow) => (
-            <UserCard key={u.user_id} u={u} onPatch={patch} busy={updateUser.isPending} records={records} />
+            <UserCard key={u.user_id} u={u} onPatch={patch} busy={updateUser.isPending} records={records} instructors={instructors} />
           ))}
         </div>
       )}

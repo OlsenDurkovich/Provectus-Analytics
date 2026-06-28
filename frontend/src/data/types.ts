@@ -182,6 +182,35 @@ export interface StudentRecord {
   email: string | null;
 }
 
+// An instructor name an admin can link an instructor account to.
+export interface InstructorRecord {
+  name: string;
+  students: number;
+}
+
+// Cost-free roster served to an instructor account (/api/me/students).
+export interface MyStudentRow {
+  id: string;
+  name: string;
+  rating: RatingCode;
+  progressPct: number;
+  hoursToDate: number;
+  daysEnrolled: number;
+  status: FlightStatus;
+}
+export interface MyInstructorPerRating {
+  rating: RatingCode;
+  n: number;
+  avgHrs: number;
+  avgDays: number;
+  studentIds: string[];
+}
+export interface MyStudentsView {
+  instructor_name: string;
+  students: MyStudentRow[];
+  perRating: MyInstructorPerRating[];
+}
+
 // Toggleable dashboard pages (mirror of auth/users.py ALL_PAGES).
 export type PageKey = 'overview' | 'ratings' | 'students' | 'instructors';
 export const ALL_PAGES: { key: PageKey; label: string }[] = [
@@ -199,6 +228,7 @@ export interface UserRow {
   pages: string[];
   is_admin: boolean;
   student_id?: number | null;
+  instructor_name?: string | null;
 }
 
 export interface PublicRatingNorm {

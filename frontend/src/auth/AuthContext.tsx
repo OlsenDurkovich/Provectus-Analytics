@@ -28,6 +28,7 @@ type AuthContextValue = {
   status: AuthStatus;
   isAdmin: boolean;
   isStudent: boolean;
+  isInstructor: boolean;
   canSee: (page: string) => boolean;
   login: (email: string, password: string, remember?: boolean) => Promise<void>;
   logout: () => Promise<void>;
@@ -118,8 +119,9 @@ export function AuthProvider({ children }: { children: ReactNode }) {
   const value = useMemo(() => {
     const isAdmin = user?.is_admin ?? false;
     const isStudent = user?.role === 'student';
+    const isInstructor = user?.role === 'instructor';
     const canSee = (page: string) => isAdmin || (user?.pages?.includes(page) ?? false);
-    return { user, status, isAdmin, isStudent, canSee, login, logout };
+    return { user, status, isAdmin, isStudent, isInstructor, canSee, login, logout };
   }, [user, status, login, logout]);
   return <AuthContext.Provider value={value}>{children}</AuthContext.Provider>;
 }

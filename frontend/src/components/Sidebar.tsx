@@ -13,13 +13,14 @@ function initialsFromEmail(email: string): string {
 }
 
 type NavItem = {
-  key: 'overview' | 'rating' | 'student' | 'instructor' | 'flights' | 'users' | 'mytraining';
+  key: 'overview' | 'rating' | 'student' | 'instructor' | 'flights' | 'users' | 'mytraining' | 'mystudents';
   label: string;
   icon: IconName;
   kbd: string;
   path: string;
   adminOnly?: boolean;
   studentOnly?: boolean;
+  instructorOnly?: boolean;
   // For dashboard pages: the page-access key that controls visibility.
   page?: 'overview' | 'ratings' | 'students' | 'instructors';
 };
@@ -32,12 +33,14 @@ export const NAV: NavItem[] = [
   { key: 'flights', label: 'Flights', icon: 'plane', kbd: 'F', path: '/flights', adminOnly: true },
   { key: 'users', label: 'Users', icon: 'users', kbd: 'U', path: '/users', adminOnly: true },
   { key: 'mytraining', label: 'My training', icon: 'overview', kbd: 'T', path: '/my-training', studentOnly: true },
+  { key: 'mystudents', label: 'My students', icon: 'users', kbd: 'M', path: '/my-students', instructorOnly: true },
 ];
 
 type Props = {
   collapsed: boolean;
   user?: StoredUser | null;
   isStudent?: boolean;
+  isInstructor?: boolean;
   onUpload?: () => void;
   onImport?: () => void;
   onRebuild?: (synthetic: boolean) => void;
@@ -49,12 +52,14 @@ export function Sidebar({
   collapsed,
   user = null,
   isStudent = false,
+  isInstructor = false,
   onUpload,
   onImport,
   onRebuild,
   importPending = false,
   rebuildPending = false,
 }: Props) {
+  const scoped = isStudent || isInstructor;
   const meta = useMeta();
   const isAdmin = user?.is_admin ?? false;
   const canSee = (page: string) => isAdmin || (user?.pages?.includes(page) ?? false);
@@ -83,7 +88,9 @@ export function Sidebar({
           <div className="workspace-plan">
             {isStudent
               ? 'Student portal'
-              : `Analytics · ${clientCount > 0 ? `${clientCount} clients` : 'synthetic'}`}
+              : isInstructor
+                ? 'Instructor portal'
+                : `Analytics · ${clientCount > 0 ? `${clientCount} clients` : 'synthetic'}`}
           </div>
         </div>
       </div>
@@ -95,7 +102,9 @@ export function Sidebar({
             ? isAdmin
             : n.studentOnly
               ? isStudent
-              : !isStudent && (!n.page || canSee(n.page)),
+              : n.instructorOnly
+                ? isInstructor
+                : !scoped && (!n.page || canSee(n.page)),
         ).map((n) => (
           <NavLink
             key={n.key}
@@ -163,7 +172,7 @@ export function Sidebar({
         </div>
       )}
 
-      {!collapsed && !isStudent && (
+      {!collapsed && !scoped && (
         <div className="data-state">
           <div className="data-state-label">Data state</div>
           <div className="data-state-row">

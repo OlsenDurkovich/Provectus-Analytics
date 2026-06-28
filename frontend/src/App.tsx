@@ -11,6 +11,7 @@ import Instructor from './routes/Instructor';
 import Flights from './routes/Flights';
 import Users from './routes/Users';
 import MyTraining from './routes/MyTraining';
+import MyStudents from './routes/MyStudents';
 import Login from './routes/Login';
 import PublicTransparency from './routes/PublicTransparency';
 import { useTheme } from './hooks/useTheme';
@@ -31,7 +32,7 @@ function breadcrumbFor(pathname: string): string {
 }
 
 export default function App() {
-  const { status, user, logout, isAdmin, isStudent, canSee } = useAuth();
+  const { status, user, logout, isAdmin, isStudent, isInstructor, canSee } = useAuth();
   const { theme, toggle: toggleTheme } = useTheme();
   const location = useLocation();
 
@@ -50,6 +51,7 @@ export default function App() {
       user={user}
       isAdmin={isAdmin}
       isStudent={isStudent}
+      isInstructor={isInstructor}
       canSee={canSee}
       logout={logout}
       theme={theme}
@@ -70,13 +72,14 @@ type ShellProps = {
   user: ReturnType<typeof useAuth>['user'];
   isAdmin: boolean;
   isStudent: boolean;
+  isInstructor: boolean;
   canSee: (page: string) => boolean;
   logout: ReturnType<typeof useAuth>['logout'];
   theme: ReturnType<typeof useTheme>['theme'];
   toggleTheme: ReturnType<typeof useTheme>['toggle'];
 };
 
-function Shell({ user, isAdmin, isStudent, canSee, logout, theme, toggleTheme }: ShellProps) {
+function Shell({ user, isAdmin, isStudent, isInstructor, canSee, logout, theme, toggleTheme }: ShellProps) {
   const location = useLocation();
   const navigate = useNavigate();
   const [collapsed, setCollapsed] = useState(false);
@@ -96,10 +99,12 @@ function Shell({ user, isAdmin, isStudent, canSee, logout, theme, toggleTheme }:
     ['students', '/students'],
     ['instructors', '/instructors'],
   ];
-  // Students have no dashboard pages — their home is the My-training view.
+  // Scoped roles have no dashboard pages — their home is their own /me view.
   const firstAllowedPath = isStudent
     ? '/my-training'
-    : (DASH_PAGES.find(([p]) => canSee(p))?.[1] ?? null);
+    : isInstructor
+      ? '/my-students'
+      : (DASH_PAGES.find(([p]) => canSee(p))?.[1] ?? null);
 
   const handlers = useMemo(
     () => ({
@@ -126,6 +131,7 @@ function Shell({ user, isAdmin, isStudent, canSee, logout, theme, toggleTheme }:
         collapsed={collapsed}
         user={user}
         isStudent={isStudent}
+        isInstructor={isInstructor}
         onUpload={isAdmin ? () => setUploadOpen(true) : undefined}
         onImport={isAdmin ? () => importMut.mutate() : undefined}
         onRebuild={isAdmin ? (synthetic) => rebuildMut.mutate({ synthetic }) : undefined}
@@ -193,6 +199,10 @@ function Shell({ user, isAdmin, isStudent, canSee, logout, theme, toggleTheme }:
               <Route
                 path="/my-training"
                 element={isStudent ? <MyTraining /> : <Navigate to={firstAllowedPath ?? '/'} replace />}
+              />
+              <Route
+                path="/my-students"
+                element={isInstructor ? <MyStudents /> : <Navigate to={firstAllowedPath ?? '/'} replace />}
               />
             </Routes>
           </ErrorBoundary>

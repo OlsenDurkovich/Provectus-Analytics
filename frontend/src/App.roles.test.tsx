@@ -152,6 +152,33 @@ test('student hitting an admin route is redirected to My training', async () => 
   expect(await screen.findByRole('heading', { name: /my training/i })).toBeInTheDocument();
 });
 
+// --- instructor role -------------------------------------------------------
+
+const INSTRUCTOR = {
+  user_id: 4, email: 'cfi@example.com', role: 'instructor', is_active: true,
+  pages: [], is_admin: false, instructor_name: 'Mike Anderson',
+};
+const ROSTER = { instructor_name: 'Mike Anderson', students: [], perRating: [] };
+
+function instructorFetch(url: string) {
+  if (url.includes('/api/auth/me')) return Promise.resolve({ ok: true, json: async () => INSTRUCTOR });
+  if (url.includes('/api/me/students')) return Promise.resolve({ ok: true, json: async () => ROSTER });
+  return Promise.resolve({ ok: true, json: async () => META });
+}
+
+test('instructor landing on / is routed to My students and sees only that nav', async () => {
+  renderCustom('/', INSTRUCTOR, instructorFetch);
+  expect(await screen.findByRole('link', { name: /my students/i })).not.toBeNull();
+  expect(screen.queryByRole('link', { name: /overview/i })).toBeNull();
+  expect(screen.queryByRole('link', { name: /users/i })).toBeNull();
+});
+
+test('instructor hitting an admin route is redirected to My students', async () => {
+  renderCustom('/users', INSTRUCTOR, instructorFetch);
+  expect(screen.queryByText('Add user')).toBeNull();
+  expect(await screen.findByRole('heading', { name: /my students/i })).toBeInTheDocument();
+});
+
 test('admin Users screen shows per-user page checkboxes', async () => {
   const admin = { user_id: 1, email: 'a@example.com', role: 'admin', is_active: true, pages: ['overview', 'ratings', 'students', 'instructors'], is_admin: true };
   const viewer = { user_id: 2, email: 'v@example.com', role: 'viewer', is_active: true, pages: ['overview'], is_admin: false };
