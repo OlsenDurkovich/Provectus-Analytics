@@ -226,7 +226,8 @@ Deployment is done; the app is live on synthetic data. The following is the work
 ### P2 — Medium
 
 - **Color scheme / branding pass — DONE, MERGED + DEPLOYED** (accent: `feat/brand-color`; heatmap: `feat/chart-palette`). UI accent purple→logo green (light `#1B5E3F`, dark `#1F8A5B`) + the activity-heatmap single-hue scale→green. **Design decision (2026-06-27, Olsen):** the *categorical* palettes — the 7 per-rating colors and the 3-metric colors — are intentionally left multi-color. Greening them would collide with the existing green (`#3DD68C`) and hurt rating distinguishability, so this is considered complete. A full categorical-palette redesign around green is a separate design exercise only if ever wanted.
-- **"Remember my login" / stay signed in** — persist the session so users aren't logged out on refresh or return visits. Likely a longer-lived refresh token + persistent (rather than in-memory/session) storage of it, gated by a "Remember me" checkbox on the login form. *Code:* token lifetimes in `src/provectus_analytics/auth/tokens.py`; login form + token storage in `frontend/src/auth/`.
+- **"Remember my login" / stay signed in — DONE, MERGED + DEPLOYED** (2026-06-27, PR #16, `feat/remember-me`). "Keep me signed in" checkbox → 30-day refresh token + localStorage (survives browser close); unchecked → sessionStorage. See Done.
+- **Display account names instead of email** (added 2026-06-28, Olsen) — accounts are identified by email everywhere in the UI; show a human display name instead. Add a `display_name` field to the users table + create/edit it in the admin Users screen, then render it in the sidebar user chip (the "main page" identifier, shown on every page — `frontend/src/components/Sidebar.tsx`, currently `userEmail`/`initialsFromEmail`) and the Users list. Fall back to email when no name is set. Small full-stack change (users model + `/api/users` + `/me` payload + a couple of frontend spots).
 
 ### P3 — Later
 
