@@ -74,6 +74,51 @@ def _has_real_exports() -> tuple[Path | None, Path | None]:
     return flight, invoice
 
 
+def _snapshot_users(db_path: Path):
+    """Capture the users table (login accounts) before a destructive rebuild.
+
+    Returns (columns, rows) or None if the DB / table doesn't exist yet. The
+    synthetic rebuild path replaces the whole DB file, and logins live in that
+    same file — so we snapshot here and restore afterward to avoid wiping every
+    account on a rebuild.
+    """
+    if not db_path.exists():
+        return None
+    conn = sqlite3.connect(db_path)
+    try:
+        cur = conn.execute("SELECT * FROM users")
+        cols = [d[0] for d in cur.description]
+        rows = cur.fetchall()
+        return cols, rows
+    except sqlite3.OperationalError:
+        return None  # no users table yet (e.g. a fresh test DB)
+    finally:
+        conn.close()
+
+
+def _restore_users(db_path: Path, snapshot) -> None:
+    """Recreate the users table after a synthetic rebuild and re-insert any
+    snapshotted accounts. Always ensures the table exists (so auth keeps working
+    even if there were no accounts yet); re-inserts rows when present."""
+    # Local import dodges a circular import (auth.deps imports queries lazily).
+    from ..auth.users import ensure_users_table
+    conn = _db.connect(db_path)
+    try:
+        ensure_users_table(conn)
+        if snapshot:
+            cols, rows = snapshot
+            if rows:
+                collist = ",".join(cols)
+                placeholders = ",".join("?" * len(cols))
+                conn.executemany(
+                    f"INSERT OR REPLACE INTO users ({collist}) VALUES ({placeholders})",
+                    rows,
+                )
+                conn.commit()
+    finally:
+        conn.close()
+
+
 def build_db(db_path: Path = DEFAULT_DB, force_synthetic: bool = False) -> dict:
     """Non-destructive rebuild.
 
@@ -87,6 +132,10 @@ def build_db(db_path: Path = DEFAULT_DB, force_synthetic: bool = False) -> dict:
     flight_xlsx, invoice_xlsx = _has_real_exports()
     use_real = (flight_xlsx is not None and invoice_xlsx is not None
                 and not force_synthetic)
+
+    # The synthetic path overwrites the whole DB file, which would otherwise
+    # drop the users table (logins live in the same file). Snapshot first.
+    users_snapshot = None if use_real else _snapshot_users(db_path)
 
     if use_real:
         conn = _db.open_or_create(db_path)
@@ -162,6 +211,9 @@ def build_db(db_path: Path = DEFAULT_DB, force_synthetic: bool = False) -> dict:
         with open(db_path, "wb") as fout:
             fout.write(data_bytes)
         tmp_path.unlink()
+        # Re-create the users table and restore login accounts that the file
+        # replacement just dropped, so a rebuild never wipes user logins.
+        _restore_users(db_path, users_snapshot)
 
     return result
 
