@@ -17,6 +17,7 @@ import type {
   Rating,
   RatingCohortMember,
   UserRow,
+  PublicTransparency,
 } from './types';
 
 export class ApiError extends Error {
@@ -122,6 +123,14 @@ export const client = {
     patchReq<UserRow>(`/api/users/${id}`, body),
   changePassword: (body: { current_password: string; new_password: string }) =>
     postNoContent('/api/auth/change-password', body),
+  // Public, unauthenticated — plain fetch (no bearer token).
+  getPublicTransparency: async (): Promise<PublicTransparency> => {
+    const res = await fetch('/api/public/transparency', {
+      headers: { Accept: 'application/json' },
+    });
+    if (!res.ok) throw new ApiError(res.status, await res.text());
+    return (await res.json()) as PublicTransparency;
+  },
 };
 
 export type Client = typeof client;

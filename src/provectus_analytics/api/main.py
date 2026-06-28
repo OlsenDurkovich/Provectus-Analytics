@@ -22,6 +22,7 @@ from .routers import flights as flights_router
 from .routers import instructors as instructors_router
 from .routers import kpis as kpis_router
 from .routers import meta as meta_router
+from .routers import public as public_router
 from .routers import ratings as ratings_router
 from .routers import students as students_router
 from .routers import upload as upload_router
@@ -135,6 +136,11 @@ def create_app() -> FastAPI:
     app.include_router(auth_router.router)
 
     # Read-only data routers: any authenticated user (admin/instructor/viewer).
+    # Public transparency endpoint — intentionally unauthenticated (marketing
+    # page). Returns only consent-filtered aggregate norms, no PII.
+    app.include_router(public_router.router)
+
+    # All data routers require an authenticated user.
     protected = [Depends(current_active_user)]
     app.include_router(meta_router.router,        dependencies=protected)
     app.include_router(kpis_router.router,        dependencies=protected)
