@@ -12,7 +12,11 @@ function mockFetch(role: string) {
     if (typeof url === 'string' && url.includes('/api/auth/me')) {
       return Promise.resolve({
         ok: true,
-        json: async () => ({ user_id: 1, email: 'u@example.com', role, is_active: true }),
+        json: async () => ({
+          user_id: 1, email: 'u@example.com', role, is_active: true,
+          pages: ['overview', 'ratings', 'students', 'instructors'],
+          is_admin: role === 'admin',
+        }),
       });
     }
     return Promise.resolve({
@@ -31,7 +35,11 @@ function seed(role: string) {
   localStorage.setItem('pv_auth_refresh', 'fake-refresh');
   localStorage.setItem(
     'pv_auth_user',
-    JSON.stringify({ user_id: 1, email: 'u@example.com', role, is_active: true }),
+    JSON.stringify({
+      user_id: 1, email: 'u@example.com', role, is_active: true,
+      pages: ['overview', 'ratings', 'students', 'instructors'],
+      is_admin: role === 'admin',
+    }),
   );
 }
 
@@ -78,4 +86,54 @@ test('viewer hitting /users is redirected to Overview', () => {
 test('admin viewing /users sees the management screen', () => {
   renderAt('/users', 'admin');
   expect(screen.getByText('Add user')).toBeInTheDocument();
+});
+
+// --- per-user page access --------------------------------------------------
+
+function renderCustom(path: string, user: Record<string, unknown>, fetchImpl: (url: string) => Promise<unknown>) {
+  localStorage.setItem('pv_auth_access', 'fake-access');
+  localStorage.setItem('pv_auth_refresh', 'fake-refresh');
+  localStorage.setItem('pv_auth_user', JSON.stringify(user));
+  globalThis.fetch = vi.fn().mockImplementation(fetchImpl);
+  const qc = new QueryClient({ defaultOptions: { queries: { retry: false } } });
+  return render(
+    <QueryClientProvider client={qc}>
+      <MemoryRouter initialEntries={[path]}>
+        <AuthProvider>
+          <App />
+        </AuthProvider>
+      </MemoryRouter>
+    </QueryClientProvider>,
+  );
+}
+
+const META = {
+  mode: 'synthetic', liveClientCount: 0,
+  dataState: { flights: 0, invoices: 0, students: 0, surveys: 0, overrides: 0 },
+};
+
+test('viewer with only Overview sees just that nav link', () => {
+  const u = { user_id: 1, email: 'v@example.com', role: 'viewer', is_active: true, pages: ['overview'], is_admin: false };
+  renderCustom('/', u, (url) =>
+    Promise.resolve({ ok: true, json: async () => (url.includes('/api/auth/me') ? u : META) }),
+  );
+  expect(screen.queryByRole('link', { name: /overview/i })).not.toBeNull();
+  expect(screen.queryByRole('link', { name: /rating detail/i })).toBeNull();
+  expect(screen.queryByRole('link', { name: /^student/i })).toBeNull();
+  expect(screen.queryByRole('link', { name: /^instructor/i })).toBeNull();
+});
+
+test('admin Users screen shows per-user page checkboxes', async () => {
+  const admin = { user_id: 1, email: 'a@example.com', role: 'admin', is_active: true, pages: ['overview', 'ratings', 'students', 'instructors'], is_admin: true };
+  const viewer = { user_id: 2, email: 'v@example.com', role: 'viewer', is_active: true, pages: ['overview'], is_admin: false };
+  renderCustom('/users', admin, (url) => {
+    if (url.includes('/api/auth/me')) return Promise.resolve({ ok: true, json: async () => admin });
+    if (url.includes('/api/users')) return Promise.resolve({ ok: true, json: async () => [admin, viewer] });
+    return Promise.resolve({ ok: true, json: async () => META });
+  });
+  expect(await screen.findByText('v@example.com')).toBeInTheDocument();
+  // the page-access controls render
+  expect(screen.getAllByText('Pages this user can see').length).toBeGreaterThanOrEqual(1);
+  // a Reset password control per user
+  expect(screen.getAllByText('Reset password').length).toBeGreaterThanOrEqual(1);
 });

@@ -27,6 +27,7 @@ type AuthContextValue = {
   user: StoredUser | null;
   status: AuthStatus;
   isAdmin: boolean;
+  canSee: (page: string) => boolean;
   login: (email: string, password: string) => Promise<void>;
   logout: () => Promise<void>;
 };
@@ -113,10 +114,11 @@ export function AuthProvider({ children }: { children: ReactNode }) {
     signOutLocal();
   }, [signOutLocal]);
 
-  const value = useMemo(
-    () => ({ user, status, isAdmin: user?.role === 'admin', login, logout }),
-    [user, status, login, logout],
-  );
+  const value = useMemo(() => {
+    const isAdmin = user?.is_admin ?? false;
+    const canSee = (page: string) => isAdmin || (user?.pages?.includes(page) ?? false);
+    return { user, status, isAdmin, canSee, login, logout };
+  }, [user, status, login, logout]);
   return <AuthContext.Provider value={value}>{children}</AuthContext.Provider>;
 }
 

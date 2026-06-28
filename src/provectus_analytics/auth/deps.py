@@ -59,3 +59,25 @@ def current_admin_user(user: users.User = Depends(current_active_user)) -> users
             detail="Admin access required",
         )
     return user
+
+
+def require_page(*pages: str):
+    """Dependency factory: allow the request iff the user is an admin OR holds
+    at least one of the named pages.
+
+    Makes per-user page access a real server-side boundary (not just UI
+    hiding). Apply per data route — routes that serve multiple pages (e.g.
+    the ratings router serves both Overview and Rating-detail) list every
+    page that legitimately uses them.
+    """
+    allowed = frozenset(pages)
+
+    def _dep(user: users.User = Depends(current_active_user)) -> users.User:
+        if user.is_admin or (allowed & set(user.pages)):
+            return user
+        raise HTTPException(
+            status_code=status.HTTP_403_FORBIDDEN,
+            detail="You don't have access to this page",
+        )
+
+    return _dep

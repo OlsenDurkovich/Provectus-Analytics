@@ -174,11 +174,22 @@ export interface Meta {
 
 export type UserRole = 'admin' | 'instructor' | 'viewer';
 
+// Toggleable dashboard pages (mirror of auth/users.py ALL_PAGES).
+export type PageKey = 'overview' | 'ratings' | 'students' | 'instructors';
+export const ALL_PAGES: { key: PageKey; label: string }[] = [
+  { key: 'overview', label: 'Overview' },
+  { key: 'ratings', label: 'Rating detail' },
+  { key: 'students', label: 'Student' },
+  { key: 'instructors', label: 'Instructor' },
+];
+
 export interface UserRow {
   user_id: number;
   email: string;
   role: string;
   is_active: boolean;
+  pages: string[];
+  is_admin: boolean;
 }
 
 export interface PublicRatingNorm {

@@ -20,6 +20,8 @@ class UserOut(BaseModel):
     email: str
     role: str
     is_active: bool
+    pages: list[str]
+    is_admin: bool
 
 
 class CreateUserRequest(BaseModel):
@@ -33,10 +35,15 @@ class CreateUserRequest(BaseModel):
 class UpdateUserRequest(BaseModel):
     role: str | None = None
     is_active: bool | None = None
+    pages: list[str] | None = None
+    new_password: str | None = None  # admin reset (no current-password check)
 
 
 def _out(u: users.User) -> UserOut:
-    return UserOut(user_id=u.user_id, email=u.email, role=u.role, is_active=u.is_active)
+    return UserOut(
+        user_id=u.user_id, email=u.email, role=u.role,
+        is_active=u.is_active, pages=list(u.pages), is_admin=u.is_admin,
+    )
 
 
 @router.get("", response_model=list[UserOut])
@@ -66,19 +73,26 @@ def create_user_endpoint(body: CreateUserRequest) -> UserOut:
 
 @router.patch("/{user_id}", response_model=UserOut)
 def update_user_endpoint(user_id: int, body: UpdateUserRequest) -> UserOut:
-    """Update role and/or active state.
+    """Update role, page access, active state, and/or reset the password.
 
-    `set_user_role` / `set_user_active` raise LookupError (→404) for an unknown
-    id and ValueError (→400) when the change would remove the last active
-    admin; both are converted by the app-level exception handlers.
+    Order matters: setting `role` re-applies that role's page preset, so an
+    explicit `pages` (applied next) can override it in the same request.
+    The `users.*` helpers raise LookupError (→404) for an unknown id and
+    ValueError (→400) for bad input / last-admin guard; the app-level handlers
+    convert both.
     """
     conn = _db.connect(web_data.DEFAULT_DB)
     try:
         result = None
         if body.role is not None:
             result = users.set_user_role(conn, user_id, body.role)
+        if body.pages is not None:
+            result = users.set_user_pages(conn, user_id, body.pages)
         if body.is_active is not None:
             result = users.set_user_active(conn, user_id, body.is_active)
+        if body.new_password is not None:
+            users.admin_reset_password(conn, user_id, body.new_password)
+            result = users.get_user_by_id(conn, user_id)
         if result is None:
             result = users.get_user_by_id(conn, user_id)
             if result is None:

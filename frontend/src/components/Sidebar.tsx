@@ -19,13 +19,15 @@ type NavItem = {
   kbd: string;
   path: string;
   adminOnly?: boolean;
+  // For dashboard pages: the page-access key that controls visibility.
+  page?: 'overview' | 'ratings' | 'students' | 'instructors';
 };
 
 export const NAV: NavItem[] = [
-  { key: 'overview', label: 'Overview', icon: 'overview', kbd: 'O', path: '/' },
-  { key: 'rating', label: 'Rating detail', icon: 'metrics', kbd: 'R', path: '/ratings' },
-  { key: 'student', label: 'Student', icon: 'users', kbd: 'S', path: '/students' },
-  { key: 'instructor', label: 'Instructor', icon: 'star', kbd: 'I', path: '/instructors' },
+  { key: 'overview', label: 'Overview', icon: 'overview', kbd: 'O', path: '/', page: 'overview' },
+  { key: 'rating', label: 'Rating detail', icon: 'metrics', kbd: 'R', path: '/ratings', page: 'ratings' },
+  { key: 'student', label: 'Student', icon: 'users', kbd: 'S', path: '/students', page: 'students' },
+  { key: 'instructor', label: 'Instructor', icon: 'star', kbd: 'I', path: '/instructors', page: 'instructors' },
   { key: 'flights', label: 'Flights', icon: 'plane', kbd: 'F', path: '/flights', adminOnly: true },
   { key: 'users', label: 'Users', icon: 'users', kbd: 'U', path: '/users', adminOnly: true },
 ];
@@ -50,7 +52,8 @@ export function Sidebar({
   rebuildPending = false,
 }: Props) {
   const meta = useMeta();
-  const isAdmin = user?.role === 'admin';
+  const isAdmin = user?.is_admin ?? false;
+  const canSee = (page: string) => isAdmin || (user?.pages?.includes(page) ?? false);
   const userEmail = user?.email ?? '';
   const userInitials = userEmail ? initialsFromEmail(userEmail) : 'PA';
   const roleLabel = user?.role
@@ -81,7 +84,7 @@ export function Sidebar({
 
       <div className="sidebar-section">
         <div className="sidebar-section-label">Analytics</div>
-        {NAV.filter((n) => !n.adminOnly || isAdmin).map((n) => (
+        {NAV.filter((n) => (n.adminOnly ? isAdmin : !n.page || canSee(n.page))).map((n) => (
           <NavLink
             key={n.key}
             to={n.path}

@@ -8,6 +8,8 @@ export type StoredUser = {
   email: string;
   role: string;
   is_active: boolean;
+  pages: string[];
+  is_admin: boolean;
 };
 
 const KEY_ACCESS = 'pv_auth_access';
