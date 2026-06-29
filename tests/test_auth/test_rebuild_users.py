@@ -30,6 +30,29 @@ def db_path(tmp_path, monkeypatch):
     return p
 
 
+def test_rebuild_recovers_from_corrupt_db(tmp_path, monkeypatch):
+    """A malformed DB paired with stale WAL/SHM sidecars (the prod outage) must
+    self-heal on the next build_db: no crash, a clean readable DB, sidecars gone."""
+    import sqlite3
+    p = tmp_path / "provectus.db"
+    monkeypatch.setattr(web_data, "DEFAULT_DB", p)
+    monkeypatch.setattr(web_data, "FSP_EXPORTS_DIR", tmp_path / "no_exports")
+    # Simulate the corruption: garbage main file + leftover sidecars.
+    p.write_bytes(b"SQLite format 3\x00" + b"\xde\xad\xbe\xef" * 500)
+    (tmp_path / "provectus.db-wal").write_bytes(b"stale-wal")
+    (tmp_path / "provectus.db-shm").write_bytes(b"stale-shm")
+
+    web_data.build_db(p, force_synthetic=True)  # must not raise
+
+    conn = _db.connect(p)
+    assert conn.execute("PRAGMA integrity_check").fetchone()[0] == "ok"
+    assert conn.execute("SELECT COUNT(*) FROM flights").fetchone()[0] > 0
+    conn.close()
+    # No stale sidecar left from the corrupt DB.
+    assert not (tmp_path / "provectus.db-wal").exists() or \
+        (tmp_path / "provectus.db-wal").stat().st_size == 0
+
+
 # --- preservation (unit, calls build_db directly) --------------------------
 
 def test_synthetic_rebuild_preserves_accounts(db_path):
