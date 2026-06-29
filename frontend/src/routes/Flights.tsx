@@ -1,8 +1,9 @@
 import { useMemo, useState } from 'react';
 import { Select } from '../components/helpers';
+import { ClientsTable } from '../components/ClientsTable';
 import { OverrideMenu } from '../components/OverrideMenu';
 import { Skel } from '../components/primitives';
-import { useFlights, useInstructors, useUpdateFlight } from '../data/queries';
+import { useClients, useFlights, useInstructors, useUpdateFlight } from '../data/queries';
 import type { AcClass, BillingKind, FlightUpdate, GroundFlag } from '../data/types';
 
 const BILLING_OPTS: BillingKind[] = ['Hobbs', 'Tach', 'Block', '—'];
@@ -52,6 +53,7 @@ export default function Flights() {
   );
 
   const flightsQ = useFlights(filter);
+  const clientsQ = useClients('all');
   const updateMut = useUpdateFlight();
   const rows = flightsQ.data ?? [];
 
@@ -201,6 +203,16 @@ export default function Flights() {
           </div>
         )}
       </div>
+
+      <div className="section-head" style={{ marginTop: 20 }}>
+        <h2 className="section-title">Client roster</h2>
+        <div className="muted tiny">All active and recently completed clients</div>
+      </div>
+      {clientsQ.isLoading ? (
+        <Skel h={300} />
+      ) : clientsQ.data ? (
+        <ClientsTable rows={clientsQ.data} />
+      ) : null}
     </div>
   );
 }

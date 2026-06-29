@@ -22,6 +22,7 @@ import { useRange } from './hooks/useRange';
 import { useImportFsp, useRebuild } from './data/queries';
 import { useAuth } from './auth/AuthContext';
 import { UploadDialog } from './components/UploadDialog';
+import { RebuildConfirmDialog } from './components/RebuildConfirmDialog';
 
 function breadcrumbFor(pathname: string): string {
   for (const n of NAV) {
@@ -91,6 +92,7 @@ function Shell({ user, isAdmin, isStudent, isInstructor, canSee, logout, theme, 
   const [collapsed, setCollapsed] = useState(false);
   const [cmdkOpen, setCmdkOpen] = useState(false);
   const [uploadOpen, setUploadOpen] = useState(false);
+  const [rebuildReq, setRebuildReq] = useState<{ synthetic: boolean } | null>(null);
   const { range, setRange } = useRange();
   const importMut = useImportFsp();
   const rebuildMut = useRebuild();
@@ -139,7 +141,7 @@ function Shell({ user, isAdmin, isStudent, isInstructor, canSee, logout, theme, 
         isInstructor={isInstructor}
         onUpload={isAdmin ? () => setUploadOpen(true) : undefined}
         onImport={isAdmin ? () => importMut.mutate() : undefined}
-        onRebuild={isAdmin ? (synthetic) => rebuildMut.mutate({ synthetic }) : undefined}
+        onRebuild={isAdmin ? (synthetic) => setRebuildReq({ synthetic }) : undefined}
         importPending={importMut.isPending}
         rebuildPending={rebuildMut.isPending}
       />
@@ -222,9 +224,20 @@ function Shell({ user, isAdmin, isStudent, isInstructor, canSee, logout, theme, 
         onSetRange={setRange}
         onToggleTheme={toggleTheme}
         onImport={() => setUploadOpen(true)}
-        onRebuild={(synthetic) => rebuildMut.mutate({ synthetic })}
+        onRebuild={(synthetic) => setRebuildReq({ synthetic })}
       />
       <UploadDialog open={uploadOpen} onClose={() => setUploadOpen(false)} />
+      <RebuildConfirmDialog
+        open={rebuildReq !== null}
+        pending={rebuildMut.isPending}
+        onCancel={() => setRebuildReq(null)}
+        onConfirm={() =>
+          rebuildMut.mutate(
+            { synthetic: rebuildReq?.synthetic ?? false },
+            { onSettled: () => setRebuildReq(null) },
+          )
+        }
+      />
     </div>
   );
 }
