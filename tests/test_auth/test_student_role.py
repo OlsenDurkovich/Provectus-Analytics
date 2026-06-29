@@ -22,9 +22,11 @@ def env(tmp_path, monkeypatch):
     web_data.build_db(db_path, force_synthetic=True)
     web_data.clear_caches()
 
+    monkeypatch.setattr(users, "AUTH_DB", tmp_path / "auth.db")
+    ac = users.connect()
+    users.create_user(ac, "admin@example.com", "adminpassword", role="admin")
+    ac.close()
     conn = _db.connect(db_path)
-    users.ensure_users_table(conn)
-    users.create_user(conn, "admin@example.com", "adminpassword", role="admin")
     # A real student_id from the synthetic data to link against.
     sid = conn.execute("SELECT student_id FROM students ORDER BY student_id LIMIT 1").fetchone()[0]
     conn.close()

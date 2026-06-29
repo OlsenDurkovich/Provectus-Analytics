@@ -18,9 +18,11 @@ Access model (2026-06-27):
 """
 from __future__ import annotations
 
+import os
 import sqlite3
 from dataclasses import dataclass
 from datetime import datetime, timezone
+from pathlib import Path
 from typing import Literal
 
 from .passwords import hash_password, verify_password
@@ -32,6 +34,42 @@ VALID_ROLES: frozenset[str] = frozenset({"admin", "instructor", "viewer", "stude
 # the override surface, an admin-only capability.
 ALL_PAGES: tuple[str, ...] = ("overview", "ratings", "students", "instructors")
 _DEFAULT_PAGES_CSV = ",".join(ALL_PAGES)
+
+# ── Dedicated auth database ───────────────────────────────────────────────────
+# Login accounts + per-user settings live in their OWN SQLite file, separate
+# from the analytics DB. The analytics DB is a regenerable artifact that the
+# "Rebuild DB" flow replaces wholesale; keeping users out of that file means a
+# rebuild (or a corrupt analytics DB) can never wipe accounts. Compartmentalized
+# durable state — a deliberate best-practice split.
+_REPO_ROOT = Path(__file__).resolve().parents[2]
+
+
+def _resolve_auth_db() -> Path:
+    """AUTH_DB_PATH if set; else sit next to the analytics DB (same volume);
+    else fall back to the repo root for local/dev."""
+    explicit = os.getenv("AUTH_DB_PATH")
+    if explicit:
+        return Path(explicit)
+    analytics = os.getenv("DB_PATH")
+    if analytics:
+        return Path(analytics).parent / "auth.db"
+    return _REPO_ROOT / "auth.db"
+
+
+# Module-level so tests can monkeypatch it (mirrors queries.DEFAULT_DB).
+AUTH_DB: Path = _resolve_auth_db()
+
+
+def connect(db_path: Path | None = None) -> sqlite3.Connection:
+    """Open the auth DB (creating + migrating the users table if needed).
+
+    Every user read/write goes through here, so user data is always read from
+    and written to the dedicated auth database — never the analytics file.
+    """
+    from .. import db as _db  # local import avoids any import-order coupling
+    conn = _db.connect(db_path or AUTH_DB)
+    ensure_users_table(conn)
+    return conn
 
 
 # Roles scoped to their own data via a dedicated endpoint instead of the shared
@@ -161,19 +199,23 @@ def _migrate_legacy_roles(conn: sqlite3.Connection) -> None:
 
 
 def _migrate_pages_column(conn: sqlite3.Connection) -> None:
-    """Add the `pages` column to DBs created before it existed, and backfill."""
+    """Add the `pages` column to DBs created before it existed, and backfill ONLY
+    genuinely-uninitialized (NULL) rows.
+
+    IMPORTANT: this runs on every connect (ensure_users_table), so it must not
+    clobber an *intentionally* empty page set. An empty string '' is a valid
+    "no dashboard pages" state (an admin can block a viewer, and scoped roles
+    are empty by design) — only NULL means "column never set". Backfilling ''
+    here would silently re-grant access to blocked users.
+    """
     cols = {r["name"] for r in conn.execute("PRAGMA table_info(users)")}
     if "pages" not in cols:
         conn.execute(
             f"ALTER TABLE users ADD COLUMN pages TEXT NOT NULL "
             f"DEFAULT '{_DEFAULT_PAGES_CSV}'"
         )
-    # Backfill genuinely-missing page sets — but NOT scoped roles (student,
-    # instructor), whose empty page set is intentional (they see only their own
-    # data via /api/me/*, no dashboard pages).
     conn.execute(
-        f"UPDATE users SET pages = '{_DEFAULT_PAGES_CSV}' "
-        f"WHERE (pages IS NULL OR pages = '') AND role NOT IN ('student', 'instructor')"
+        f"UPDATE users SET pages = '{_DEFAULT_PAGES_CSV}' WHERE pages IS NULL"
     )
     conn.commit()
 
@@ -517,3 +559,32 @@ def seed_initial_admin(
     if count_users(conn) > 0:
         return None
     return create_user(conn, email, password, role="admin", is_active=True)
+
+
+def migrate_legacy_users(auth_conn: sqlite3.Connection, legacy_db_path) -> int:
+    """One-time: copy accounts from the OLD location (the analytics DB, where
+    users used to live) into the dedicated auth DB. Runs only when the auth DB
+    has no users yet; a no-op afterward and on fresh installs. Lets existing
+    deployments keep their logins when this split ships. Returns rows migrated.
+    """
+    legacy_db_path = Path(legacy_db_path)
+    if count_users(auth_conn) > 0 or not legacy_db_path.exists():
+        return 0
+    legacy = sqlite3.connect(legacy_db_path)
+    try:
+        cur = legacy.execute("SELECT * FROM users")
+        cols = [d[0] for d in cur.description]
+        rows = cur.fetchall()
+    except sqlite3.Error:
+        return 0  # no users table / unreadable legacy DB — nothing to migrate
+    finally:
+        legacy.close()
+    if not rows:
+        return 0
+    collist = ",".join(cols)
+    placeholders = ",".join("?" * len(cols))
+    auth_conn.executemany(
+        f"INSERT OR IGNORE INTO users ({collist}) VALUES ({placeholders})", rows
+    )
+    auth_conn.commit()
+    return len(rows)

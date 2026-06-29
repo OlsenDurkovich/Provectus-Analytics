@@ -24,8 +24,8 @@ def app_with_db(tmp_path, monkeypatch):
     web_data.clear_caches()
 
     # Seed a test user directly in the DB.
-    conn = _db.connect(db_path)
-    users.ensure_users_table(conn)
+    monkeypatch.setattr(users, "AUTH_DB", tmp_path / "auth.db")
+    conn = users.connect()
     users.create_user(conn, "alice@example.com", "alicepassword", role="admin")
     conn.close()
 

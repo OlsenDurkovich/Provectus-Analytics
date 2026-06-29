@@ -8,11 +8,9 @@ from __future__ import annotations
 from fastapi import APIRouter, Depends, HTTPException, Request, status
 from pydantic import BaseModel, Field
 
-from ... import db as _db
 from ...auth import deps, tokens, users
 from ...auth.config import settings
 from ...auth.rate_limit import limiter
-from .. import queries as web_data
 
 router = APIRouter(prefix="/api/auth", tags=["auth"])
 
@@ -72,7 +70,7 @@ def _build_token_pair(user_id: int, remember: bool = False) -> TokenPair:
 @router.post("/login", response_model=TokenPair)
 @limiter.limit(settings.login_rate_limit)
 def login(request: Request, body: LoginRequest) -> TokenPair:
-    conn = _db.connect(web_data.DEFAULT_DB)
+    conn = users.connect()
     try:
         user = users.authenticate(conn, body.email, body.password)
     finally:
@@ -94,7 +92,7 @@ def refresh(body: RefreshRequest) -> TokenPair:
             status_code=status.HTTP_401_UNAUTHORIZED,
             detail=str(exc),
         ) from exc
-    conn = _db.connect(web_data.DEFAULT_DB)
+    conn = users.connect()
     try:
         user = users.get_user_by_id(conn, user_id)
     finally:
@@ -139,7 +137,7 @@ def update_me(
     client sends are changed. Email collisions / bad input raise ValueError
     (→400 via the app handler)."""
     fields = body.model_dump(exclude_unset=True)
-    conn = _db.connect(web_data.DEFAULT_DB)
+    conn = users.connect()
     try:
         updated = users.set_user_profile(conn, user.user_id, **fields)
     finally:
@@ -162,7 +160,7 @@ def change_password_endpoint(
     users.change_password raises ValueError (→400) on wrong current password
     or a too-short new one; the app-level handler converts it.
     """
-    conn = _db.connect(web_data.DEFAULT_DB)
+    conn = users.connect()
     try:
         users.change_password(
             conn, user.user_id, body.current_password, body.new_password
