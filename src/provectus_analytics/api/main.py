@@ -12,8 +12,8 @@ from slowapi import _rate_limit_exceeded_handler
 from slowapi.errors import RateLimitExceeded
 from slowapi.middleware import SlowAPIMiddleware
 
-from .. import db as _db
-from ..auth import ensure_users_table, seed_initial_admin
+from ..auth import seed_initial_admin
+from ..auth import users as users_mod
 from ..auth.config import settings as auth_settings
 from ..auth.deps import current_active_user, current_admin_user, require_page
 from ..auth.rate_limit import limiter
@@ -56,11 +56,13 @@ def _bootstrap_data() -> None:
 
 
 def _bootstrap_auth() -> None:
-    """One-time setup at startup: ensure users table + optional admin seed."""
+    """One-time setup at startup, on the DEDICATED auth DB: ensure the users
+    table, migrate any legacy accounts that used to live in the analytics DB,
+    then seed the initial admin if there are still none."""
     from . import queries as web_data  # local import — queries imports schema
-    conn = _db.connect(web_data.DEFAULT_DB)
+    conn = users_mod.connect()  # opens + ensures the auth DB
     try:
-        ensure_users_table(conn)
+        users_mod.migrate_legacy_users(conn, web_data.DEFAULT_DB)
         seed_initial_admin(
             conn,
             auth_settings.initial_admin_email,

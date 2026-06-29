@@ -22,9 +22,11 @@ def env(tmp_path, monkeypatch):
     web_data.build_db(db_path, force_synthetic=True)
     web_data.clear_caches()
 
+    monkeypatch.setattr(users, "AUTH_DB", tmp_path / "auth.db")
+    ac = users.connect()
+    users.create_user(ac, "admin@example.com", "adminpassword", role="admin")
+    ac.close()
     conn = _db.connect(db_path)
-    users.ensure_users_table(conn)
-    users.create_user(conn, "admin@example.com", "adminpassword", role="admin")
     # An instructor name with students, to link against.
     name = conn.execute(
         "SELECT instructor FROM flights WHERE instructor != '' "

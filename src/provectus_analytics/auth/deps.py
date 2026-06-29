@@ -4,7 +4,6 @@ from __future__ import annotations
 from fastapi import Depends, HTTPException, Request, status
 from fastapi.security import HTTPAuthorizationCredentials, HTTPBearer
 
-from .. import db as _db
 from . import tokens, users
 from .config import settings
 
@@ -14,9 +13,9 @@ _bearer = HTTPBearer(auto_error=False)
 
 
 def _get_db(request: Request):
-    """Pull DB path from queries.DEFAULT_DB (lazy import dodges circularity)."""
-    from ..api import queries  # local import — queries imports schema/ingest
-    conn = _db.connect(queries.DEFAULT_DB)
+    """Connection to the dedicated AUTH database (where user accounts live) —
+    NOT the analytics DB. current_active_user looks users up here."""
+    conn = users.connect()
     try:
         yield conn
     finally:

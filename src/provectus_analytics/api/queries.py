@@ -74,54 +74,6 @@ def _has_real_exports() -> tuple[Path | None, Path | None]:
     return flight, invoice
 
 
-def _snapshot_users(db_path: Path):
-    """Capture the users table (login accounts) before a destructive rebuild.
-
-    Returns (columns, rows) or None if the DB / table doesn't exist yet. The
-    synthetic rebuild path replaces the whole DB file, and logins live in that
-    same file — so we snapshot here and restore afterward to avoid wiping every
-    account on a rebuild.
-    """
-    if not db_path.exists():
-        return None
-    conn = sqlite3.connect(db_path)
-    try:
-        cur = conn.execute("SELECT * FROM users")
-        cols = [d[0] for d in cur.description]
-        rows = cur.fetchall()
-        return cols, rows
-    except sqlite3.Error:
-        # No users table yet (OperationalError) OR the DB is unreadable/corrupt
-        # (DatabaseError: "database disk image is malformed"). Either way we have
-        # nothing to preserve — let the rebuild proceed and replace the file.
-        return None
-    finally:
-        conn.close()
-
-
-def _restore_users(db_path: Path, snapshot) -> None:
-    """Recreate the users table after a synthetic rebuild and re-insert any
-    snapshotted accounts. Always ensures the table exists (so auth keeps working
-    even if there were no accounts yet); re-inserts rows when present."""
-    # Local import dodges a circular import (auth.deps imports queries lazily).
-    from ..auth.users import ensure_users_table
-    conn = _db.connect(db_path)
-    try:
-        ensure_users_table(conn)
-        if snapshot:
-            cols, rows = snapshot
-            if rows:
-                collist = ",".join(cols)
-                placeholders = ",".join("?" * len(cols))
-                conn.executemany(
-                    f"INSERT OR REPLACE INTO users ({collist}) VALUES ({placeholders})",
-                    rows,
-                )
-                conn.commit()
-    finally:
-        conn.close()
-
-
 def _checkpoint_db(db_path: Path) -> None:
     """Fold the WAL into the main file so the single .db file is self-contained
     (no sidecar needed) before we copy/swap it."""
@@ -175,9 +127,8 @@ def build_db(db_path: Path = DEFAULT_DB, force_synthetic: bool = False) -> dict:
     use_real = (flight_xlsx is not None and invoice_xlsx is not None
                 and not force_synthetic)
 
-    # The synthetic path overwrites the whole DB file, which would otherwise
-    # drop the users table (logins live in the same file). Snapshot first.
-    users_snapshot = None if use_real else _snapshot_users(db_path)
+    # NOTE: user accounts live in a SEPARATE auth DB (auth.users.AUTH_DB), so a
+    # rebuild here never touches them — no snapshot/restore dance needed.
 
     if use_real:
         conn = _db.open_or_create(db_path)
@@ -246,11 +197,10 @@ def build_db(db_path: Path = DEFAULT_DB, force_synthetic: bool = False) -> dict:
     conn.close()
 
     if not use_real:
-        # Finish the build IN the temp DB, then atomically swap it into place.
-        # Restore login accounts + checkpoint so tmp is a complete single file,
-        # then _atomic_replace() installs it without ever leaving db_path
-        # half-written or paired with a stale WAL (the bug that corrupted prod).
-        _restore_users(tmp_path, users_snapshot)
+        # Checkpoint so tmp is a complete single file, then atomically swap it
+        # into place — never leaving db_path half-written or paired with a stale
+        # WAL (the bug that corrupted prod). Accounts are in the auth DB, so the
+        # swap can't affect them.
         _checkpoint_db(tmp_path)
         _atomic_replace(tmp_path, db_path)
 

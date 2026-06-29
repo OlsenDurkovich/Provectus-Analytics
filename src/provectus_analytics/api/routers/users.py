@@ -128,7 +128,7 @@ def list_instructor_records() -> list[InstructorRecord]:
 
 @router.get("", response_model=list[UserOut])
 def list_users_endpoint() -> list[UserOut]:
-    conn = _db.connect(web_data.DEFAULT_DB)
+    conn = users.connect()  # accounts live in the dedicated auth DB
     try:
         return [_out(u) for u in users.list_users(conn)]
     finally:
@@ -137,22 +137,22 @@ def list_users_endpoint() -> list[UserOut]:
 
 @router.post("", response_model=UserOut, status_code=201)
 def create_user_endpoint(body: CreateUserRequest) -> UserOut:
-    conn = _db.connect(web_data.DEFAULT_DB)
+    # Validate scoped links against the ANALYTICS DB (students/flights live there).
+    if body.role == "student" and body.student_id is None:
+        raise HTTPException(status_code=422, detail="a student account must be linked to a student record")
+    if body.role == "instructor" and not body.instructor_name:
+        raise HTTPException(status_code=422, detail="an instructor account must be linked to an instructor")
+    adb = _db.connect(web_data.DEFAULT_DB)
     try:
         if body.role == "student":
-            if body.student_id is None:
-                raise HTTPException(
-                    status_code=422,
-                    detail="a student account must be linked to a student record",
-                )
-            _assert_student_exists(conn, body.student_id)
+            _assert_student_exists(adb, body.student_id)
         if body.role == "instructor":
-            if not body.instructor_name:
-                raise HTTPException(
-                    status_code=422,
-                    detail="an instructor account must be linked to an instructor",
-                )
-            _assert_instructor_exists(conn, body.instructor_name)
+            _assert_instructor_exists(adb, body.instructor_name)
+    finally:
+        adb.close()
+    # Create the account in the dedicated AUTH DB.
+    conn = users.connect()
+    try:
         try:
             user = users.create_user(
                 conn, body.email, body.password, role=body.role,
@@ -178,12 +178,19 @@ def update_user_endpoint(user_id: int, body: UpdateUserRequest) -> UserOut:
     LookupError (→404) for an unknown id and ValueError (→400) for bad input /
     last-admin guard; the app-level handlers convert both.
     """
-    conn = _db.connect(web_data.DEFAULT_DB)
+    # Validate scoped links against the ANALYTICS DB first.
+    if body.student_id is not None or body.instructor_name is not None:
+        adb = _db.connect(web_data.DEFAULT_DB)
+        try:
+            if body.student_id is not None:
+                _assert_student_exists(adb, body.student_id)
+            if body.instructor_name is not None:
+                _assert_instructor_exists(adb, body.instructor_name)
+        finally:
+            adb.close()
+    # All user mutations happen in the dedicated AUTH DB.
+    conn = users.connect()
     try:
-        if body.student_id is not None:
-            _assert_student_exists(conn, body.student_id)
-        if body.instructor_name is not None:
-            _assert_instructor_exists(conn, body.instructor_name)
         result = None
         if body.role is not None:
             result = users.set_user_role(conn, user_id, body.role)

@@ -22,8 +22,8 @@ def app_with_users(tmp_path, monkeypatch):
     web_data.build_db(db_path, force_synthetic=True)
     web_data.clear_caches()
 
-    conn = _db.connect(db_path)
-    users.ensure_users_table(conn)
+    monkeypatch.setattr(users, "AUTH_DB", tmp_path / "auth.db")
+    conn = users.connect()
     users.create_user(conn, "admin@example.com", "adminpassword", role="admin")
     users.create_user(conn, "instructor@example.com", "instrpassword", role="instructor")
     users.create_user(conn, "viewer@example.com", "viewerpassword", role="viewer")
