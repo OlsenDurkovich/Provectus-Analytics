@@ -32,6 +32,7 @@ type AuthContextValue = {
   canSee: (page: string) => boolean;
   login: (email: string, password: string, remember?: boolean) => Promise<void>;
   logout: () => Promise<void>;
+  refreshUser: () => Promise<void>;
 };
 
 const AuthContext = createContext<AuthContextValue | null>(null);
@@ -107,6 +108,15 @@ export function AuthProvider({ children }: { children: ReactNode }) {
     setStatusState('authenticated');
   }, []);
 
+  const refreshUser = useCallback(async () => {
+    const res = await authFetch('/api/auth/me');
+    if (res.ok) {
+      const fresh = (await res.json()) as StoredUser;
+      setStoredUser(fresh);
+      setUser(fresh);
+    }
+  }, []);
+
   const logout = useCallback(async () => {
     try {
       await authFetch('/api/auth/logout', { method: 'POST' });
@@ -121,8 +131,8 @@ export function AuthProvider({ children }: { children: ReactNode }) {
     const isStudent = user?.role === 'student';
     const isInstructor = user?.role === 'instructor';
     const canSee = (page: string) => isAdmin || (user?.pages?.includes(page) ?? false);
-    return { user, status, isAdmin, isStudent, isInstructor, canSee, login, logout };
-  }, [user, status, login, logout]);
+    return { user, status, isAdmin, isStudent, isInstructor, canSee, login, logout, refreshUser };
+  }, [user, status, login, logout, refreshUser]);
   return <AuthContext.Provider value={value}>{children}</AuthContext.Provider>;
 }
 

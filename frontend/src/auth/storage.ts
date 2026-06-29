@@ -18,6 +18,9 @@ export type StoredUser = {
   is_admin: boolean;
   student_id?: number | null;
   instructor_name?: string | null;
+  display_name?: string | null;
+  phone?: string | null;
+  theme?: string | null;
 };
 
 const KEY_ACCESS = 'pv_auth_access';

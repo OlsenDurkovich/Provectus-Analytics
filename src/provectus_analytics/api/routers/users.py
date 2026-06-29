@@ -24,6 +24,8 @@ class UserOut(BaseModel):
     is_admin: bool
     student_id: int | None = None
     instructor_name: str | None = None
+    display_name: str | None = None
+    phone: str | None = None
 
 
 class StudentRecord(BaseModel):
@@ -56,6 +58,9 @@ class UpdateUserRequest(BaseModel):
     new_password: str | None = None     # admin reset (no current-password check)
     student_id: int | None = None       # (re)link a student account to a record
     instructor_name: str | None = None  # (re)link an instructor account
+    display_name: str | None = None     # admin can set a user's profile fields
+    email: str | None = None
+    phone: str | None = None
 
 
 def _out(u: users.User) -> UserOut:
@@ -63,6 +68,7 @@ def _out(u: users.User) -> UserOut:
         user_id=u.user_id, email=u.email, role=u.role,
         is_active=u.is_active, pages=list(u.pages), is_admin=u.is_admin,
         student_id=u.student_id, instructor_name=u.instructor_name,
+        display_name=u.display_name, phone=u.phone,
     )
 
 
@@ -192,6 +198,16 @@ def update_user_endpoint(user_id: int, body: UpdateUserRequest) -> UserOut:
         if body.new_password is not None:
             users.admin_reset_password(conn, user_id, body.new_password)
             result = users.get_user_by_id(conn, user_id)
+        # Profile fields (admin can edit any user's name / email / phone).
+        profile = {
+            k: v for k, v in {
+                "display_name": body.display_name,
+                "email": body.email,
+                "phone": body.phone,
+            }.items() if v is not None
+        }
+        if profile:
+            result = users.set_user_profile(conn, user_id, **profile)
         if result is None:
             result = users.get_user_by_id(conn, user_id)
             if result is None:

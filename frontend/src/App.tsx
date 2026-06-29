@@ -1,4 +1,4 @@
-import { useMemo, useState } from 'react';
+import { useEffect, useMemo, useState } from 'react';
 import { Routes, Route, Navigate, useLocation, useNavigate } from 'react-router-dom';
 import { Sidebar, NAV } from './components/Sidebar';
 import { Topbar } from './components/Topbar';
@@ -12,6 +12,7 @@ import Flights from './routes/Flights';
 import Users from './routes/Users';
 import MyTraining from './routes/MyTraining';
 import MyStudents from './routes/MyStudents';
+import Settings from './routes/Settings';
 import Login from './routes/Login';
 import PublicTransparency from './routes/PublicTransparency';
 import { useTheme } from './hooks/useTheme';
@@ -21,7 +22,6 @@ import { useRange } from './hooks/useRange';
 import { useImportFsp, useRebuild } from './data/queries';
 import { useAuth } from './auth/AuthContext';
 import { UploadDialog } from './components/UploadDialog';
-import { ChangePasswordDialog } from './components/ChangePasswordDialog';
 
 function breadcrumbFor(pathname: string): string {
   for (const n of NAV) {
@@ -33,8 +33,14 @@ function breadcrumbFor(pathname: string): string {
 
 export default function App() {
   const { status, user, logout, isAdmin, isStudent, isInstructor, canSee } = useAuth();
-  const { theme, toggle: toggleTheme } = useTheme();
+  const { theme, toggle: toggleTheme, setTheme } = useTheme();
   const location = useLocation();
+
+  // Apply the user's saved theme preference on login / when it changes.
+  useEffect(() => {
+    const t = user?.theme;
+    if ((t === 'dark' || t === 'light') && t !== theme) setTheme(t);
+  }, [user?.theme, theme, setTheme]);
 
   // Public, unauthenticated marketing page — bypasses the auth gate entirely.
   if (location.pathname.startsWith('/transparency')) {
@@ -85,7 +91,6 @@ function Shell({ user, isAdmin, isStudent, isInstructor, canSee, logout, theme, 
   const [collapsed, setCollapsed] = useState(false);
   const [cmdkOpen, setCmdkOpen] = useState(false);
   const [uploadOpen, setUploadOpen] = useState(false);
-  const [pwOpen, setPwOpen] = useState(false);
   const { range, setRange } = useRange();
   const importMut = useImportFsp();
   const rebuildMut = useRebuild();
@@ -151,8 +156,8 @@ function Shell({ user, isAdmin, isStudent, isInstructor, canSee, logout, theme, 
           importPending={importMut.isPending}
           showImport={isAdmin}
           showRangePicker={isOverview}
-          userEmail={user?.email ?? null}
-          onChangePassword={() => setPwOpen(true)}
+          userEmail={user?.display_name || user?.email || null}
+          onSettings={() => navigate('/settings')}
           onLogout={logout}
         />
         <div className="canvas">
@@ -204,6 +209,8 @@ function Shell({ user, isAdmin, isStudent, isInstructor, canSee, logout, theme, 
                 path="/my-students"
                 element={isInstructor ? <MyStudents /> : <Navigate to={firstAllowedPath ?? '/'} replace />}
               />
+              {/* Account settings — every logged-in user can reach their own. */}
+              <Route path="/settings" element={<Settings />} />
             </Routes>
           </ErrorBoundary>
         </div>
@@ -218,7 +225,6 @@ function Shell({ user, isAdmin, isStudent, isInstructor, canSee, logout, theme, 
         onRebuild={(synthetic) => rebuildMut.mutate({ synthetic })}
       />
       <UploadDialog open={uploadOpen} onClose={() => setUploadOpen(false)} />
-      <ChangePasswordDialog open={pwOpen} onClose={() => setPwOpen(false)} />
     </div>
   );
 }

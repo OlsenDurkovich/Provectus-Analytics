@@ -142,10 +142,20 @@ export const client = {
       new_password?: string;
       student_id?: number | null;
       instructor_name?: string | null;
+      display_name?: string | null;
+      email?: string;
+      phone?: string | null;
     },
   ) => patchReq<UserRow>(`/api/users/${id}`, body),
   changePassword: (body: { current_password: string; new_password: string }) =>
     postNoContent('/api/auth/change-password', body),
+  // Self-service profile update for the logged-in user.
+  updateProfile: (body: {
+    display_name?: string | null;
+    email?: string;
+    phone?: string | null;
+    theme?: string | null;
+  }) => patchReq<UserRow>('/api/auth/me', body),
   // Public, unauthenticated — plain fetch (no bearer token).
   getPublicTransparency: async (): Promise<PublicTransparency> => {
     const res = await fetch('/api/public/transparency', {

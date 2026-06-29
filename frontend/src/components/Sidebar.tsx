@@ -64,7 +64,10 @@ export function Sidebar({
   const isAdmin = user?.is_admin ?? false;
   const canSee = (page: string) => isAdmin || (user?.pages?.includes(page) ?? false);
   const userEmail = user?.email ?? '';
-  const userInitials = userEmail ? initialsFromEmail(userEmail) : 'PA';
+  const displayName = user?.display_name || userEmail;
+  const userInitials = (user?.display_name
+    ? user.display_name.trim().split(/\s+/).map((w) => w[0]).slice(0, 2).join('')
+    : userEmail ? initialsFromEmail(userEmail) : 'PA').toUpperCase() || 'PA';
   const roleLabel = user?.role
     ? user.role.charAt(0).toUpperCase() + user.role.slice(1)
     : 'Internal analytics';
@@ -202,7 +205,7 @@ export function Sidebar({
         <div className="user-avatar">{userInitials}</div>
         {!collapsed && (
           <div style={{ flex: 1, minWidth: 0 }}>
-            <div className="user-name">{userEmail || 'Not signed in'}</div>
+            <div className="user-name">{displayName || 'Not signed in'}</div>
             <div className="user-email">{roleLabel}</div>
           </div>
         )}

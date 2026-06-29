@@ -48,6 +48,18 @@ class UserOut(BaseModel):
     is_admin: bool
     student_id: int | None = None
     instructor_name: str | None = None
+    display_name: str | None = None
+    phone: str | None = None
+    theme: str | None = None
+
+
+def _user_out(user: users.User) -> "UserOut":
+    return UserOut(
+        user_id=user.user_id, email=user.email, role=user.role,
+        is_active=user.is_active, pages=list(user.pages), is_admin=user.is_admin,
+        student_id=user.student_id, instructor_name=user.instructor_name,
+        display_name=user.display_name, phone=user.phone, theme=user.theme,
+    )
 
 
 def _build_token_pair(user_id: int, remember: bool = False) -> TokenPair:
@@ -106,16 +118,33 @@ def logout(_=Depends(deps.current_active_user)) -> None:
 
 @router.get("/me", response_model=UserOut)
 def me(user: users.User = Depends(deps.current_active_user)) -> UserOut:
-    return UserOut(
-        user_id=user.user_id,
-        email=user.email,
-        role=user.role,
-        is_active=user.is_active,
-        pages=list(user.pages),
-        is_admin=user.is_admin,
-        student_id=user.student_id,
-        instructor_name=user.instructor_name,
-    )
+    return _user_out(user)
+
+
+class ProfileUpdateRequest(BaseModel):
+    # All optional — only the fields present are changed. Self-service: a user
+    # editing their OWN profile (display name, email, phone, theme preference).
+    display_name: str | None = None
+    email: str | None = None
+    phone: str | None = None
+    theme: str | None = None
+
+
+@router.patch("/me", response_model=UserOut)
+def update_me(
+    body: ProfileUpdateRequest,
+    user: users.User = Depends(deps.current_active_user),
+) -> UserOut:
+    """Self-service profile update for the logged-in user. Only the fields the
+    client sends are changed. Email collisions / bad input raise ValueError
+    (→400 via the app handler)."""
+    fields = body.model_dump(exclude_unset=True)
+    conn = _db.connect(web_data.DEFAULT_DB)
+    try:
+        updated = users.set_user_profile(conn, user.user_id, **fields)
+    finally:
+        conn.close()
+    return _user_out(updated)
 
 
 class ChangePasswordRequest(BaseModel):

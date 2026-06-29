@@ -229,6 +229,8 @@ export interface UserRow {
   is_admin: boolean;
   student_id?: number | null;
   instructor_name?: string | null;
+  display_name?: string | null;
+  phone?: string | null;
 }
 
 export interface PublicRatingNorm {

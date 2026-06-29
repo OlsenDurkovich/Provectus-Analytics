@@ -71,6 +71,9 @@ CREATE TABLE IF NOT EXISTS users (
     pages            TEXT NOT NULL DEFAULT '{_DEFAULT_PAGES_CSV}',
     student_id       INTEGER,
     instructor_name  TEXT,
+    display_name     TEXT,
+    phone            TEXT,
+    theme            TEXT,                -- 'dark' | 'light' | NULL (follow browser)
     created_at       TEXT NOT NULL
 )
 """
@@ -89,6 +92,10 @@ class User:
     # Set only for `instructor`-role accounts: the flights.instructor name whose
     # students this login may see. None for every other role.
     instructor_name: str | None = None
+    # Self-service profile fields (any role can edit their own).
+    display_name: str | None = None
+    phone: str | None = None
+    theme: str | None = None  # 'dark' | 'light' | None (follow browser)
 
     @property
     def is_admin(self) -> bool:
@@ -121,6 +128,9 @@ class User:
                 if "instructor_name" in keys and row["instructor_name"] is not None
                 else None
             ),
+            display_name=row["display_name"] if "display_name" in keys else None,
+            phone=row["phone"] if "phone" in keys else None,
+            theme=row["theme"] if "theme" in keys else None,
         )
 
 
@@ -132,6 +142,16 @@ def ensure_users_table(conn: sqlite3.Connection) -> None:
     _migrate_pages_column(conn)
     _migrate_student_id_column(conn)
     _migrate_instructor_name_column(conn)
+    _migrate_profile_columns(conn)
+
+
+def _migrate_profile_columns(conn: sqlite3.Connection) -> None:
+    """Add the self-service profile columns to pre-existing DBs."""
+    cols = {r["name"] for r in conn.execute("PRAGMA table_info(users)")}
+    for col in ("display_name", "phone", "theme"):
+        if col not in cols:
+            conn.execute(f"ALTER TABLE users ADD COLUMN {col} TEXT")
+    conn.commit()
 
 
 def _migrate_legacy_roles(conn: sqlite3.Connection) -> None:
@@ -285,6 +305,62 @@ def _would_remove_last_admin(
     if role_after == "admin" and active_after:
         return False
     return count_active_admins(conn) <= 1
+
+
+_UNSET = object()
+
+
+def set_user_profile(
+    conn: sqlite3.Connection,
+    user_id: int,
+    *,
+    display_name=_UNSET,
+    email=_UNSET,
+    phone=_UNSET,
+    theme=_UNSET,
+) -> User:
+    """Partial update of self-service profile fields. Only args you pass are
+    changed (pass None to clear a nullable field). Used by both the self-service
+    PATCH /api/auth/me and the admin Users screen.
+
+    Validates email (format + uniqueness) and theme. Empty strings for the
+    nullable text fields are stored as NULL.
+    """
+    if get_user_by_id(conn, user_id) is None:
+        raise LookupError(f"no user with id {user_id}")
+
+    sets: list[str] = []
+    vals: list = []
+
+    if display_name is not _UNSET:
+        sets.append("display_name = ?")
+        vals.append((display_name or "").strip() or None)
+    if phone is not _UNSET:
+        sets.append("phone = ?")
+        vals.append((phone or "").strip() or None)
+    if theme is not _UNSET:
+        t = (theme or "").strip().lower() or None
+        if t not in (None, "dark", "light"):
+            raise ValueError("theme must be 'dark', 'light', or empty")
+        sets.append("theme = ?")
+        vals.append(t)
+    if email is not _UNSET:
+        e = (email or "").strip().lower()
+        if not e or "@" not in e:
+            raise ValueError("email must be a valid address")
+        sets.append("email = ?")
+        vals.append(e)
+
+    if not sets:
+        return get_user_by_id(conn, user_id)
+
+    vals.append(user_id)
+    try:
+        conn.execute(f"UPDATE users SET {', '.join(sets)} WHERE user_id = ?", vals)
+    except sqlite3.IntegrityError as exc:
+        raise ValueError("that email is already in use") from exc
+    conn.commit()
+    return get_user_by_id(conn, user_id)
 
 
 def set_user_role(conn: sqlite3.Connection, user_id: int, role: Role) -> User:

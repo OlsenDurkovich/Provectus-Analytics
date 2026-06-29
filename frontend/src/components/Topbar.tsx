@@ -18,7 +18,7 @@ type Props = {
   showImport?: boolean;
   showRangePicker?: boolean;
   userEmail?: string | null;
-  onChangePassword?: () => void;
+  onSettings?: () => void;
   onLogout?: () => void;
 };
 
@@ -35,7 +35,7 @@ export function Topbar({
   showImport = true,
   showRangePicker = true,
   userEmail = null,
-  onChangePassword,
+  onSettings,
   onLogout,
 }: Props) {
   const meta = useMeta();
@@ -148,14 +148,14 @@ export function Topbar({
         <Icon name={theme === 'dark' ? 'sun' : 'moon'} size={14} />
       </button>
 
-      {onChangePassword && (
+      {onSettings && (
         <button
           className="btn btn-outline"
-          onClick={onChangePassword}
-          title="Change your password"
+          onClick={onSettings}
+          title="Account settings"
           type="button"
         >
-          Password
+          Settings
         </button>
       )}
 
