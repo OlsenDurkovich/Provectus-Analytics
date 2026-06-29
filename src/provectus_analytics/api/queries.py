@@ -90,8 +90,11 @@ def _snapshot_users(db_path: Path):
         cols = [d[0] for d in cur.description]
         rows = cur.fetchall()
         return cols, rows
-    except sqlite3.OperationalError:
-        return None  # no users table yet (e.g. a fresh test DB)
+    except sqlite3.Error:
+        # No users table yet (OperationalError) OR the DB is unreadable/corrupt
+        # (DatabaseError: "database disk image is malformed"). Either way we have
+        # nothing to preserve — let the rebuild proceed and replace the file.
+        return None
     finally:
         conn.close()
 
@@ -117,6 +120,45 @@ def _restore_users(db_path: Path, snapshot) -> None:
                 conn.commit()
     finally:
         conn.close()
+
+
+def _checkpoint_db(db_path: Path) -> None:
+    """Fold the WAL into the main file so the single .db file is self-contained
+    (no sidecar needed) before we copy/swap it."""
+    conn = _db.connect(db_path)
+    try:
+        conn.execute("PRAGMA wal_checkpoint(TRUNCATE)")
+        conn.commit()
+    finally:
+        conn.close()
+
+
+def _atomic_replace(src: Path, dst: Path) -> None:
+    """Atomically install the freshly-built DB at `src` as `dst`.
+
+    The old non-atomic `open(dst,'wb').write(...)` could leave `dst` half-written
+    (corrupt) if interrupted, AND it left the old `dst-wal`/`dst-shm` sidecars in
+    place — which then mismatch the new main file and raise "database disk image
+    is malformed". This writes a staging copy on the SAME filesystem as `dst`,
+    removes the stale sidecars, then os.replace() — an atomic rename — so a
+    reader never sees a partial file or a stale-WAL pairing.
+    """
+    src, dst = Path(src), Path(dst)
+    staging = dst.with_name(dst.name + ".rebuilding")
+    staging.write_bytes(src.read_bytes())
+    # Drop the previous DB's WAL/SHM first so they can't shadow the new file.
+    for side in ("-wal", "-shm"):
+        p = Path(str(dst) + side)
+        if p.exists():
+            p.unlink()
+    os.replace(staging, dst)  # atomic within the same filesystem
+    # Clean up the /tmp build + its sidecars.
+    for p in (src, Path(str(src) + "-wal"), Path(str(src) + "-shm")):
+        try:
+            if p.exists():
+                p.unlink()
+        except OSError:
+            pass
 
 
 def build_db(db_path: Path = DEFAULT_DB, force_synthetic: bool = False) -> dict:
@@ -204,16 +246,13 @@ def build_db(db_path: Path = DEFAULT_DB, force_synthetic: bool = False) -> dict:
     conn.close()
 
     if not use_real:
-        # Move the finished DB from /tmp to the real destination.
-        # Use explicit read/write rather than shutil.copy2: on some FUSE-mounted
-        # filesystems (e.g. the Cowork sandbox) os.sendfile silently writes 0 bytes.
-        data_bytes = tmp_path.read_bytes()
-        with open(db_path, "wb") as fout:
-            fout.write(data_bytes)
-        tmp_path.unlink()
-        # Re-create the users table and restore login accounts that the file
-        # replacement just dropped, so a rebuild never wipes user logins.
-        _restore_users(db_path, users_snapshot)
+        # Finish the build IN the temp DB, then atomically swap it into place.
+        # Restore login accounts + checkpoint so tmp is a complete single file,
+        # then _atomic_replace() installs it without ever leaving db_path
+        # half-written or paired with a stale WAL (the bug that corrupted prod).
+        _restore_users(tmp_path, users_snapshot)
+        _checkpoint_db(tmp_path)
+        _atomic_replace(tmp_path, db_path)
 
     return result
 
