@@ -77,7 +77,7 @@ export function ScatterStrip({
         width={w}
         height={resolvedHeight}
         onMouseLeave={() => setHovered(null)}
-        style={{ cursor: 'default' }}
+        style={{ cursor: 'default', height: resolvedHeight }}
       >
         {/* Grid lines + y-axis labels */}
         {ticks.map((t, i) => (
