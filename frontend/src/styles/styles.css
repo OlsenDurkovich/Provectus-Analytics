@@ -382,6 +382,26 @@ input { font-family: inherit; color: inherit; }
   gap: 16px;
 }
 
+/* Page containers: a single column of sections with consistent vertical
+   rhythm. (Cards inside are full-width by design.) Scoped to these pages so
+   block-layout pages like Flights/Users keep their own spacing. */
+.overview,
+.student-detail,
+.instructor-detail {
+  display: flex;
+  flex-direction: column;
+  gap: 16px;
+}
+/* Neutralize the ad-hoc margins these children carried for the old block
+   layout, so the flex gap is the single source of spacing. */
+.overview > .page-head,
+.student-detail > .page-head,
+.instructor-detail > .page-head { margin-bottom: 0; }
+.student-detail .section-head,
+.instructor-detail .section-head { margin: 0; }
+.student-detail .rating-block,
+.instructor-detail .rating-block { margin-top: 0; }
+
 .page-head {
   grid-column: 1 / -1;
   display: flex;

@@ -1,13 +1,11 @@
 import { useState } from 'react';
-import { ClientsTable } from '../components/ClientsTable';
+import { RatingSummary } from '../components/RatingSummary';
 import { KpiGrid } from '../components/KpiGrid';
-import { Heatmap } from '../components/charts/Heatmap';
 import { RatingBars } from '../components/charts/RatingBars';
 import { RatingsList } from '../components/charts/RatingsList';
 import { Skel } from '../components/primitives';
 import {
   useClients,
-  useHeatmap,
   useKpis,
   useRatingBars,
   useRatingsCompleted,
@@ -35,7 +33,6 @@ export default function Overview({ range }: Props) {
   const kpis = useKpis(range);
   const bars = useRatingBars(metric, range);
   const completed = useRatingsCompleted(range);
-  const heatmap = useHeatmap(range);
   const clients = useClients(range, focusedRating ?? undefined);
 
   return (
@@ -85,29 +82,19 @@ export default function Overview({ range }: Props) {
         ) : null}
       </div>
 
-      <div className="two-up">
-        <div className="card">
-          <div className="card-title">Ratings completed</div>
-          {completed.isLoading ? (
-            <Skel h={180} />
-          ) : completed.data ? (
-            <RatingsList data={completed.data} />
-          ) : null}
-        </div>
-        <div className="card">
-          <div className="card-title">When clients train</div>
-          {heatmap.isLoading ? (
-            <Skel h={180} />
-          ) : heatmap.data ? (
-            <Heatmap rows={heatmap.data.rows} buckets={heatmap.data.buckets} />
-          ) : null}
-        </div>
+      <div className="card">
+        <div className="card-title">Ratings completed</div>
+        {completed.isLoading ? (
+          <Skel h={180} />
+        ) : completed.data ? (
+          <RatingsList data={completed.data} />
+        ) : null}
       </div>
 
       {clients.isLoading ? (
-        <Skel h={400} />
+        <Skel h={300} />
       ) : clients.data ? (
-        <ClientsTable
+        <RatingSummary
           rows={clients.data}
           filterRating={focusedRating}
           onClearFilter={() => setFocusedRating(null)}
