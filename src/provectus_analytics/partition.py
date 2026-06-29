@@ -107,6 +107,103 @@ def build_enrollments(conn: sqlite3.Connection) -> int:
     return n
 
 
+def _end_of_next_month(d: date) -> date:
+    """Last day of the month AFTER d — a safe window end for a *pre*-checkride
+    stage check (the real checkride lands days/weeks later)."""
+    y, m = d.year, d.month + 1
+    if m == 13:
+        y, m = y + 1, 1
+    return date(y, m, monthrange(y, m)[1])
+
+
+def apply_stage_check_windows(conn: sqlite3.Connection) -> int:
+    """Use matched stage checks to set/refine rating windows.
+
+    Precedence (safe by design): **survey-backed enrollments are never touched**
+    — historical alumni keep their reported dates, and the ground-truth test is
+    unaffected. For a (student, rating) with stage checks and no survey
+    enrollment, this refines the guesstimate enrollment (or creates one),
+    stamping `source='stage_check'`, the milestone dates the stage checks pin
+    (pre_solo→first_solo, pre_xc→xc_solos, xc_complete→xc_pic), and a checkride
+    window end derived from the pre-checkride stage check.
+
+    No-op when there are no matched stage checks. Run after build_enrollments +
+    guesstimate, before partition_flights. Returns rows created/updated.
+
+    Honest limitation: ratings whose only stage check is pre-checkride don't pin
+    a *start* — we keep the guesstimate's start when present, else fall back to
+    the earliest stage-check month (a lower bound, not the true start).
+    """
+    groups: dict[tuple[int, str], dict[str, str]] = {}
+    rows = conn.execute(
+        """SELECT student_id, rating, stage, check_date FROM stage_checks
+           WHERE student_id IS NOT NULL AND match_status = 'matched'
+           ORDER BY check_date"""
+    ).fetchall()
+    for r in rows:
+        key = (r["student_id"], r["rating"])
+        # latest date wins per stage (a repeat stage check supersedes the first)
+        groups.setdefault(key, {})[r["stage"]] = r["check_date"]
+
+    n = 0
+    for (student_id, rating_code), stages in groups.items():
+        try:
+            rating_id = rating_id_by_code(conn, rating_code)
+        except KeyError:
+            continue  # unknown rating code — skip rather than crash the pass
+        existing = conn.execute(
+            """SELECT enrollment_id, source, start_date, checkride_date, is_partial
+               FROM enrollments WHERE student_id = ? AND rating_id = ? AND instance_num = 0""",
+            (student_id, rating_id),
+        ).fetchone()
+        if existing is not None and existing["source"] == "survey":
+            continue  # never override the alum's own reported window
+
+        first_solo = stages.get("pre_solo")
+        xc_solos = stages.get("pre_xc")
+        xc_pic = stages.get("xc_complete")
+        pre_ck = stages.get("pre_checkride")
+        earliest = min(stages.values())
+
+        if pre_ck:
+            checkride_date = _end_of_next_month(date.fromisoformat(pre_ck)).isoformat()
+            is_partial = 0
+        elif existing is not None:
+            checkride_date = existing["checkride_date"]
+            is_partial = existing["is_partial"]
+        else:
+            checkride_date = "2099-12-31"  # PARTIAL_SENTINEL
+            is_partial = 1
+
+        start_date = existing["start_date"] if existing else f"{earliest[:7]}-01"
+
+        if existing is not None:
+            conn.execute(
+                """UPDATE enrollments
+                   SET start_date = ?, checkride_date = ?,
+                       first_solo_date = COALESCE(?, first_solo_date),
+                       xc_solos_complete_date = COALESCE(?, xc_solos_complete_date),
+                       xc_pic_complete_date = COALESCE(?, xc_pic_complete_date),
+                       source = 'stage_check', is_partial = ?
+                   WHERE enrollment_id = ?""",
+                (start_date, checkride_date, first_solo, xc_solos, xc_pic,
+                 is_partial, existing["enrollment_id"]),
+            )
+        else:
+            conn.execute(
+                """INSERT OR IGNORE INTO enrollments
+                       (student_id, rating_id, instance_num, start_date, checkride_date,
+                        first_solo_date, xc_solos_complete_date, xc_pic_complete_date,
+                        source, is_partial)
+                   VALUES (?, ?, 0, ?, ?, ?, ?, ?, 'stage_check', ?)""",
+                (student_id, rating_id, start_date, checkride_date,
+                 first_solo, xc_solos, xc_pic, is_partial),
+            )
+        n += 1
+    conn.commit()
+    return n
+
+
 def _infer_billing_from_preceding(
     flight_date: str,
     student_id: int,

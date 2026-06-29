@@ -182,6 +182,101 @@ def ingest_survey(conn: sqlite3.Connection, survey_csv: Path) -> int:
     return len(rows)
 
 
+# ── Stage-check ingest ────────────────────────────────────────────────────────
+# Normalize the form's human-readable labels into stable codes. Keys are matched
+# case-insensitively by prefix so minor wording tweaks on the form still land.
+_STAGE_LABELS = [
+    ("pre-solo", "pre_solo"),
+    ("pre-cross", "pre_xc"),
+    ("stage 1", "xc_complete"),
+    ("xc time", "xc_complete"),
+    ("stage 2", "pre_checkride"),
+    ("pre-checkride", "pre_checkride"),
+]
+_RESULT_LABELS = [
+    ("satisfactory", "satisfactory"),
+    ("unsatisfactory", "unsatisfactory"),
+    ("partial", "partial"),
+]
+# Aircraft family → engine class. The two "Other" buckets keep the SE/ME signal.
+_AIRCRAFT_ENGINE = {
+    "C172": "SE", "PA-28": "SE", "BE-76": "ME",
+    "Other single-engine (ASEL)": "SE", "Other multi-engine (AMEL)": "ME",
+}
+
+
+def _norm_rating(label: str | None) -> str:
+    """Form uses 'ASEL COM'; the DB rating code is 'COM'. Others pass through."""
+    s = (label or "").strip().upper()
+    return "COM" if s in ("ASEL COM", "ASEL COMM", "COMMERCIAL") else s
+
+
+def _norm_stage(label: str | None) -> str:
+    s = (label or "").strip().lower()
+    for needle, code in _STAGE_LABELS:
+        if needle in s:
+            return code
+    return s or "unknown"
+
+
+def _norm_result(label: str | None) -> str:
+    s = (label or "").strip().lower()
+    for needle, code in _RESULT_LABELS:
+        if needle in s:
+            return code
+    return s or "unknown"
+
+
+def _engine_class(aircraft: str | None) -> str | None:
+    if not aircraft:
+        return None
+    a = aircraft.strip()
+    if a in _AIRCRAFT_ENGINE:
+        return _AIRCRAFT_ENGINE[a]
+    low = a.lower()
+    if "multi" in low or "amel" in low:
+        return "ME"
+    if "single" in low or "asel" in low:
+        return "SE"
+    return None
+
+
+def ingest_stage_checks(conn: sqlite3.Connection, stage_csv: Path) -> int:
+    """Load stage-check form responses into `stage_checks` (student_id NULL).
+
+    Reconciliation to a student happens in reconcile.reconcile_stage_checks().
+    The CSV is the canonical/normalized shape (see Stage Check Form Spec); the
+    real Google-Form response sheet gets mapped to these columns at export time.
+    """
+    with open(stage_csv, newline="") as f:
+        rows = list(csv.DictReader(f))
+    for r in rows:
+        conn.execute(
+            """INSERT INTO stage_checks
+                 (student_id, student_name, student_email, check_date, rating, stage,
+                  result, hobbs_hours, conducting_instructor, primary_cfi, aircraft,
+                  engine_class, notes, match_status, raw_json)
+               VALUES (NULL, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, 'unmatched', ?)""",
+            (
+                (r.get("student_name") or "").strip(),
+                (r.get("student_email") or "").strip(),
+                (r.get("date") or "").strip(),
+                _norm_rating(r.get("rating")),
+                _norm_stage(r.get("stage")),
+                _norm_result(r.get("result")),
+                _float(r.get("hobbs_hours")),
+                (r.get("conducting_instructor") or "").strip() or None,
+                (r.get("primary_cfi") or "").strip() or None,
+                (r.get("aircraft") or "").strip() or None,
+                _engine_class(r.get("aircraft")),
+                (r.get("notes") or "").strip() or None,
+                json.dumps(r),
+            ),
+        )
+    conn.commit()
+    return len(rows)
+
+
 # Columns in the alumni survey XLSX that hold rating-boundary dates (datetime
 # in Excel, but partition.py expects "Month YYYY" strings — same format the
 # synthetic CSV uses).

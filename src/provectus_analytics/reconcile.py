@@ -143,3 +143,77 @@ def reconcile(conn: sqlite3.Connection) -> list[MatchResult]:
     )
     conn.commit()
     return results
+
+
+def _student_index(conn: sqlite3.Connection):
+    """Students we can match against: from the client roster, auto-from-flights,
+    or already survey-matched. Indexed by email and by both name fields."""
+    students = list(conn.execute(
+        "SELECT student_id, fsp_display_name, survey_name, email FROM students "
+        "WHERE fsp_client_id IS NOT NULL OR match_status IN ('auto_from_flights', 'matched')"
+    ))
+    by_email = {_norm(s["email"]): s for s in students if s["email"]}
+    by_name: dict[str, sqlite3.Row] = {}
+    for s in students:
+        for nm in (s["fsp_display_name"], s["survey_name"]):
+            if nm:
+                by_name.setdefault(_norm(nm), s)
+    return students, by_email, by_name
+
+
+def _match_person(students, by_email, by_name, name: str, email: str):
+    """Email → exact name → token-subset. Returns (row|None, method, notes)."""
+    if email and _norm(email) in by_email:
+        return by_email[_norm(email)], "email", ""
+    if _norm(name) in by_name:
+        return by_name[_norm(name)], "name_exact", ""
+    tokens = _name_tokens(name)
+    if tokens:
+        cands = []
+        seen = set()
+        for s in students:
+            if s["student_id"] in seen:
+                continue
+            names = [s["fsp_display_name"], s["survey_name"]]
+            if any(n and tokens.issubset(_name_tokens(n)) for n in names):
+                cands.append(s)
+                seen.add(s["student_id"])
+        if len(cands) == 1:
+            return cands[0], "name_subset", f"matched on token subset of '{name}'"
+        if len(cands) > 1:
+            return None, "ambiguous", f"'{name}' matches multiple students"
+    return None, "unmatched", "no student match"
+
+
+def reconcile_stage_checks(conn: sqlite3.Connection) -> dict[str, int]:
+    """Set stage_checks.student_id by matching name/email to a student.
+
+    Run AFTER reconcile() (so survey-matched students are in the index) and
+    after auto_populate_students_from_flights(). Returns a status tally; the
+    'unmatched' rows are the manual-fix-up surface (instructors may mistype the
+    student's email)."""
+    students, by_email, by_name = _student_index(conn)
+    tally = {"matched": 0, "unmatched": 0, "ambiguous": 0}
+    for row in conn.execute(
+        "SELECT stage_check_id, student_name, student_email FROM stage_checks"
+    ).fetchall():
+        match, method, notes = _match_person(
+            students, by_email, by_name, row["student_name"] or "", row["student_email"] or ""
+        )
+        if match is not None:
+            status = "matched"
+            conn.execute(
+                "UPDATE stage_checks SET student_id = ?, match_status = 'matched', match_notes = ? "
+                "WHERE stage_check_id = ?",
+                (match["student_id"], notes or None, row["stage_check_id"]),
+            )
+        else:
+            status = "ambiguous" if method == "ambiguous" else "unmatched"
+            conn.execute(
+                "UPDATE stage_checks SET student_id = NULL, match_status = ?, match_notes = ? "
+                "WHERE stage_check_id = ?",
+                (status, notes or None, row["stage_check_id"]),
+            )
+        tally[status] += 1
+    conn.commit()
+    return tally

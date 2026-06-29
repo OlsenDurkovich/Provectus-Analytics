@@ -108,6 +108,27 @@ DDL = [
     )
     """,
     """
+    CREATE TABLE IF NOT EXISTS stage_checks (
+        stage_check_id        INTEGER PRIMARY KEY,
+        student_id            INTEGER REFERENCES students(student_id),  -- NULL until reconciled
+        student_name          TEXT,
+        student_email         TEXT,                 -- primary match key
+        check_date            TEXT NOT NULL,
+        rating                TEXT NOT NULL,        -- PPL/IFR/COM/AMEL/CFI/CFII/MEI
+        stage                 TEXT NOT NULL,        -- pre_solo/pre_xc/xc_complete/pre_checkride
+        result                TEXT,                 -- satisfactory/unsatisfactory/partial
+        hobbs_hours           REAL,                 -- optional hours-at-date cross-check
+        conducting_instructor TEXT,
+        primary_cfi           TEXT,
+        aircraft              TEXT,                 -- C172/PA-28/BE-76/other_se/other_me
+        engine_class          TEXT,                 -- SE/ME (derived from aircraft)
+        notes                 TEXT,
+        match_status          TEXT NOT NULL DEFAULT 'unmatched',  -- matched | unmatched | ambiguous
+        match_notes           TEXT,
+        raw_json              TEXT                  -- full original row, for audit
+    )
+    """,
+    """
     CREATE TABLE IF NOT EXISTS flight_overrides (
         override_id    INTEGER PRIMARY KEY,
         flight_id      INTEGER NOT NULL REFERENCES flights(flight_id) ON DELETE CASCADE,
@@ -125,6 +146,7 @@ DDL = [
     "CREATE INDEX IF NOT EXISTS idx_invoices_student     ON invoices(student_id)",
     "CREATE INDEX IF NOT EXISTS idx_milestones_enrollment ON milestones(enrollment_id)",
     "CREATE INDEX IF NOT EXISTS idx_overrides_flight     ON flight_overrides(flight_id)",
+    "CREATE INDEX IF NOT EXISTS idx_stage_checks_student ON stage_checks(student_id)",
 ]
 
 # Rating lookup seed data
