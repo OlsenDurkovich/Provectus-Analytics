@@ -10,7 +10,8 @@ from pathlib import Path
 
 import pytest
 
-from provectus_analytics import ingest, reconcile
+from provectus_analytics import ingest, partition, reconcile
+from provectus_analytics.db import rating_id_by_code
 
 REPO_ROOT = Path(__file__).resolve().parents[1]
 STAGE_CSV = REPO_ROOT / "synthetic_stage_checks.csv"
@@ -114,3 +115,61 @@ def test_unknown_student_is_left_unmatched(pipeline_db):
         "SELECT student_id FROM stage_checks WHERE student_email = 'ghost@nowhere.test'"
     ).fetchone()[0]
     assert sid is None
+
+
+# --- window wiring: stage checks set the rating window ---------------------
+
+def _add_stage(conn, sid, rating, stage, date):
+    conn.execute(
+        """INSERT INTO stage_checks
+             (student_id, student_name, student_email, check_date, rating, stage, match_status)
+           VALUES (?, 'Future Student', 'future@x.com', ?, ?, ?, 'matched')""",
+        (sid, date, rating, stage),
+    )
+
+
+def test_stage_checks_define_window_for_survey_less_student(pipeline_db):
+    # A future student: in the roster, no survey, no enrollment yet.
+    sid = pipeline_db.execute(
+        "INSERT INTO students (fsp_display_name, email, match_status) "
+        "VALUES ('Future Student', 'future@x.com', 'auto_from_flights')"
+    ).lastrowid
+    _add_stage(pipeline_db, sid, "PPL", "pre_solo", "2025-03-01")
+    _add_stage(pipeline_db, sid, "PPL", "pre_xc", "2025-06-01")
+    _add_stage(pipeline_db, sid, "PPL", "pre_checkride", "2025-09-01")
+    pipeline_db.commit()
+
+    n = partition.apply_stage_check_windows(pipeline_db)
+    assert n == 1
+
+    ppl = rating_id_by_code(pipeline_db, "PPL")
+    e = pipeline_db.execute(
+        "SELECT * FROM enrollments WHERE student_id = ? AND rating_id = ?", (sid, ppl)
+    ).fetchone()
+    assert e is not None
+    assert e["source"] == "stage_check"
+    assert e["is_partial"] == 0
+    assert e["start_date"] == "2025-03-01"
+    assert e["first_solo_date"] == "2025-03-01"
+    assert e["xc_solos_complete_date"] == "2025-06-01"
+    # pre-checkride on 2025-09-01 → window end is the end of the following month
+    assert e["checkride_date"] == "2025-10-31"
+
+
+def test_apply_never_touches_survey_enrollments(pipeline_db):
+    before = pipeline_db.execute(
+        "SELECT COUNT(*) FROM enrollments WHERE source = 'survey'"
+    ).fetchone()[0]
+    ingest.ingest_stage_checks(pipeline_db, STAGE_CSV)
+    reconcile.reconcile_stage_checks(pipeline_db)
+    # Every synthetic stage-check student already has a survey enrollment, so the
+    # pass must be a complete no-op on them.
+    n = partition.apply_stage_check_windows(pipeline_db)
+    assert n == 0
+    after = pipeline_db.execute(
+        "SELECT COUNT(*) FROM enrollments WHERE source = 'survey'"
+    ).fetchone()[0]
+    assert after == before
+    assert pipeline_db.execute(
+        "SELECT COUNT(*) FROM enrollments WHERE source = 'stage_check'"
+    ).fetchone()[0] == 0

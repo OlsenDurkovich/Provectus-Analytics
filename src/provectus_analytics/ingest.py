@@ -205,6 +205,12 @@ _AIRCRAFT_ENGINE = {
 }
 
 
+def _norm_rating(label: str | None) -> str:
+    """Form uses 'ASEL COM'; the DB rating code is 'COM'. Others pass through."""
+    s = (label or "").strip().upper()
+    return "COM" if s in ("ASEL COM", "ASEL COMM", "COMMERCIAL") else s
+
+
 def _norm_stage(label: str | None) -> str:
     s = (label or "").strip().lower()
     for needle, code in _STAGE_LABELS:
@@ -255,7 +261,7 @@ def ingest_stage_checks(conn: sqlite3.Connection, stage_csv: Path) -> int:
                 (r.get("student_name") or "").strip(),
                 (r.get("student_email") or "").strip(),
                 (r.get("date") or "").strip(),
-                (r.get("rating") or "").strip(),
+                _norm_rating(r.get("rating")),
                 _norm_stage(r.get("stage")),
                 _norm_result(r.get("result")),
                 _float(r.get("hobbs_hours")),
