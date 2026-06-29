@@ -45,6 +45,9 @@ type UpdateBody = {
   new_password?: string;
   student_id?: number | null;
   instructor_name?: string | null;
+  display_name?: string | null;
+  email?: string;
+  phone?: string | null;
 };
 
 function UserCard({
@@ -61,6 +64,8 @@ function UserCard({
   instructors: InstructorRecord[];
 }) {
   const [pw, setPw] = useState('');
+  const [name, setName] = useState(u.display_name ?? '');
+  const [phone, setPhone] = useState(u.phone ?? '');
 
   const togglePage = (key: string) => {
     const next = u.pages.includes(key)
@@ -73,7 +78,10 @@ function UserCard({
     <div style={{ ...card, opacity: u.is_active ? 1 : 0.6 }}>
       <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between', gap: 8, flexWrap: 'wrap' }}>
         <strong style={{ fontSize: 14 }}>
-          {u.email}
+          {u.display_name || u.email}
+          {u.display_name && (
+            <span style={{ marginLeft: 8, fontSize: 11, color: 'var(--fg-dim)', fontWeight: 400 }}>{u.email}</span>
+          )}
           {!u.is_active && (
             <span style={{ marginLeft: 8, fontSize: 11, color: 'var(--fg-dim)' }}>(inactive)</span>
           )}
@@ -88,6 +96,29 @@ function UserCard({
             {u.is_active ? 'Deactivate' : 'Reactivate'}
           </button>
         </div>
+      </div>
+
+      <div style={{ display: 'flex', gap: 8, alignItems: 'center', flexWrap: 'wrap' }}>
+        <input
+          style={{ ...input, flex: 1, minWidth: 140 }}
+          placeholder="display name"
+          value={name}
+          onChange={(e) => setName(e.target.value)}
+        />
+        <input
+          style={{ ...input, flex: 1, minWidth: 120 }}
+          placeholder="phone"
+          value={phone}
+          onChange={(e) => setPhone(e.target.value)}
+        />
+        <button
+          className="btn btn-outline"
+          type="button"
+          disabled={busy || (name === (u.display_name ?? '') && phone === (u.phone ?? ''))}
+          onClick={() => onPatch(u.user_id, { display_name: name, phone })}
+        >
+          Save
+        </button>
       </div>
 
       {u.role === 'student' ? (

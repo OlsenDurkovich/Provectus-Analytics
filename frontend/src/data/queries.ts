@@ -218,6 +218,9 @@ export const useUpdateUser = () => {
         new_password?: string;
         student_id?: number | null;
         instructor_name?: string | null;
+        display_name?: string | null;
+        email?: string;
+        phone?: string | null;
       };
     }) => client.updateUser(id, patch),
     onSuccess: () => {
@@ -230,6 +233,16 @@ export const useChangePassword = () =>
   useMutation({
     mutationFn: (body: { current_password: string; new_password: string }) =>
       client.changePassword(body),
+  });
+
+export const useUpdateProfile = () =>
+  useMutation({
+    mutationFn: (body: {
+      display_name?: string | null;
+      email?: string;
+      phone?: string | null;
+      theme?: string | null;
+    }) => client.updateProfile(body),
   });
 export const usePublicTransparency = () =>
   useQuery({ queryKey: ['publicTransparency'], queryFn: client.getPublicTransparency });
