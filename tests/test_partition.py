@@ -2,25 +2,36 @@
 from __future__ import annotations
 
 
-def test_no_enrollments_for_tyler(pipeline_db):
-    """Tyler completed nothing → no enrollment rows."""
-    n = pipeline_db.execute(
-        """SELECT COUNT(*) FROM enrollments e
+def test_tyler_in_progress_partial_enrollment(pipeline_db):
+    """Tyler is mid-PPL (no checkride). He now surfaces as a single PARTIAL PPL
+    enrollment so he's visible as an active student — but with NO checkride
+    milestone, so he never enters the cohort norms."""
+    rows = pipeline_db.execute(
+        """SELECT r.code, e.is_partial,
+                  EXISTS(SELECT 1 FROM milestones m
+                         WHERE m.enrollment_id = e.enrollment_id
+                           AND m.milestone_name = 'checkride') AS cr
+           FROM enrollments e
+           JOIN ratings r USING (rating_id)
            JOIN students s USING (student_id)
            WHERE s.survey_name = 'Tyler Brooks'"""
-    ).fetchone()[0]
-    assert n == 0
+    ).fetchall()
+    assert len(rows) == 1
+    assert rows[0]["code"] == "PPL"
+    assert rows[0]["is_partial"] == 1
+    assert rows[0]["cr"] == 0  # no checkride milestone → excluded from norms
 
 
-def test_tyler_flights_unattributed(pipeline_db):
-    """Tyler's flights exist but should all have NULL enrollment_id."""
+def test_tyler_flights_now_attributed(pipeline_db):
+    """His primary flights attach to the partial enrollment (so hours/cost roll up)."""
     rows = list(pipeline_db.execute(
         """SELECT enrollment_id FROM flights f
            JOIN students s USING (student_id)
-           WHERE s.survey_name = 'Tyler Brooks' AND f.status = 'Completed'"""
+           WHERE s.survey_name = 'Tyler Brooks' AND f.status = 'Completed'
+             AND f.reservation_type = 'Dual Flight Training'"""
     ))
     assert len(rows) > 0
-    assert all(r["enrollment_id"] is None for r in rows)
+    assert any(r["enrollment_id"] is not None for r in rows)
 
 
 def test_olivia_concurrent_resolved_by_aircraft(pipeline_db):
@@ -54,16 +65,32 @@ def test_excluded_types_never_attributed(pipeline_db):
     assert n == 0
 
 
-def test_current_students_have_no_enrollments(pipeline_db):
-    """Henry/Grace/Daniel — no survey, so no enrollments, so all flights unattributed."""
+def test_current_students_are_in_progress_partials(pipeline_db):
+    """Henry/Grace/Daniel are actively training (no checkride). Each surfaces as a
+    PARTIAL PPL enrollment with attributed flights but no checkride milestone, so
+    they appear as active students without polluting the cohort norms."""
     for name in ["Henry Walsh", "Grace Liu", "Daniel Park"]:
-        n = pipeline_db.execute(
+        enr = pipeline_db.execute(
+            """SELECT r.code, e.is_partial,
+                      EXISTS(SELECT 1 FROM milestones m
+                             WHERE m.enrollment_id = e.enrollment_id
+                               AND m.milestone_name = 'checkride') AS cr
+               FROM enrollments e
+               JOIN ratings r USING (rating_id)
+               JOIN students s USING (student_id)
+               WHERE s.fsp_display_name = ?""",
+            (name,),
+        ).fetchall()
+        assert len(enr) == 1, f"{name} should have one enrollment"
+        assert enr[0]["code"] == "PPL" and enr[0]["is_partial"] == 1
+        assert enr[0]["cr"] == 0, f"{name} must have no checkride milestone"
+        attributed = pipeline_db.execute(
             """SELECT COUNT(*) FROM flights f
                JOIN students s USING (student_id)
                WHERE s.fsp_display_name = ? AND f.enrollment_id IS NOT NULL""",
             (name,),
         ).fetchone()[0]
-        assert n == 0, f"{name} should have no attributed flights"
+        assert attributed > 0, f"{name} should have attributed flights"
 
 
 def test_full_career_alum_all_seven_ratings(pipeline_db):

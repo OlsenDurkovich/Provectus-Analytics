@@ -82,6 +82,34 @@ def test_efficiency_uses_vs_rest_fields(tmp_path, monkeypatch):
     assert abs(e["score"] - (e["avgHoursVsRestPct"] + e["avgCostVsRestPct"]) / 2) < 1e-3
 
 
+def test_predictions_cover_in_progress_states(tmp_path, monkeypatch):
+    c = _fresh(tmp_path, monkeypatch)
+    preds = {p["name"]: p for p in c.get("/api/insights").json()["predictions"]}
+    assert preds, "synthetic data has in-progress students to predict"
+    statuses = {p["status"] for p in preds.values()}
+    assert statuses <= {"on_track", "over_median", "stalled"}
+    # Tyler hasn't flown in years → stalled, no projection.
+    assert preds["Tyler Brooks"]["status"] == "stalled"
+    assert preds["Tyler Brooks"]["projectedDate"] is None
+    # An on-track student gets a future projected date + weeks remaining.
+    on_track = [p for p in preds.values() if p["status"] == "on_track"]
+    assert on_track and all(p["projectedDate"] and p["weeksRemaining"] is not None for p in on_track)
+
+
+def test_cadence_buckets_monotonic(tmp_path, monkeypatch):
+    c = _fresh(tmp_path, monkeypatch)
+    cad = c.get("/api/insights").json()["cadence"]
+    assert cad and cad["rating"] == "PPL"
+    buckets = cad["buckets"]
+    assert len(buckets) >= 2
+    # higher cadence (later bucket) → fewer calendar days and not-more cost
+    cadences = [b["avgCadence"] for b in buckets]
+    days = [b["avgDays"] for b in buckets]
+    assert cadences == sorted(cadences)
+    assert days == sorted(days, reverse=True), "more frequent training should finish sooner"
+    assert buckets[-1]["avgCost"] <= buckets[0]["avgCost"]
+
+
 def test_adapter_at_risk_threshold_unit(tmp_path, monkeypatch):
     # Direct adapter call (no HTTP) — at a 200% threshold nobody is flagged.
     db = tmp_path / "test.db"

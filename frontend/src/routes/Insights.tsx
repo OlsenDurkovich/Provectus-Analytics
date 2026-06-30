@@ -3,7 +3,9 @@ import { useInsights } from '../data/queries';
 import { Skel } from '../components/primitives';
 import type {
   AtRiskRow,
+  CadenceInsight,
   InstructorEfficiency,
+  PredictionRow,
   RatingCode,
   RatingStrength,
 } from '../data/types';
@@ -68,6 +70,8 @@ export default function Insights() {
             threshold={threshold}
             onThreshold={setThreshold}
           />
+          <Predictions rows={q.data.predictions} />
+          {q.data.cadence && <Cadence data={q.data.cadence} />}
           <Strengths strengths={q.data.strengths} />
           <Efficiency rows={q.data.efficiency} />
         </>
@@ -149,6 +153,120 @@ function AtRisk({
                 </tr>
               ))
             )}
+          </tbody>
+        </table>
+      </div>
+    </div>
+  );
+}
+
+const PRED_STATUS: Record<PredictionRow['status'], { label: string; color: string }> = {
+  on_track: { label: 'On track', color: 'var(--positive)' },
+  over_median: { label: 'Over median', color: 'var(--negative)' },
+  stalled: { label: 'Stalled', color: 'var(--fg-dim)' },
+};
+
+function fmtDate(iso: string | null): string {
+  if (!iso) return '—';
+  const d = new Date(iso);
+  return Number.isNaN(d.getTime()) ? iso : d.toLocaleDateString('en', { month: 'short', year: 'numeric' });
+}
+
+function Predictions({ rows }: { rows: PredictionRow[] }) {
+  return (
+    <div className="card table-card">
+      <div className="card-head">
+        <div>
+          <div className="card-title">Completion forecast · in-progress students</div>
+          <div className="card-sub">
+            Projected checkride-readiness from each student's recent flight pace vs the cohort median.
+            Use it to time the checkride — or to spot who's stalled or running long.
+          </div>
+        </div>
+      </div>
+      <div className="table-wrap">
+        <table className="dt">
+          <thead>
+            <tr>
+              <th style={{ width: '20%' }}>Student</th>
+              <th>Rating</th>
+              <th className="num">Hours</th>
+              <th className="num">Pace/wk</th>
+              <th className="num">Last flew</th>
+              <th className="num">Projected</th>
+              <th>Status</th>
+            </tr>
+          </thead>
+          <tbody>
+            {rows.length === 0 ? (
+              <tr><td colSpan={7}><div className="empty"><div className="empty-title">No students in progress</div></div></td></tr>
+            ) : (
+              rows.map((p) => {
+                const st = PRED_STATUS[p.status];
+                return (
+                  <tr key={`${p.studentId}-${p.rating}`}>
+                    <td>{p.name}</td>
+                    <td>{chip(p.rating)}</td>
+                    <td className="num">{p.currentHours.toFixed(1)} / {p.medianHours.toFixed(0)}</td>
+                    <td className="num">{p.pacePerWeek.toFixed(1)}h</td>
+                    <td className="num">{p.daysSinceLastFlight}d ago</td>
+                    <td className="num">
+                      {p.projectedDate
+                        ? <span>{fmtDate(p.projectedDate)}{p.weeksRemaining != null ? <span className="muted tiny"> ({p.weeksRemaining}w)</span> : null}</span>
+                        : <span className="muted">—</span>}
+                    </td>
+                    <td><span style={{ color: st.color }}>{st.label}</span></td>
+                  </tr>
+                );
+              })
+            )}
+          </tbody>
+        </table>
+      </div>
+    </div>
+  );
+}
+
+function Cadence({ data }: { data: CadenceInsight }) {
+  const maxDays = Math.max(...data.buckets.map((b) => b.avgDays), 1);
+  return (
+    <div className="card table-card">
+      <div className="card-head">
+        <div>
+          <div className="card-title">Training cadence vs outcomes · {RATING_META[data.rating].name}</div>
+          <div className="card-sub">
+            Completed {data.rating} students grouped by how often they flew. Flying more frequently
+            finishes far sooner — and modestly cuts hours and cost. (n={data.n})
+          </div>
+        </div>
+      </div>
+      <div className="table-wrap">
+        <table className="dt">
+          <thead>
+            <tr>
+              <th>Cadence</th>
+              <th className="num">Students</th>
+              <th className="num">Avg hours</th>
+              <th className="num">Avg cost</th>
+              <th className="num">Days to checkride</th>
+              <th style={{ width: '28%' }}>Time</th>
+            </tr>
+          </thead>
+          <tbody>
+            {data.buckets.map((b) => (
+              <tr key={b.label}>
+                <td>{b.label}</td>
+                <td className="num">{b.n}</td>
+                <td className="num">{b.avgHours.toFixed(1)}</td>
+                <td className="num">${Math.round(b.avgCost).toLocaleString()}</td>
+                <td className="num">{Math.round(b.avgDays)}</td>
+                <td>
+                  <div className="progress-bar">
+                    <div className="progress-fill" style={{ width: `${(b.avgDays / maxDays) * 100}%`, background: 'var(--accent)' }} />
+                  </div>
+                </td>
+              </tr>
+            ))}
           </tbody>
         </table>
       </div>

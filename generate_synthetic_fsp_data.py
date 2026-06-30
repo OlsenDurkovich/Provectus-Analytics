@@ -408,6 +408,76 @@ def gen_noise(res_counter, flight_counter):
             flight_counter[0] += 1
     return flights
 
+# ============= Cadence demo cohort (PPL completers) =============
+# A batch of completed Private-Pilot students with a DELIBERATE training-cadence
+# signal, so the "cadence vs cost" insight has something to show. Higher weekly
+# cadence → fewer total hours (massed-practice retention effect) → lower cost and
+# fewer calendar days. Non-survey, so they flow through guesstimate as PPL
+# completers. CLEARLY SYNTHETIC — illustrative of a real, studied effect, not
+# measured from real alumni. (name, cadence flights/wk, email, client_id)
+CADENCE_COMPLETERS = [
+    ("Olivia Brennan",  0.9, "olivia.brennan@gmail.com",  "C1401", "2024"),
+    ("Liam Foster",     1.1, "liam.foster@gmail.com",     "C1402", "2024"),
+    ("Sophia Reyes",    1.3, "sophia.reyes@gmail.com",    "C1403", "2024"),
+    ("Noah Whitfield",  1.5, "noah.whitfield@gmail.com",  "C1404", "2024"),
+    ("Emma Caldwell",   1.7, "emma.caldwell@gmail.com",   "C1405", "2024"),
+    ("Mason Trent",     1.9, "mason.trent@gmail.com",     "C1406", "2024"),
+    ("Ava Donovan",     2.2, "ava.donovan@gmail.com",     "C1407", "2025"),
+    ("Lucas Hartman",   2.5, "lucas.hartman@gmail.com",   "C1408", "2025"),
+    ("Mia Sutton",      2.8, "mia.sutton@gmail.com",      "C1409", "2025"),
+    ("Ethan Bauer",     3.0, "ethan.bauer@gmail.com",     "C1410", "2025"),
+    ("Chloe Marsh",     3.3, "chloe.marsh@gmail.com",     "C1411", "2025"),
+    ("Jack Holloway",   3.5, "jack.holloway@gmail.com",   "C1412", "2025"),
+]
+
+
+def gen_cadence_completers(res_counter, flight_counter):
+    flights = []
+    for name, cadence, _email, _cid, _yr in CADENCE_COMPLETERS:
+        primary = get_primary_instructor(name)
+        # retention effect: denser schedule → fewer hours. Intercept tuned so the
+        # cadence cohort's hours sit around/just below the existing PPL alumni and
+        # decline monotonically across the low/med/high cadence buckets.
+        target_hours = max(50.0, min(80.0, 68.0 - 6.0 * (cadence - 0.9) + random.uniform(-1.5, 1.5)))
+        n_flights = max(18, round(target_hours / 1.8))
+        per_flight = target_hours / n_flights
+        interval_days = 7.0 / cadence
+        span_days = int(n_flights * interval_days)
+        # finish (checkride) somewhere in the last ~2 years
+        checkride_date = random_date_between(date(2024, 3, 1), date(2026, 4, 15))
+        start = checkride_date - timedelta(days=span_days + 5)
+        solo_every = max(4, n_flights // 4)
+        for i in range(n_flights):
+            d = start + timedelta(days=int(i * interval_days) + random.randint(0, 1))
+            if d >= checkride_date:
+                d = checkride_date - timedelta(days=2)
+            length = round(max(1.0, min(2.6, per_flight + random.uniform(-0.3, 0.3))), 1)
+            a = random.choice(SE_BASIC)
+            is_solo = (i > solo_every and i % solo_every == 0)
+            flights.append(dict(
+                res_num=f"R{res_counter[0]:06d}",
+                flight_num=f"F{flight_counter[0]:06d}",
+                date=d, length=length,
+                type="Student Solo" if is_solo else "Dual Flight Training",
+                status="Completed", client=name,
+                tail=a[0], make=a[1], model=a[2],
+                instructor="" if is_solo else pick_instructor(primary),
+                rating_hint="PPL (cadence cohort)"))
+            res_counter[0] += 1
+            flight_counter[0] += 1
+        # checkride
+        a = random.choice(SE_BASIC)
+        flights.append(dict(
+            res_num=f"R{res_counter[0]:06d}", flight_num=f"F{flight_counter[0]:06d}",
+            date=checkride_date, length=round(random.uniform(1.5, 2.2), 1),
+            type="Check Ride", status="Completed", client=name,
+            tail=a[0], make=a[1], model=a[2], instructor="",
+            rating_hint="PPL (cadence cohort)"))
+        res_counter[0] += 1
+        flight_counter[0] += 1
+    return flights
+
+
 # ============= Main =============
 res_counter = [100000]
 flight_counter = [50000]
@@ -419,6 +489,9 @@ for fsp_name, ratings in WINDOWS.items():
 
 all_flights.extend(gen_tyler_incomplete(res_counter, flight_counter))
 all_flights.extend(gen_noise(res_counter, flight_counter))
+# Appended LAST so existing students' RNG draws (incl. the ground-truth alum) are
+# untouched. These are the cadence-vs-cost demo completers.
+all_flights.extend(gen_cadence_completers(res_counter, flight_counter))
 all_flights.sort(key=lambda f: f["date"])
 
 # --- Write reservations ---
@@ -449,7 +522,11 @@ with open("synthetic_fsp_clients.csv", "w", newline="") as f:
         parts = fsp_name.split(" ", 1)
         w.writerow([cid, fsp_name, parts[0], parts[1] if len(parts) > 1 else "",
                     email, "Active", f"{joined}-01-15", note])
-print(f"Clients written: {len(ALUMNI) + len(NOISE_CLIENTS)}")
+    for fsp_name, _cad, email, cid, joined in CADENCE_COMPLETERS:
+        parts = fsp_name.split(" ", 1)
+        w.writerow([cid, fsp_name, parts[0], parts[1] if len(parts) > 1 else "",
+                    email, "Active", f"{joined}-01-15", "PPL completer (cadence cohort)"])
+print(f"Clients written: {len(ALUMNI) + len(NOISE_CLIENTS) + len(CADENCE_COMPLETERS)}")
 
 # --- Write invoices (schema is a GUESS, see README) ---
 invoice_rows = []
@@ -461,8 +538,12 @@ for fl in all_flights:
         continue
     inv_num = f"INV{inv_counter[0]:06d}"
     inv_counter[0] += 1
-    inv_date = fl["date"] + timedelta(days=random.randint(0, 3))
-    status = "Paid" if random.random() < 0.92 else "Outstanding"
+    # Per-flight RNG seeded on the reservation number: a flight's invoice (dates,
+    # instructor add-on hours, ground lines, paid status) depends ONLY on itself,
+    # so adding/removing other students never perturbs an existing alum's cost.
+    inv_rng = random.Random(fl["res_num"])
+    inv_date = fl["date"] + timedelta(days=inv_rng.randint(0, 3))
+    status = "Paid" if inv_rng.random() < 0.92 else "Outstanding"
     ac_rate = RATES.get(fl["tail"], 200)
 
     invoice_rows.append(dict(inv=inv_num, date=inv_date, client=fl["client"], res=fl["res_num"],
@@ -471,13 +552,13 @@ for fl in all_flights:
                              amount=round(fl["length"] * ac_rate, 2), status=status))
 
     if fl["instructor"]:
-        instr_hrs = round(fl["length"] + random.choice([0.0, 0.0, 0.3, 0.5]), 1)
+        instr_hrs = round(fl["length"] + inv_rng.choice([0.0, 0.0, 0.3, 0.5]), 1)
         invoice_rows.append(dict(inv=inv_num, date=inv_date, client=fl["client"], res=fl["res_num"],
                                  desc=f"Instructor time - {fl['instructor']}",
                                  category="Instructor", qty=instr_hrs, rate=INSTRUCTOR_RATE,
                                  amount=round(instr_hrs * INSTRUCTOR_RATE, 2), status=status))
-        if random.random() < 0.25:
-            gh = round(random.uniform(0.5, 1.5), 1)
+        if inv_rng.random() < 0.25:
+            gh = round(inv_rng.uniform(0.5, 1.5), 1)
             invoice_rows.append(dict(inv=inv_num, date=inv_date, client=fl["client"], res=fl["res_num"],
                                      desc="Ground instruction / briefing",
                                      category="Ground", qty=gh, rate=GROUND_RATE,

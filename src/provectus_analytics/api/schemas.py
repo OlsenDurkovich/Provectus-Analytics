@@ -237,8 +237,40 @@ class InstructorEfficiency(BaseModel):
     lowSample: bool
 
 
+class PredictionRow(BaseModel):
+    """An in-progress student's projected path to checkride, from recent pace."""
+    studentId: str
+    name: str
+    rating: RatingCode
+    currentHours: float
+    medianHours: float
+    pacePerWeek: float            # recent flight hours per week
+    weeksRemaining: float | None  # None when stalled or already over median
+    projectedDate: str | None     # ISO date of projected checkride-readiness
+    lastFlight: str
+    daysSinceLastFlight: int
+    status: Literal["on_track", "over_median", "stalled"]
+
+
+class CadenceBucket(BaseModel):
+    label: str
+    n: int
+    avgCadence: float             # flights per week
+    avgHours: float
+    avgCost: float
+    avgDays: float                # calendar days to checkride
+
+
+class CadenceInsight(BaseModel):
+    rating: RatingCode
+    n: int
+    buckets: list[CadenceBucket]
+
+
 class Insights(BaseModel):
     atRiskThresholdPct: float
     atRisk: list[AtRiskRow]
     strengths: list[RatingStrength]
     efficiency: list[InstructorEfficiency]
+    predictions: list[PredictionRow]
+    cadence: CadenceInsight | None
