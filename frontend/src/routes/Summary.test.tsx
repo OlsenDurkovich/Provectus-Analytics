@@ -28,7 +28,11 @@ beforeEach(() => {
         atRisk: [{ studentId: '1', name: 'Jamie Chen', rating: 'AMEL', hours: 18, medianHours: 14, pctOverHours: 0.29, cost: 9300, medianCost: 7080, pctOverCost: 0.31, days: 70, worstPct: 0.31, status: 'Completed' }],
         strengths: [],
         efficiency: [{ instructor: 'Sarah Phillips', students: 30, ratings: 7, avgHoursVsRestPct: -0.04, avgCostVsRestPct: -0.04, score: -0.04, rank: 1, lowSample: false }],
-        predictions: [{ studentId: '21', name: 'Henry Walsh', rating: 'PPL', currentHours: 59.5, medianHours: 64, pacePerWeek: 0.6, weeksRemaining: 7.3, projectedDate: '2026-08-20', lastFlight: '2026-05-11', daysSinceLastFlight: 50, status: 'on_track' }],
+        predictions: [
+          { studentId: '21', name: 'Henry Walsh', rating: 'PPL', currentHours: 59.5, medianHours: 64, pacePerWeek: 0.6, weeksRemaining: 7.3, projectedDate: '2026-08-20', lastFlight: '2026-05-11', daysSinceLastFlight: 50, status: 'on_track' },
+          { studentId: '22', name: 'Grace Liu', rating: 'PPL', currentHours: 34.8, medianHours: 64, pacePerWeek: 0.3, weeksRemaining: 97.9, projectedDate: '2028-05-15', lastFlight: '2026-04-23', daysSinceLastFlight: 68, status: 'behind_pace' },
+          { studentId: '10', name: 'Tyler Brooks', rating: 'PPL', currentHours: 26, medianHours: 64, pacePerWeek: 0, weeksRemaining: null, projectedDate: null, lastFlight: '2024-01-26', daysSinceLastFlight: 886, status: 'stalled' },
+        ],
         cadence: { scope: 'all ratings', n: 104, buckets: [
           { label: '2.5×/week or less', n: 88, avgCadence: 0.9, avgDays: 363, costVsMedianPct: 0.01, hoursVsMedianPct: 0.01 },
           { label: 'Over 4×/week', n: 7, avgCadence: 4.8, avgDays: 72, costVsMedianPct: -0.09, hoursVsMedianPct: -0.09 },
@@ -48,19 +52,29 @@ function wrap(ui: React.ReactNode) {
   return <QueryClientProvider client={qc}><MemoryRouter>{ui}</MemoryRouter></QueryClientProvider>;
 }
 
-test('renders KPIs, per-rating table, and highlights', async () => {
+test('renders the overview half (KPIs, per-rating table, highlights)', async () => {
   render(wrap(<Summary />));
   await waitFor(() => expect(screen.getByText('Ratings completed')).toBeTruthy());
-  // KPI value
-  expect(screen.getByText('81')).toBeTruthy();
-  // per-rating table: PPL row with merged metrics
-  expect(screen.getByText('Private Pilot')).toBeTruthy();
+  expect(screen.getByText('81')).toBeTruthy();                 // KPI value
+  expect(screen.getByText('Private Pilot')).toBeTruthy();      // per-rating table
   expect(screen.getByText('$16,500')).toBeTruthy();
-  // highlights: best instructor + cadence finding + in-progress/at-risk
-  expect(screen.getByText('Sarah Phillips')).toBeTruthy();
+  expect(screen.getByText('Sarah Phillips')).toBeTruthy();     // highlight
   expect(screen.getByText(/72 vs 363 days/)).toBeTruthy();
-  expect(screen.getByText(/1 in progress · 1 at-risk/)).toBeTruthy();
-  // print affordance + synthetic banner
   expect(screen.getByRole('button', { name: /Print/ })).toBeTruthy();
   expect(screen.getByText(/Sample data/)).toBeTruthy();
+});
+
+test('renders the "right now" half (pipeline, needs-attention, upcoming)', async () => {
+  render(wrap(<Summary />));
+  await waitFor(() => expect(screen.getByText(/Right now/)).toBeTruthy());
+  // pipeline snapshot + statuses
+  expect(screen.getByText('Behind pace')).toBeTruthy();
+  expect(screen.getByText('Stalled')).toBeTruthy();
+  // needs-attention list surfaces the non-on-track + at-risk students
+  expect(screen.getByText('Needs attention')).toBeTruthy();
+  expect(screen.getByText('Grace Liu')).toBeTruthy();
+  expect(screen.getByText('Jamie Chen')).toBeTruthy();         // at-risk
+  // upcoming checkrides surfaces the on-track student
+  expect(screen.getByText(/Upcoming checkrides/)).toBeTruthy();
+  expect(screen.getByText('Henry Walsh')).toBeTruthy();
 });

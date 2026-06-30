@@ -1,20 +1,31 @@
 // Exec one-pager: a single, print-friendly program summary for leadership.
-// Pulls live data (all-time), and "Print" → browser Print → save as PDF.
-import { useKpis, useRatingBars, useInsights } from '../data/queries';
+// Half "overview" (all-time cohort) + half "right now" (live operational state).
+// "Print" → browser Print → save as PDF.
+import { useKpis, useRatingBars, useInsights, useMeta } from '../data/queries';
 import { Skel } from '../components/primitives';
-import { useMeta } from '../data/queries';
-import type { MetricKey, RatingCode, RatingBarPoint } from '../data/types';
+import type { MetricKey, RatingCode, RatingBarPoint, PredictionRow } from '../data/types';
 
 const RATING_ORDER: RatingCode[] = ['PPL', 'IFR', 'COM', 'AMEL', 'CFI', 'CFII', 'MEI'];
 const RATING_NAME: Record<RatingCode, string> = {
   PPL: 'Private Pilot', IFR: 'Instrument', COM: 'Commercial SE', AMEL: 'Multi-Engine',
   CFI: 'CFI', CFII: 'CFII', MEI: 'MEI',
 };
+const PRED_META: Record<PredictionRow['status'], { label: string; color: string }> = {
+  on_track: { label: 'On track', color: 'var(--positive)' },
+  behind_pace: { label: 'Behind pace', color: 'var(--warn, #E0A030)' },
+  over_median: { label: 'Over hours', color: 'var(--negative)' },
+  stalled: { label: 'Stalled', color: 'var(--fg-dim)' },
+};
 
 function byCode(rows: RatingBarPoint[] | undefined): Map<RatingCode, RatingBarPoint> {
   const m = new Map<RatingCode, RatingBarPoint>();
   (rows ?? []).forEach((r) => m.set(r.code, r));
   return m;
+}
+function fmtDate(iso: string | null): string {
+  if (!iso) return '—';
+  const d = new Date(iso);
+  return Number.isNaN(d.getTime()) ? iso : d.toLocaleDateString('en', { month: 'short', year: 'numeric' });
 }
 
 export default function Summary() {
@@ -34,14 +45,40 @@ export default function Summary() {
   const synthetic = meta.data?.mode !== 'real';
   const today = new Date().toLocaleDateString('en', { year: 'numeric', month: 'long', day: 'numeric' });
 
-  // Insight highlights
   const ins = insights.data;
+  const preds = ins?.predictions ?? [];
+  const atRisk = ins?.atRisk ?? [];
+
+  // Pipeline snapshot
+  const counts = { on_track: 0, behind_pace: 0, over_median: 0, stalled: 0 } as Record<PredictionRow['status'], number>;
+  preds.forEach((p) => { counts[p.status] += 1; });
+
+  // Needs attention: behind-pace / over-hours / stalled + at-risk (deduped by name)
+  const attn: { name: string; rating: RatingCode; reason: string; color: string }[] = [];
+  const seen = new Set<string>();
+  preds.filter((p) => p.status !== 'on_track').forEach((p) => {
+    seen.add(p.name);
+    const reason =
+      p.status === 'behind_pace' ? `Behind pace — proj. ${fmtDate(p.projectedDate)} (${p.weeksRemaining}w)`
+        : p.status === 'over_median' ? `Over typical hours — ${p.currentHours.toFixed(0)}h vs ${p.medianHours.toFixed(0)}`
+          : `Stalled — last flew ${p.daysSinceLastFlight}d ago`;
+    attn.push({ name: p.name, rating: p.rating, reason, color: PRED_META[p.status].color });
+  });
+  atRisk.forEach((r) => {
+    if (seen.has(r.name)) return;
+    attn.push({ name: r.name, rating: r.rating, reason: `${Math.round(r.worstPct * 100)}% over cohort median`, color: 'var(--negative)' });
+  });
+
+  // Upcoming checkrides: on-track, soonest first
+  const upcoming = preds
+    .filter((p) => p.status === 'on_track' && p.projectedDate)
+    .sort((a, b) => (a.weeksRemaining ?? 1e9) - (b.weeksRemaining ?? 1e9))
+    .slice(0, 5);
+
   const bestInstructor = ins?.efficiency?.find((e) => !e.lowSample) ?? ins?.efficiency?.[0];
   const cad = ins?.cadence;
   const slow = cad?.buckets?.[0];
   const fast = cad?.buckets && cad.buckets.length > 1 ? cad.buckets[cad.buckets.length - 1] : undefined;
-  const atRiskN = ins?.atRisk?.length ?? 0;
-  const inProgressN = ins?.predictions?.length ?? 0;
 
   return (
     <div className="summary-page">
@@ -49,7 +86,7 @@ export default function Summary() {
         <div>
           <div className="eyebrow">Program summary</div>
           <h1 className="page-title">Provectus Flight Training — at a glance</h1>
-          <div className="page-sub">All-time cohort · generated {today}</div>
+          <div className="page-sub">Generated {today}</div>
         </div>
         <button className="btn btn-primary no-print" type="button" onClick={() => window.print()}>
           Print / Save PDF
@@ -75,7 +112,48 @@ export default function Summary() {
             ))}
           </div>
 
-          <div className="summary-section-title">Cost &amp; time per rating <span className="muted tiny">(cohort median)</span></div>
+          {/* ── RIGHT NOW (current operational state) ───────────────────── */}
+          <div className="summary-section-title">Right now <span className="muted tiny">· current students</span></div>
+          <div className="summary-pipeline">
+            <div className="summary-pipe-total">{preds.length}<span>in training</span></div>
+            {(['on_track', 'behind_pace', 'over_median', 'stalled'] as PredictionRow['status'][]).map((s) => (
+              <div className="summary-pipe-stat" key={s}>
+                <div className="summary-pipe-n" style={{ color: PRED_META[s].color }}>{counts[s]}</div>
+                <div className="summary-pipe-label">{PRED_META[s].label}</div>
+              </div>
+            ))}
+          </div>
+
+          <div className="summary-now-grid">
+            <div className="summary-list-card">
+              <div className="summary-list-title">Needs attention</div>
+              {attn.length === 0 ? (
+                <div className="muted tiny">Everyone's on track.</div>
+              ) : attn.slice(0, 6).map((a) => (
+                <div className="summary-list-row" key={`${a.name}-${a.reason}`}>
+                  <div>
+                    <span className="summary-dot" style={{ background: a.color }} />
+                    <strong>{a.name}</strong> <span className="muted tiny">{a.rating}</span>
+                  </div>
+                  <div className="summary-list-sub">{a.reason}</div>
+                </div>
+              ))}
+            </div>
+            <div className="summary-list-card">
+              <div className="summary-list-title">Upcoming checkrides <span className="muted tiny">· schedule these</span></div>
+              {upcoming.length === 0 ? (
+                <div className="muted tiny">None projected soon.</div>
+              ) : upcoming.map((p) => (
+                <div className="summary-list-row" key={p.studentId}>
+                  <div><strong>{p.name}</strong> <span className="muted tiny">{p.rating}</span></div>
+                  <div className="summary-list-sub">~{fmtDate(p.projectedDate)} · {p.weeksRemaining}w · {p.currentHours.toFixed(0)}/{p.medianHours.toFixed(0)}h</div>
+                </div>
+              ))}
+            </div>
+          </div>
+
+          {/* ── OVERVIEW (all-time cohort) ──────────────────────────────── */}
+          <div className="summary-section-title">Cost &amp; time per rating <span className="muted tiny">· all-time cohort median</span></div>
           <table className="dt summary-table">
             <thead>
               <tr>
@@ -102,7 +180,6 @@ export default function Summary() {
             </tbody>
           </table>
 
-          <div className="summary-section-title">Highlights</div>
           <div className="summary-highlights">
             {bestInstructor && (
               <div className="summary-highlight">
@@ -120,16 +197,10 @@ export default function Summary() {
                 </div>
               </div>
             )}
-            <div className="summary-highlight">
-              <div className="summary-highlight-big">{inProgressN} in progress · {atRiskN} at-risk</div>
-              <div className="summary-highlight-cap">
-                Students currently training, with {atRiskN} running ≥25% over the cohort median (may need extra help).
-              </div>
-            </div>
           </div>
 
           <div className="summary-foot muted tiny">
-            Provectus Analytics · cohort medians shown · full detail in the dashboards.
+            Provectus Analytics · all-time cohort medians + live pipeline · full detail in the dashboards.
           </div>
         </>
       )}
