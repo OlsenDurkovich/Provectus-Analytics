@@ -21,9 +21,9 @@ test('useTheme toggles + persists', () => {
   expect(document.documentElement.getAttribute('data-theme')).toBe('light');
 });
 
-test('useRange defaults to 12mo', () => {
+test('useRange defaults to all-time', () => {
   const { result } = renderHook(() => useRange());
-  expect(result.current.range).toBe('12mo');
+  expect(result.current.range).toBe('all');
 });
 
 test('useRange respects initial', () => {
