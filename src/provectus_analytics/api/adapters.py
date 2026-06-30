@@ -828,43 +828,75 @@ def insights_at_risk(
     return out
 
 
+def _mean(xs: list[float]) -> float:
+    return sum(xs) / len(xs) if xs else 0.0
+
+
+def _loo_instructor_rating_stats(base_rows):
+    """Per (instructor, rating): their averages and their LEAVE-ONE-OUT deviation
+    — i.e. compared against every OTHER instructor's students in that rating, not
+    against a cohort baseline that includes their own students. Returns a flat
+    list of dicts (all groups, no sample filter)."""
+    from collections import defaultdict
+
+    by_rating: dict[str, list] = defaultdict(list)
+    for row in base_rows:
+        if row["primary_instructor"]:
+            by_rating[row["rating"]].append(row)
+
+    stats: list[dict] = []
+    for rating, rows in by_rating.items():
+        instructors = {r["primary_instructor"] for r in rows}
+        for inst in instructors:
+            mine = [r for r in rows if r["primary_instructor"] == inst]
+            others = [r for r in rows if r["primary_instructor"] != inst]
+            mh = _mean([float(r["hours"] or 0) for r in mine])
+            mc = _mean([float(r["cost"] or 0) for r in mine])
+            md = _mean([float(r["days"] or 0) for r in mine])
+            if others:
+                oh = _mean([float(r["hours"] or 0) for r in others])
+                oc = _mean([float(r["cost"] or 0) for r in others])
+                vs_h = (mh - oh) / oh if oh else 0.0
+                vs_c = (mc - oc) / oc if oc else 0.0
+                comparable = True
+            else:
+                vs_h = vs_c = 0.0
+                comparable = False
+            stats.append({
+                "instructor": inst, "rating": rating, "n": len(mine),
+                "avgHours": mh, "avgCost": mc, "avgDays": md,
+                "vsRestHoursPct": vs_h, "vsRestCostPct": vs_c, "comparable": comparable,
+            })
+    return stats
+
+
 def insights_instructor_ratings(
     norm_by_rating, base_rows
 ) -> list[schemas.RatingStrength]:
-    """Per rating, each instructor's avg hours/cost vs the cohort, best-first."""
+    """Per rating, each instructor vs the OTHER instructors' students (leave-one-
+    out), ranked best-first by avg hours."""
     from collections import defaultdict
 
-    groups: dict[tuple[str, str], list] = defaultdict(list)
-    for row in base_rows:
-        inst = row["primary_instructor"]
-        if inst:
-            groups[(inst, row["rating"])].append(row)
-
     by_rating: dict[str, list[schemas.InstructorRatingStat]] = defaultdict(list)
-    for (inst, rating), rs in groups.items():
-        if len(rs) < _IR_MIN:
+    for s in _loo_instructor_rating_stats(base_rows):
+        if s["n"] < _IR_MIN:
             continue
-        norm = norm_by_rating.get(rating)
-        n = len(rs)
-        avg_h = sum(float(r["hours"] or 0) for r in rs) / n
-        avg_c = sum(float(r["cost"] or 0) for r in rs) / n
-        avg_d = sum(float(r["days"] or 0) for r in rs) / n
-        mh = float(norm.median_hours) if norm and norm.median_hours else 0.0
-        mc = float(norm.median_cost) if norm and norm.median_cost else 0.0
-        by_rating[rating].append(
+        by_rating[s["rating"]].append(
             schemas.InstructorRatingStat(
-                instructor=inst, rating=rating, n=n,
-                avgHours=round(avg_h, 1), avgCost=round(avg_c, 0), avgDays=round(avg_d, 0),
-                vsMedianHoursPct=round(_pct_over(avg_h, mh), 4),
-                vsMedianCostPct=round(_pct_over(avg_c, mc), 4),
-                lowSample=n < _IR_GOOD, rank=0,
+                instructor=s["instructor"], rating=s["rating"], n=s["n"],
+                avgHours=round(s["avgHours"], 1), avgCost=round(s["avgCost"], 0),
+                avgDays=round(s["avgDays"], 0),
+                vsRestHoursPct=round(s["vsRestHoursPct"], 4),
+                vsRestCostPct=round(s["vsRestCostPct"], 4),
+                comparable=s["comparable"],
+                lowSample=s["n"] < _IR_GOOD, rank=0,
             )
         )
 
     out: list[schemas.RatingStrength] = []
-    for rating, stats in by_rating.items():
-        stats.sort(key=lambda s: s.avgHours)  # lower hours = better
-        for i, s in enumerate(stats, start=1):
+    for rating, group in by_rating.items():
+        group.sort(key=lambda s: s.avgHours)  # lower hours = better
+        for i, s in enumerate(group, start=1):
             s.rank = i
         norm = norm_by_rating.get(rating)
         out.append(
@@ -872,10 +904,9 @@ def insights_instructor_ratings(
                 rating=rating,
                 medianHours=float(norm.median_hours) if norm and norm.median_hours else 0.0,
                 medianCost=float(norm.median_cost) if norm and norm.median_cost else 0.0,
-                instructors=stats,
+                instructors=group,
             )
         )
-    # Order ratings in canonical training order.
     order = {c: i for i, c in enumerate(("PPL", "IFR", "COM", "AMEL", "CFI", "CFII", "MEI"))}
     out.sort(key=lambda rs: order.get(rs.rating, 99))
     return out
@@ -884,39 +915,32 @@ def insights_instructor_ratings(
 def insights_instructor_efficiency(
     norm_by_rating, base_rows
 ) -> list[schemas.InstructorEfficiency]:
-    """Each instructor's mean % deviation from cohort median (hours & cost)."""
+    """Each instructor's overall efficiency = n-weighted mean of their per-rating
+    leave-one-out deviations (vs every other instructor's students)."""
     from collections import defaultdict
 
-    by_inst: dict[str, list] = defaultdict(list)
-    for row in base_rows:
-        inst = row["primary_instructor"]
-        if inst:
-            by_inst[inst].append(row)
+    by_inst: dict[str, list[dict]] = defaultdict(list)
+    for s in _loo_instructor_rating_stats(base_rows):
+        if s["comparable"]:
+            by_inst[s["instructor"]].append(s)
 
     out: list[schemas.InstructorEfficiency] = []
-    for inst, rs in by_inst.items():
-        h_devs, c_devs, ratings = [], [], set()
-        for r in rs:
-            norm = norm_by_rating.get(r["rating"])
-            if not norm or not norm.median_hours or not norm.median_cost:
-                continue
-            h_devs.append(_pct_over(float(r["hours"] or 0), float(norm.median_hours)))
-            c_devs.append(_pct_over(float(r["cost"] or 0), float(norm.median_cost)))
-            ratings.add(r["rating"])
-        if not h_devs:
+    for inst, entries in by_inst.items():
+        total_n = sum(e["n"] for e in entries)
+        if total_n == 0:
             continue
-        avg_h = sum(h_devs) / len(h_devs)
-        avg_c = sum(c_devs) / len(c_devs)
+        avg_h = sum(e["vsRestHoursPct"] * e["n"] for e in entries) / total_n
+        avg_c = sum(e["vsRestCostPct"] * e["n"] for e in entries) / total_n
         out.append(
             schemas.InstructorEfficiency(
-                instructor=inst, students=len(rs), ratings=len(ratings),
-                avgHoursVsMedianPct=round(avg_h, 4),
-                avgCostVsMedianPct=round(avg_c, 4),
+                instructor=inst, students=total_n, ratings=len(entries),
+                avgHoursVsRestPct=round(avg_h, 4),
+                avgCostVsRestPct=round(avg_c, 4),
                 score=round((avg_h + avg_c) / 2, 4),
-                rank=0, lowSample=len(rs) < _EFF_MIN,
+                rank=0, lowSample=total_n < _EFF_MIN,
             )
         )
-    out.sort(key=lambda e: e.score)  # most efficient (lowest deviation) first
+    out.sort(key=lambda e: e.score)  # most efficient (most below the rest) first
     for i, e in enumerate(out, start=1):
         e.rank = i
     return out

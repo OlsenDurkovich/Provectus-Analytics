@@ -34,8 +34,11 @@ function chip(code: RatingCode) {
   return <span className="rating-chip" style={{ background: m.color }}>{code}</span>;
 }
 
-// vs-median %: lower is better, so negative is good (green), positive is bad (red).
-function VsMedian({ value }: { value: number }) {
+// vs-rest %: lower is better, so negative is good (green), positive is bad (red).
+// `comparable === false` means the instructor taught everyone in the rating, so
+// there's no "rest" to compare against.
+function VsRest({ value, comparable = true }: { value: number; comparable?: boolean }) {
+  if (!comparable) return <span className="muted">—</span>;
   const color = value < -0.005 ? 'var(--positive)' : value > 0.005 ? 'var(--negative)' : 'var(--fg-dim)';
   return <span style={{ color, fontVariantNumeric: 'tabular-nums' }}>{pct(value)}</span>;
 }
@@ -135,9 +138,9 @@ function AtRisk({
                   <td>{r.name}</td>
                   <td>{chip(r.rating)}<span className="muted tiny" style={{ marginLeft: 8 }}>{RATING_META[r.rating].name}</span></td>
                   <td className="num">{r.hours.toFixed(1)}</td>
-                  <td className="num"><VsMedian value={r.pctOverHours} /></td>
+                  <td className="num"><VsRest value={r.pctOverHours} /></td>
                   <td className="num">${Math.round(r.cost).toLocaleString()}</td>
-                  <td className="num"><VsMedian value={r.pctOverCost} /></td>
+                  <td className="num"><VsRest value={r.pctOverCost} /></td>
                   <td className="num">
                     <span className="status-pill status-active" style={{ background: 'var(--negative-faint, rgba(220,80,80,0.15))', color: 'var(--negative)' }}>
                       {pct(r.worstPct)}
@@ -160,7 +163,10 @@ function Strengths({ strengths }: { strengths: RatingStrength[] }) {
         <div>
           <div className="card-title">Instructor strengths · by rating</div>
           <div className="card-sub">
-            Who gets students to checkride most efficiently in each rating (ranked by avg hours; #1 = best).
+            Ranked by avg hours-to-checkride (#1 = best). "vs rest" compares each instructor's
+            students against <em>every other</em> instructor's students in that rating — not a
+            cohort baseline they're part of — so a negative % means their students were faster
+            than everyone else's.
           </div>
         </div>
       </div>
@@ -172,9 +178,9 @@ function Strengths({ strengths }: { strengths: RatingStrength[] }) {
               <th>Instructor</th>
               <th className="num">Students</th>
               <th className="num">Avg hours</th>
-              <th className="num">vs median</th>
+              <th className="num">vs rest</th>
               <th className="num">Avg cost</th>
-              <th className="num">vs median</th>
+              <th className="num">vs rest</th>
             </tr>
           </thead>
           <tbody>
@@ -193,9 +199,9 @@ function Strengths({ strengths }: { strengths: RatingStrength[] }) {
                   </td>
                   <td className="num">{i.n}</td>
                   <td className="num">{i.avgHours.toFixed(1)}</td>
-                  <td className="num"><VsMedian value={i.vsMedianHoursPct} /></td>
+                  <td className="num"><VsRest value={i.vsRestHoursPct} comparable={i.comparable} /></td>
                   <td className="num">${Math.round(i.avgCost).toLocaleString()}</td>
-                  <td className="num"><VsMedian value={i.vsMedianCostPct} /></td>
+                  <td className="num"><VsRest value={i.vsRestCostPct} comparable={i.comparable} /></td>
                 </tr>
               )),
             )}
@@ -213,7 +219,9 @@ function Efficiency({ rows }: { rows: InstructorEfficiency[] }) {
         <div>
           <div className="card-title">Instructor efficiency ranking</div>
           <div className="card-sub">
-            Average deviation from cohort medians across every rating taught (lower = more efficient).
+            Each instructor's students vs every <em>other</em> instructor's students, averaged
+            across the ratings they teach (leave-one-out, weighted by student count). Lower = more
+            efficient.
           </div>
         </div>
       </div>
@@ -225,8 +233,8 @@ function Efficiency({ rows }: { rows: InstructorEfficiency[] }) {
               <th>Instructor</th>
               <th className="num">Students</th>
               <th className="num">Ratings</th>
-              <th className="num">Hours vs median</th>
-              <th className="num">Cost vs median</th>
+              <th className="num">Hours vs rest</th>
+              <th className="num">Cost vs rest</th>
             </tr>
           </thead>
           <tbody>
@@ -240,8 +248,8 @@ function Efficiency({ rows }: { rows: InstructorEfficiency[] }) {
                 </td>
                 <td className="num">{e.students}</td>
                 <td className="num">{e.ratings}</td>
-                <td className="num"><VsMedian value={e.avgHoursVsMedianPct} /></td>
-                <td className="num"><VsMedian value={e.avgCostVsMedianPct} /></td>
+                <td className="num"><VsRest value={e.avgHoursVsRestPct} /></td>
+                <td className="num"><VsRest value={e.avgCostVsRestPct} /></td>
               </tr>
             ))}
           </tbody>

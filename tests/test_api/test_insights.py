@@ -58,6 +58,28 @@ def test_strengths_ranked_lowest_hours_first(tmp_path, monkeypatch):
         # n below the 'good' sample size is flagged
         for i in insts:
             assert i["lowSample"] == (i["n"] < 3)
+            assert "vsRestHoursPct" in i and "comparable" in i
+
+
+def test_leave_one_out_resolves_dominant_instructor_paradox(tmp_path, monkeypatch):
+    """CFI's top instructor taught most of the cohort, so a self-inclusive
+    baseline read +1% (★ but red — the paradox). Leave-one-out compares them to
+    everyone else's students, so the rank-1 instructor now reads BELOW the rest."""
+    c = _fresh(tmp_path, monkeypatch)
+    strengths = c.get("/api/insights").json()["strengths"]
+    cfi = next(r for r in strengths if r["rating"] == "CFI")
+    best = cfi["instructors"][0]
+    assert best["rank"] == 1 and best["comparable"]
+    assert best["vsRestHoursPct"] < 0, "rank-1 CFI instructor should be below the rest"
+
+
+def test_efficiency_uses_vs_rest_fields(tmp_path, monkeypatch):
+    c = _fresh(tmp_path, monkeypatch)
+    eff = c.get("/api/insights").json()["efficiency"]
+    assert eff and {"avgHoursVsRestPct", "avgCostVsRestPct"} <= eff[0].keys()
+    # score is the blend of the two deviations (allow for 4-dp rounding slack)
+    e = eff[0]
+    assert abs(e["score"] - (e["avgHoursVsRestPct"] + e["avgCostVsRestPct"]) / 2) < 1e-3
 
 
 def test_adapter_at_risk_threshold_unit(tmp_path, monkeypatch):
