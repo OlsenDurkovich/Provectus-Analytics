@@ -32,8 +32,11 @@ VALID_ROLES: frozenset[str] = frozenset({"admin", "instructor", "viewer", "stude
 
 # Toggleable dashboard pages (in canonical order). Flights is NOT here — it's
 # the override surface, an admin-only capability.
-ALL_PAGES: tuple[str, ...] = ("overview", "ratings", "students", "instructors")
+ALL_PAGES: tuple[str, ...] = ("overview", "ratings", "students", "instructors", "insights")
 _DEFAULT_PAGES_CSV = ",".join(ALL_PAGES)
+# Pages that existed before "insights" was added — used to grant the new page to
+# users who already had full dashboard access (see _migrate_add_page).
+_LEGACY_FULL_PAGES = frozenset(("overview", "ratings", "students", "instructors"))
 
 # ── Dedicated auth database ───────────────────────────────────────────────────
 # Login accounts + per-user settings live in their OWN SQLite file, separate
@@ -178,6 +181,7 @@ def ensure_users_table(conn: sqlite3.Connection) -> None:
     conn.commit()
     _migrate_legacy_roles(conn)
     _migrate_pages_column(conn)
+    _migrate_add_page(conn)
     _migrate_student_id_column(conn)
     _migrate_instructor_name_column(conn)
     _migrate_profile_columns(conn)
@@ -217,6 +221,28 @@ def _migrate_pages_column(conn: sqlite3.Connection) -> None:
     conn.execute(
         f"UPDATE users SET pages = '{_DEFAULT_PAGES_CSV}' WHERE pages IS NULL"
     )
+    conn.commit()
+
+
+def _migrate_add_page(conn: sqlite3.Connection) -> None:
+    """Grant a newly-added page to users who already had the full legacy set.
+
+    When a new toggleable page ships (e.g. 'insights'), existing users' stored
+    `pages` CSV won't include it, so they'd silently lose access to the new tab.
+    Idempotent: only touches users whose set is a superset of the legacy full set
+    and is missing the new page — leaves intentionally-restricted/empty sets and
+    scoped roles (empty pages) untouched.
+    """
+    new_pages = [p for p in ALL_PAGES if p not in _LEGACY_FULL_PAGES]
+    if not new_pages:
+        return
+    for row in conn.execute("SELECT user_id, pages FROM users").fetchall():
+        present = {p for p in (row["pages"] or "").split(",") if p}
+        if _LEGACY_FULL_PAGES <= present and not all(p in present for p in new_pages):
+            merged = _pages_to_csv(present | set(new_pages))
+            conn.execute(
+                "UPDATE users SET pages = ? WHERE user_id = ?", (merged, row["user_id"])
+            )
     conn.commit()
 
 

@@ -753,6 +753,193 @@ def instructor_detail(instructor_id: str) -> schemas.InstructorDetail:
     )
 
 
+# ── Insights tab ──────────────────────────────────────────────────────────────
+# Sample thresholds: an (instructor, rating) pair needs >= _IR_MIN students to
+# show; below _IR_GOOD it's flagged low-sample. Overall efficiency needs
+# >= _EFF_MIN enrollments. Tuned for the ~80-enrollment / 5-instructor cohort.
+_IR_MIN = 2
+_IR_GOOD = 3
+_EFF_MIN = 3
+ME_RATINGS = ("AMEL", "MEI")  # local copy; partition.ME_RATINGS is the source
+
+
+def _insights_base(conn: sqlite3.Connection):
+    """One pass: every completed (checkride) enrollment with its primary
+    instructor + the cohort norm for its rating. Shared by all three insights."""
+    from .. import norms as _norms
+
+    norm_by_rating = {n.rating: n for n in _norms.compute_rating_norms(conn)}
+    rows = conn.execute(
+        """SELECT e.enrollment_id, s.student_id, s.fsp_display_name AS name,
+                  r.code AS rating,
+                  m.cumulative_hours AS hours, m.cumulative_cost AS cost,
+                  m.days_from_rating_start AS days,
+                  (SELECT f3.instructor FROM flights f3
+                     WHERE f3.enrollment_id = e.enrollment_id
+                       AND f3.instructor IS NOT NULL AND f3.instructor != ''
+                     GROUP BY f3.instructor
+                     ORDER BY SUM(f3.length_hrs) DESC LIMIT 1) AS primary_instructor
+           FROM milestones m
+           JOIN enrollments e USING (enrollment_id)
+           JOIN ratings r USING (rating_id)
+           JOIN students s USING (student_id)
+           WHERE m.milestone_name = 'checkride'"""
+    ).fetchall()
+    return rows, norm_by_rating
+
+
+def _pct_over(value: float, median: float) -> float:
+    return (value - median) / median if median and median > 0 else 0.0
+
+
+def insights_at_risk(
+    conn: sqlite3.Connection, norm_by_rating, base_rows, threshold: float
+) -> list[schemas.AtRiskRow]:
+    """Students whose hours OR cost ran >= threshold over the cohort median."""
+    out: list[schemas.AtRiskRow] = []
+    for row in base_rows:
+        norm = norm_by_rating.get(row["rating"])
+        if not norm or not norm.median_hours or not norm.median_cost:
+            continue
+        hours = float(row["hours"] or 0)
+        cost = float(row["cost"] or 0)
+        po_h = _pct_over(hours, float(norm.median_hours))
+        po_c = _pct_over(cost, float(norm.median_cost))
+        worst = max(po_h, po_c)
+        if worst < threshold:
+            continue
+        out.append(
+            schemas.AtRiskRow(
+                studentId=str(row["student_id"]),
+                name=row["name"] or "Unknown",
+                rating=row["rating"],
+                hours=hours,
+                medianHours=float(norm.median_hours),
+                pctOverHours=round(po_h, 4),
+                cost=cost,
+                medianCost=float(norm.median_cost),
+                pctOverCost=round(po_c, 4),
+                days=int(row["days"] or 0),
+                worstPct=round(worst, 4),
+                status="Completed",
+            )
+        )
+    out.sort(key=lambda r: r.worstPct, reverse=True)
+    return out
+
+
+def insights_instructor_ratings(
+    norm_by_rating, base_rows
+) -> list[schemas.RatingStrength]:
+    """Per rating, each instructor's avg hours/cost vs the cohort, best-first."""
+    from collections import defaultdict
+
+    groups: dict[tuple[str, str], list] = defaultdict(list)
+    for row in base_rows:
+        inst = row["primary_instructor"]
+        if inst:
+            groups[(inst, row["rating"])].append(row)
+
+    by_rating: dict[str, list[schemas.InstructorRatingStat]] = defaultdict(list)
+    for (inst, rating), rs in groups.items():
+        if len(rs) < _IR_MIN:
+            continue
+        norm = norm_by_rating.get(rating)
+        n = len(rs)
+        avg_h = sum(float(r["hours"] or 0) for r in rs) / n
+        avg_c = sum(float(r["cost"] or 0) for r in rs) / n
+        avg_d = sum(float(r["days"] or 0) for r in rs) / n
+        mh = float(norm.median_hours) if norm and norm.median_hours else 0.0
+        mc = float(norm.median_cost) if norm and norm.median_cost else 0.0
+        by_rating[rating].append(
+            schemas.InstructorRatingStat(
+                instructor=inst, rating=rating, n=n,
+                avgHours=round(avg_h, 1), avgCost=round(avg_c, 0), avgDays=round(avg_d, 0),
+                vsMedianHoursPct=round(_pct_over(avg_h, mh), 4),
+                vsMedianCostPct=round(_pct_over(avg_c, mc), 4),
+                lowSample=n < _IR_GOOD, rank=0,
+            )
+        )
+
+    out: list[schemas.RatingStrength] = []
+    for rating, stats in by_rating.items():
+        stats.sort(key=lambda s: s.avgHours)  # lower hours = better
+        for i, s in enumerate(stats, start=1):
+            s.rank = i
+        norm = norm_by_rating.get(rating)
+        out.append(
+            schemas.RatingStrength(
+                rating=rating,
+                medianHours=float(norm.median_hours) if norm and norm.median_hours else 0.0,
+                medianCost=float(norm.median_cost) if norm and norm.median_cost else 0.0,
+                instructors=stats,
+            )
+        )
+    # Order ratings in canonical training order.
+    order = {c: i for i, c in enumerate(("PPL", "IFR", "COM", "AMEL", "CFI", "CFII", "MEI"))}
+    out.sort(key=lambda rs: order.get(rs.rating, 99))
+    return out
+
+
+def insights_instructor_efficiency(
+    norm_by_rating, base_rows
+) -> list[schemas.InstructorEfficiency]:
+    """Each instructor's mean % deviation from cohort median (hours & cost)."""
+    from collections import defaultdict
+
+    by_inst: dict[str, list] = defaultdict(list)
+    for row in base_rows:
+        inst = row["primary_instructor"]
+        if inst:
+            by_inst[inst].append(row)
+
+    out: list[schemas.InstructorEfficiency] = []
+    for inst, rs in by_inst.items():
+        h_devs, c_devs, ratings = [], [], set()
+        for r in rs:
+            norm = norm_by_rating.get(r["rating"])
+            if not norm or not norm.median_hours or not norm.median_cost:
+                continue
+            h_devs.append(_pct_over(float(r["hours"] or 0), float(norm.median_hours)))
+            c_devs.append(_pct_over(float(r["cost"] or 0), float(norm.median_cost)))
+            ratings.add(r["rating"])
+        if not h_devs:
+            continue
+        avg_h = sum(h_devs) / len(h_devs)
+        avg_c = sum(c_devs) / len(c_devs)
+        out.append(
+            schemas.InstructorEfficiency(
+                instructor=inst, students=len(rs), ratings=len(ratings),
+                avgHoursVsMedianPct=round(avg_h, 4),
+                avgCostVsMedianPct=round(avg_c, 4),
+                score=round((avg_h + avg_c) / 2, 4),
+                rank=0, lowSample=len(rs) < _EFF_MIN,
+            )
+        )
+    out.sort(key=lambda e: e.score)  # most efficient (lowest deviation) first
+    for i, e in enumerate(out, start=1):
+        e.rank = i
+    return out
+
+
+def insights(threshold: float = 0.25) -> schemas.Insights:
+    conn = sqlite3.connect(web_data.DEFAULT_DB)
+    conn.row_factory = sqlite3.Row
+    try:
+        base_rows, norm_by_rating = _insights_base(conn)
+        at_risk = insights_at_risk(conn, norm_by_rating, base_rows, threshold)
+        strengths = insights_instructor_ratings(norm_by_rating, base_rows)
+        efficiency = insights_instructor_efficiency(norm_by_rating, base_rows)
+    finally:
+        conn.close()
+    return schemas.Insights(
+        atRiskThresholdPct=threshold,
+        atRisk=at_risk,
+        strengths=strengths,
+        efficiency=efficiency,
+    )
+
+
 def _trailing_8_months(today: date) -> list[str]:
     """Return 8 YYYY-MM strings, oldest first, ending at today's month."""
     out: list[str] = []

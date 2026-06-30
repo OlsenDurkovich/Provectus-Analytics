@@ -21,6 +21,7 @@ import type {
   InstructorRecord,
   MyStudentsView,
   PublicTransparency,
+  Insights,
 } from './types';
 
 export class ApiError extends Error {
@@ -101,6 +102,8 @@ export const client = {
   getMyTraining: () => get<StudentDetail>('/api/me/training'),
   // Instructor-role self-service: only the caller's own roster (no cost).
   getMyStudents: () => get<MyStudentsView>('/api/me/students'),
+  getInsights: (threshold?: number) =>
+    get<Insights>('/api/insights', threshold != null ? { threshold: String(threshold) } : undefined),
   getInstructors: () => get<InstructorSummary[]>('/api/instructors'),
   getInstructor: (id: string) => get<InstructorDetail>(`/api/instructors/${id}`),
   getFlights: (filter: {

@@ -19,6 +19,7 @@ from ..auth.deps import current_active_user, current_admin_user, require_page
 from ..auth.rate_limit import limiter
 from .routers import auth as auth_router
 from .routers import flights as flights_router
+from .routers import insights as insights_router
 from .routers import instructors as instructors_router
 from .routers import kpis as kpis_router
 from .routers import me as me_router
@@ -156,6 +157,7 @@ def create_app() -> FastAPI:
     app.include_router(ratings_router.router,     dependencies=protected)
     app.include_router(students_router.router,    dependencies=protected)
     app.include_router(instructors_router.router, dependencies=[Depends(require_page("instructors"))])
+    app.include_router(insights_router.router,    dependencies=[Depends(require_page("insights"))])
 
     # Admin-only: user management, the Flights override surface, and FSP uploads.
     admin_only = [Depends(current_admin_user)]

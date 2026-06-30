@@ -167,7 +167,7 @@ def test_switching_student_back_to_viewer_clears_link(client, student_id):
     assert r.status_code == 200
     assert r.json()["role"] == "viewer"
     assert r.json()["student_id"] is None
-    assert sorted(r.json()["pages"]) == sorted(["overview", "ratings", "students", "instructors"])
+    assert sorted(r.json()["pages"]) == sorted(["overview", "ratings", "students", "instructors", "insights"])
 
 
 def test_relink_existing_student_to_different_record(client, student_id):

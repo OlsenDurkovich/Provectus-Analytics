@@ -180,3 +180,60 @@ class Meta(BaseModel):
     mode: Literal["real", "synthetic"]
     liveClientCount: int
     dataState: DataState
+
+
+# ── Insights tab ──────────────────────────────────────────────────────────────
+class AtRiskRow(BaseModel):
+    """A student running materially over the cohort median for a rating."""
+    studentId: str
+    name: str
+    rating: RatingCode
+    hours: float
+    medianHours: float
+    pctOverHours: float          # 0.30 == 30% over median hours
+    cost: float
+    medianCost: float
+    pctOverCost: float
+    days: int
+    worstPct: float              # max(pctOverHours, pctOverCost) — sort key
+    status: FlightStatus
+
+
+class InstructorRatingStat(BaseModel):
+    """One instructor's track record for a single rating, vs the cohort."""
+    instructor: str
+    rating: RatingCode
+    n: int                       # students they took to checkride in this rating
+    avgHours: float
+    avgCost: float
+    avgDays: float
+    vsMedianHoursPct: float      # -0.12 == 12% below cohort median (better)
+    vsMedianCostPct: float
+    lowSample: bool
+    rank: int                    # 1 = best (lowest avg hours) for this rating
+
+
+class RatingStrength(BaseModel):
+    rating: RatingCode
+    medianHours: float
+    medianCost: float
+    instructors: list[InstructorRatingStat]   # best-first
+
+
+class InstructorEfficiency(BaseModel):
+    """One instructor's overall efficiency vs cohort medians across ratings."""
+    instructor: str
+    students: int                # total enrollments taken to checkride
+    ratings: int                 # distinct ratings taught
+    avgHoursVsMedianPct: float   # mean (hours-median)/median across enrollments
+    avgCostVsMedianPct: float
+    score: float                 # blended hours+cost deviation; lower = better
+    rank: int
+    lowSample: bool
+
+
+class Insights(BaseModel):
+    atRiskThresholdPct: float
+    atRisk: list[AtRiskRow]
+    strengths: list[RatingStrength]
+    efficiency: list[InstructorEfficiency]

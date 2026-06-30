@@ -23,6 +23,7 @@ export const queryKeys = {
   student: (id: string) => ['student', id] as const,
   instructors: ['instructors'] as const,
   instructor: (id: string) => ['instructor', id] as const,
+  insights: (threshold: number) => ['insights', threshold] as const,
   flights: (filter: object) => ['flights', filter] as const,
 };
 
@@ -80,6 +81,12 @@ export const useClients = (range: RangeKey, rating?: RatingCode) =>
   useQuery({
     queryKey: queryKeys.clients(range, rating),
     queryFn: () => client.getClients(range, rating),
+  });
+
+export const useInsights = (threshold: number) =>
+  useQuery({
+    queryKey: queryKeys.insights(threshold),
+    queryFn: () => client.getInsights(threshold),
   });
 
 export const useStudent = (id: string | undefined) =>

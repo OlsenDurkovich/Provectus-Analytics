@@ -9,7 +9,7 @@ from provectus_analytics.api import queries as web_data
 from provectus_analytics.auth import users
 from provectus_analytics.auth.rate_limit import limiter
 
-ALL_PAGES = ["overview", "ratings", "students", "instructors"]
+ALL_PAGES = ["overview", "ratings", "students", "instructors", "insights"]
 
 
 @pytest.fixture
