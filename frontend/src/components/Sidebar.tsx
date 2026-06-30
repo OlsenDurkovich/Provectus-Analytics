@@ -13,7 +13,7 @@ function initialsFromEmail(email: string): string {
 }
 
 type NavItem = {
-  key: 'overview' | 'rating' | 'student' | 'instructor' | 'insights' | 'flights' | 'users' | 'mytraining' | 'mystudents';
+  key: 'overview' | 'rating' | 'student' | 'instructor' | 'insights' | 'summary' | 'flights' | 'users' | 'mytraining' | 'mystudents';
   label: string;
   icon: IconName;
   kbd: string;
@@ -31,6 +31,7 @@ export const NAV: NavItem[] = [
   { key: 'student', label: 'Student', icon: 'users', kbd: 'S', path: '/students', page: 'students' },
   { key: 'instructor', label: 'Instructor', icon: 'star', kbd: 'I', path: '/instructors', page: 'instructors' },
   { key: 'insights', label: 'Insights', icon: 'metrics', kbd: 'N', path: '/insights', page: 'insights' },
+  { key: 'summary', label: 'Summary', icon: 'overview', kbd: 'Y', path: '/summary', page: 'overview' },
   { key: 'flights', label: 'Flights', icon: 'plane', kbd: 'F', path: '/flights', adminOnly: true },
   { key: 'users', label: 'Users', icon: 'users', kbd: 'U', path: '/users', adminOnly: true },
   { key: 'mytraining', label: 'My training', icon: 'overview', kbd: 'T', path: '/my-training', studentOnly: true },
