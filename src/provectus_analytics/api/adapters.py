@@ -157,26 +157,22 @@ def kpis(range_key: schemas.RangeKey, today: date | None = None) -> list[schemas
     else:
         d_ratings = d_active = d_hours = d_billed = 0.0
 
+    # Billing intentionally omitted — the owner doesn't track revenue here.
     return [
         schemas.Kpi(
             key="ratings_completed", label="Ratings completed",
             value=str(cur_ratings), sub=sub, delta=d_ratings, positive=d_ratings >= 0,
-            spark=[float(cur_ratings)] * 8, color="#6E56F8",
+            comparable=has_prior, spark=[float(cur_ratings)] * 8, color="#6E56F8",
         ),
         schemas.Kpi(
             key="active_clients", label="Active clients",
             value=str(cur_active), sub=sub, delta=d_active, positive=d_active >= 0,
-            spark=[float(cur_active)] * 8, color="#3DD68C",
+            comparable=has_prior, spark=[float(cur_active)] * 8, color="#3DD68C",
         ),
         schemas.Kpi(
             key="flight_hours", label="Flight hours",
             value=f"{cur_hours:,.0f}", sub=sub, delta=d_hours, positive=d_hours >= 0,
-            spark=[float(cur_hours)] * 8, color="#22D3EE",
-        ),
-        schemas.Kpi(
-            key="total_billed", label="Total billed",
-            value=f"${cur_billed:,.0f}", sub=sub, delta=d_billed, positive=d_billed >= 0,
-            spark=[float(cur_billed)] * 8, color="#F59E0B",
+            comparable=has_prior, spark=[float(cur_hours)] * 8, color="#22D3EE",
         ),
     ]
 

@@ -30,6 +30,7 @@ class Kpi(BaseModel):
     sub: str
     delta: float
     positive: bool
+    comparable: bool   # False for the "all time" range — no prior period, so hide the delta
     spark: list[float]
     color: str
 

@@ -23,6 +23,7 @@ export interface Kpi {
   sub: string;
   delta: number;
   positive: boolean;
+  comparable: boolean;
   spark: number[];
   color: string;
 }

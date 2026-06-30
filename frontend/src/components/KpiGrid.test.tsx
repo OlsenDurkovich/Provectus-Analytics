@@ -3,8 +3,8 @@ import { test, expect, vi } from 'vitest';
 import { KpiGrid } from './KpiGrid';
 
 const sample = [
-  { key: 'a', label: 'A', value: '1', sub: 'sub', delta: 0, positive: true, spark: [1, 2, 3], color: '#fff' },
-  { key: 'b', label: 'B', value: '2', sub: 'sub', delta: 0, positive: true, spark: [1, 2, 3], color: '#fff' },
+  { key: 'a', label: 'A', value: '1', sub: 'sub', delta: 0, positive: true, comparable: true, spark: [1, 2, 3], color: '#fff' },
+  { key: 'b', label: 'B', value: '2', sub: 'sub', delta: 0, positive: true, comparable: true, spark: [1, 2, 3], color: '#fff' },
 ];
 
 test('renders KPI cards', () => {

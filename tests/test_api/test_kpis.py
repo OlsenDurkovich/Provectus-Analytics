@@ -13,31 +13,34 @@ def _fresh(tmp_path, monkeypatch):
     return TestClient(create_app())
 
 
-def test_kpis_returns_four_cards(tmp_path, monkeypatch):
+def test_kpis_returns_three_cards_no_billing(tmp_path, monkeypatch):
     client = _fresh(tmp_path, monkeypatch)
     response = client.get("/api/kpis?range=12mo")
     assert response.status_code == 200
     kpis = response.json()
-    assert len(kpis) == 4
+    # billing is intentionally omitted (owner doesn't track revenue here)
+    assert len(kpis) == 3
     keys = {k["key"] for k in kpis}
-    assert keys == {"ratings_completed", "active_clients", "flight_hours", "total_billed"}
+    assert keys == {"ratings_completed", "active_clients", "flight_hours"}
+    assert "total_billed" not in keys
     for k in kpis:
         assert "value" in k and "spark" in k and isinstance(k["spark"], list)
         assert isinstance(k["delta"], float)
-        # positive flag must match the sign of delta (>=0 → positive)
         assert k["positive"] is (k["delta"] >= 0)
+        # a 12-month range has a prior window to compare against
+        assert k["comparable"] is True
 
 
-def test_kpis_range_all(tmp_path, monkeypatch):
+def test_kpis_range_all_not_comparable(tmp_path, monkeypatch):
     client = _fresh(tmp_path, monkeypatch)
     response = client.get("/api/kpis?range=all")
     assert response.status_code == 200
     kpis = response.json()
-    assert len(kpis) == 4
-    # "all" range has no prior window — deltas must stay at 0.
+    assert len(kpis) == 3
+    # "all" range has no prior window — not comparable, delta 0 (UI hides the badge).
     for k in kpis:
+        assert k["comparable"] is False
         assert k["delta"] == 0.0
-        assert k["positive"] is True
 
 
 def test_kpis_delta_uses_prior_window(tmp_path, monkeypatch):
