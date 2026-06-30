@@ -170,11 +170,21 @@ def _guesstimate_student(
         })
 
     # ── PRIMARY ratings (PPL → IFR → COM) ────────────────────────────────────
-    primary_flights = [
-        f for f in completed
-        if f["billing_category"] == "PRIMARY"
-        or f["reservation_type"] == "Student Solo"
-    ]
+    def _looks_primary(f: dict) -> bool:
+        if f["billing_category"] == "PRIMARY" or f["reservation_type"] == "Student Solo":
+            return True
+        # Fallback when no billing signal is present (synthetic data, or a real
+        # export missing the Flight-Detail billing column): a single-engine Dual
+        # Flight Training lesson with no unambiguous billing is primary training.
+        # This is what lets actively-training students (no checkride yet) surface
+        # as a PARTIAL primary enrollment instead of vanishing.
+        return (
+            f["reservation_type"] == "Dual Flight Training"
+            and f["billing_category"] in (None, "PRIMARY")
+            and (f["aircraft_class"] or "").startswith("SE")
+        )
+
+    primary_flights = [f for f in completed if _looks_primary(f)]
     solo_flights = [f for f in completed if f["reservation_type"] == "Student Solo"]
 
     if primary_flights:

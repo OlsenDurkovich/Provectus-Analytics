@@ -946,6 +946,134 @@ def insights_instructor_efficiency(
     return out
 
 
+_PREDICT_PACE_WINDOW_DAYS = 84   # look at the trailing 12 weeks for current pace
+_PREDICT_STALLED_DAYS = 75       # no flight in this long → stalled, don't predict
+_PRIMARY_RATINGS = ("PPL", "IFR", "COM", "AMEL", "CFI", "CFII", "MEI")
+
+
+def insights_predictions(conn, norm_by_rating) -> list[schemas.PredictionRow]:
+    """Project each in-progress (partial, no-checkride) student's path to
+    checkride-readiness from their recent flight pace."""
+    from datetime import date as _date, timedelta as _td
+
+    today = _date.today()
+    rows = conn.execute(
+        """SELECT e.enrollment_id, s.student_id, s.fsp_display_name AS name, r.code AS rating
+           FROM enrollments e
+           JOIN ratings r USING (rating_id)
+           JOIN students s USING (student_id)
+           WHERE e.is_partial = 1
+             AND r.code IN ('PPL','IFR','COM','AMEL','CFI','CFII','MEI')
+             AND NOT EXISTS (SELECT 1 FROM milestones m
+                             WHERE m.enrollment_id = e.enrollment_id
+                               AND m.milestone_name = 'checkride')"""
+    ).fetchall()
+
+    out: list[schemas.PredictionRow] = []
+    for row in rows:
+        flights = conn.execute(
+            """SELECT flight_date, length_hrs FROM flights
+               WHERE enrollment_id = ? AND status = 'Completed'
+                 AND reservation_type != 'Check Ride' AND length_hrs > 0
+               ORDER BY flight_date""",
+            (row["enrollment_id"],),
+        ).fetchall()
+        if not flights:
+            continue
+        current = sum(float(f["length_hrs"] or 0) for f in flights)
+        last_flight = _date.fromisoformat(flights[-1]["flight_date"])
+        first_flight = _date.fromisoformat(flights[0]["flight_date"])
+        days_since = (today - last_flight).days
+
+        norm = norm_by_rating.get(row["rating"])
+        median = float(norm.median_hours) if norm and norm.median_hours else 0.0
+
+        # Recent pace: hours in the trailing window ÷ weeks of that window.
+        window_start = today - _td(days=_PREDICT_PACE_WINDOW_DAYS)
+        recent_hours = sum(
+            float(f["length_hrs"] or 0) for f in flights
+            if _date.fromisoformat(f["flight_date"]) >= window_start
+        )
+        window_days = min(_PREDICT_PACE_WINDOW_DAYS, max(1, (today - first_flight).days))
+        pace = recent_hours / (window_days / 7.0)
+
+        weeks_remaining: float | None = None
+        projected: str | None = None
+        if days_since > _PREDICT_STALLED_DAYS or pace <= 0.05:
+            status = "stalled"
+        elif median and current >= median * 0.98:
+            status = "over_median"
+        else:
+            status = "on_track"
+            if median and pace > 0:
+                weeks_remaining = round(max(0.0, (median - current)) / pace, 1)
+                projected = (today + _td(days=int(weeks_remaining * 7))).isoformat()
+
+        out.append(schemas.PredictionRow(
+            studentId=str(row["student_id"]), name=row["name"] or "Unknown",
+            rating=row["rating"], currentHours=round(current, 1),
+            medianHours=round(median, 1), pacePerWeek=round(pace, 1),
+            weeksRemaining=weeks_remaining, projectedDate=projected,
+            lastFlight=last_flight.isoformat(), daysSinceLastFlight=days_since,
+            status=status,
+        ))
+    # On-track first (soonest projected), then over-median, then stalled.
+    order = {"on_track": 0, "over_median": 1, "stalled": 2}
+    out.sort(key=lambda p: (order[p.status], p.weeksRemaining if p.weeksRemaining is not None else 1e9))
+    return out
+
+
+_CADENCE_BUCKETS = [
+    ("Under 1.5×/week", 0.0, 1.5),
+    ("1.5–2.5×/week", 1.5, 2.5),
+    ("2.5×+/week", 2.5, 1e9),
+]
+
+
+def insights_cadence(conn, rating: str = "PPL") -> schemas.CadenceInsight | None:
+    """Bucket completed students in a rating by training cadence (flights/week)
+    and show avg hours, cost, and calendar days per bucket. Defaults to PPL,
+    which has the most data."""
+    rows = conn.execute(
+        """SELECT m.cumulative_hours AS hours, m.cumulative_cost AS cost,
+                  m.days_from_rating_start AS days,
+                  (SELECT COUNT(*) FROM flights f
+                   WHERE f.enrollment_id = e.enrollment_id AND f.status = 'Completed'
+                     AND f.reservation_type != 'Check Ride') AS nfl
+           FROM milestones m
+           JOIN enrollments e USING (enrollment_id)
+           JOIN ratings r USING (rating_id)
+           WHERE m.milestone_name = 'checkride' AND r.code = ?""",
+        (rating,),
+    ).fetchall()
+    if not rows:
+        return None
+
+    grouped: dict[str, list] = {b[0]: [] for b in _CADENCE_BUCKETS}
+    for r in rows:
+        days = max(1, int(r["days"] or 1))
+        cadence = float(r["nfl"] or 0) / (days / 7.0)
+        for label, lo, hi in _CADENCE_BUCKETS:
+            if lo <= cadence < hi:
+                grouped[label].append((cadence, float(r["hours"] or 0), float(r["cost"] or 0), float(r["days"] or 0)))
+                break
+
+    buckets = []
+    for label, _lo, _hi in _CADENCE_BUCKETS:
+        v = grouped[label]
+        if not v:
+            continue
+        n = len(v)
+        buckets.append(schemas.CadenceBucket(
+            label=label, n=n,
+            avgCadence=round(sum(x[0] for x in v) / n, 2),
+            avgHours=round(sum(x[1] for x in v) / n, 1),
+            avgCost=round(sum(x[2] for x in v) / n, 0),
+            avgDays=round(sum(x[3] for x in v) / n, 0),
+        ))
+    return schemas.CadenceInsight(rating=rating, n=len(rows), buckets=buckets)
+
+
 def insights(threshold: float = 0.25) -> schemas.Insights:
     conn = sqlite3.connect(web_data.DEFAULT_DB)
     conn.row_factory = sqlite3.Row
@@ -954,6 +1082,8 @@ def insights(threshold: float = 0.25) -> schemas.Insights:
         at_risk = insights_at_risk(conn, norm_by_rating, base_rows, threshold)
         strengths = insights_instructor_ratings(norm_by_rating, base_rows)
         efficiency = insights_instructor_efficiency(norm_by_rating, base_rows)
+        predictions = insights_predictions(conn, norm_by_rating)
+        cadence = insights_cadence(conn, "PPL")
     finally:
         conn.close()
     return schemas.Insights(
@@ -961,6 +1091,8 @@ def insights(threshold: float = 0.25) -> schemas.Insights:
         atRisk=at_risk,
         strengths=strengths,
         efficiency=efficiency,
+        predictions=predictions,
+        cadence=cadence,
     )
 
 

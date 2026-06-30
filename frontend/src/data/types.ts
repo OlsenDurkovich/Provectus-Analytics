@@ -269,11 +269,42 @@ export interface InstructorEfficiency {
   lowSample: boolean;
 }
 
+export interface PredictionRow {
+  studentId: string;
+  name: string;
+  rating: RatingCode;
+  currentHours: number;
+  medianHours: number;
+  pacePerWeek: number;
+  weeksRemaining: number | null;
+  projectedDate: string | null;
+  lastFlight: string;
+  daysSinceLastFlight: number;
+  status: 'on_track' | 'over_median' | 'stalled';
+}
+
+export interface CadenceBucket {
+  label: string;
+  n: number;
+  avgCadence: number;
+  avgHours: number;
+  avgCost: number;
+  avgDays: number;
+}
+
+export interface CadenceInsight {
+  rating: RatingCode;
+  n: number;
+  buckets: CadenceBucket[];
+}
+
 export interface Insights {
   atRiskThresholdPct: number;
   atRisk: AtRiskRow[];
   strengths: RatingStrength[];
   efficiency: InstructorEfficiency[];
+  predictions: PredictionRow[];
+  cadence: CadenceInsight | null;
 }
 
 export interface UserRow {
