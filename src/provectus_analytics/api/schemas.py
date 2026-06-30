@@ -200,15 +200,19 @@ class AtRiskRow(BaseModel):
 
 
 class InstructorRatingStat(BaseModel):
-    """One instructor's track record for a single rating, vs the cohort."""
+    """One instructor's track record for a single rating, vs the OTHER
+    instructors' students in that rating (leave-one-out — excludes their own
+    students, so an instructor who dominates a rating isn't compared to a
+    baseline they themselves define)."""
     instructor: str
     rating: RatingCode
     n: int                       # students they took to checkride in this rating
     avgHours: float
     avgCost: float
     avgDays: float
-    vsMedianHoursPct: float      # -0.12 == 12% below cohort median (better)
-    vsMedianCostPct: float
+    vsRestHoursPct: float        # -0.12 == their students averaged 12% fewer hours than everyone else's (better)
+    vsRestCostPct: float
+    comparable: bool             # False if they taught every student in the rating (no "rest")
     lowSample: bool
     rank: int                    # 1 = best (lowest avg hours) for this rating
 
@@ -221,12 +225,13 @@ class RatingStrength(BaseModel):
 
 
 class InstructorEfficiency(BaseModel):
-    """One instructor's overall efficiency vs cohort medians across ratings."""
+    """One instructor's overall efficiency vs every OTHER instructor's students,
+    averaged across the ratings they teach (leave-one-out per rating)."""
     instructor: str
-    students: int                # total enrollments taken to checkride
-    ratings: int                 # distinct ratings taught
-    avgHoursVsMedianPct: float   # mean (hours-median)/median across enrollments
-    avgCostVsMedianPct: float
+    students: int                # comparable enrollments (ratings with a "rest" to compare to)
+    ratings: int                 # distinct comparable ratings taught
+    avgHoursVsRestPct: float     # n-weighted mean of per-rating vs-rest hours deviation
+    avgCostVsRestPct: float
     score: float                 # blended hours+cost deviation; lower = better
     rank: int
     lowSample: bool

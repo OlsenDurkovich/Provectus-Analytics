@@ -244,8 +244,9 @@ export interface InstructorRatingStat {
   avgHours: number;
   avgCost: number;
   avgDays: number;
-  vsMedianHoursPct: number;
-  vsMedianCostPct: number;
+  vsRestHoursPct: number;
+  vsRestCostPct: number;
+  comparable: boolean;
   lowSample: boolean;
   rank: number;
 }
@@ -261,8 +262,8 @@ export interface InstructorEfficiency {
   instructor: string;
   students: number;
   ratings: number;
-  avgHoursVsMedianPct: number;
-  avgCostVsMedianPct: number;
+  avgHoursVsRestPct: number;
+  avgCostVsRestPct: number;
   score: number;
   rank: number;
   lowSample: boolean;

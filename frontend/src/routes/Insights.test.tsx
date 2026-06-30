@@ -22,13 +22,13 @@ function payload(threshold: number) {
     strengths: [{
       rating: 'COM', medianHours: 28, medianCost: 27600,
       instructors: [
-        { instructor: 'Sarah Phillips', rating: 'COM', n: 5, avgHours: 24.1, avgCost: 24000, vsMedianHoursPct: -0.13, vsMedianCostPct: -0.13, lowSample: false, rank: 1 },
-        { instructor: 'Jenny Park', rating: 'COM', n: 4, avgHours: 30.5, avgCost: 31000, vsMedianHoursPct: 0.10, vsMedianCostPct: 0.12, lowSample: false, rank: 2 },
+        { instructor: 'Sarah Phillips', rating: 'COM', n: 5, avgHours: 24.1, avgCost: 24000, vsRestHoursPct: -0.18, vsRestCostPct: -0.18, comparable: true, lowSample: false, rank: 1 },
+        { instructor: 'Jenny Park', rating: 'COM', n: 4, avgHours: 30.5, avgCost: 31000, vsRestHoursPct: 0.14, vsRestCostPct: 0.15, comparable: true, lowSample: false, rank: 2 },
       ],
     }],
     efficiency: [
-      { instructor: 'Tom Reyes', students: 7, ratings: 4, avgHoursVsMedianPct: -0.03, avgCostVsMedianPct: -0.03, score: -0.03, rank: 1, lowSample: false },
-      { instructor: 'Mike Anderson', students: 9, ratings: 7, avgHoursVsMedianPct: 0.06, avgCostVsMedianPct: 0.07, score: 0.06, rank: 2, lowSample: false },
+      { instructor: 'Tom Reyes', students: 7, ratings: 4, avgHoursVsRestPct: -0.031, avgCostVsRestPct: -0.039, score: -0.035, rank: 1, lowSample: false },
+      { instructor: 'Mike Anderson', students: 9, ratings: 7, avgHoursVsRestPct: 0.066, avgCostVsRestPct: 0.06, score: 0.063, rank: 2, lowSample: false },
     ],
   };
 }
