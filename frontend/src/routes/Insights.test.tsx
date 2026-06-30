@@ -35,9 +35,9 @@ function payload(threshold: number) {
       { studentId: '10', name: 'Tyler Brooks', rating: 'PPL', currentHours: 26, medianHours: 64, pacePerWeek: 0, weeksRemaining: null, projectedDate: null, lastFlight: '2024-01-26', daysSinceLastFlight: 886, status: 'stalled' },
     ],
     cadence: {
-      rating: 'PPL', n: 24, buckets: [
-        { label: 'Under 1.5×/week', n: 16, avgCadence: 0.7, avgHours: 64.2, avgCost: 17029, avgDays: 363 },
-        { label: '2.5×+/week', n: 4, avgCadence: 3.0, avgHours: 55.6, avgCost: 14654, avgDays: 72 },
+      scope: 'all ratings', n: 104, buckets: [
+        { label: '2.5×/week or less', n: 88, avgCadence: 0.9, avgDays: 163, costVsMedianPct: 0.01, hoursVsMedianPct: 0.01 },
+        { label: 'Over 4×/week', n: 7, avgCadence: 4.8, avgDays: 44, costVsMedianPct: -0.09, hoursVsMedianPct: -0.09 },
       ],
     },
   };

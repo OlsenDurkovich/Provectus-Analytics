@@ -1024,18 +1024,21 @@ def insights_predictions(conn, norm_by_rating) -> list[schemas.PredictionRow]:
 
 
 _CADENCE_BUCKETS = [
-    ("Under 1.5×/week", 0.0, 1.5),
-    ("1.5–2.5×/week", 1.5, 2.5),
-    ("2.5×+/week", 2.5, 1e9),
+    ("2.5×/week or less", 0.0, 2.5),
+    ("2.5–3.5×/week", 2.5, 3.5),
+    ("3.5–4×/week", 3.5, 4.0),
+    ("Over 4×/week", 4.0, 1e9),
 ]
 
 
-def insights_cadence(conn, rating: str = "PPL") -> schemas.CadenceInsight | None:
-    """Bucket completed students in a rating by training cadence (flights/week)
-    and show avg hours, cost, and calendar days per bucket. Defaults to PPL,
-    which has the most data."""
+def insights_cadence(conn, norm_by_rating) -> schemas.CadenceInsight | None:
+    """Bucket ALL completed students (every rating) by training cadence
+    (flights/week). Days-to-checkride is raw; cost & hours are shown vs each
+    student's own rating median so ratings can be pooled without the dollar
+    figures being confounded by rating mix."""
     rows = conn.execute(
-        """SELECT m.cumulative_hours AS hours, m.cumulative_cost AS cost,
+        """SELECT r.code AS rating,
+                  m.cumulative_hours AS hours, m.cumulative_cost AS cost,
                   m.days_from_rating_start AS days,
                   (SELECT COUNT(*) FROM flights f
                    WHERE f.enrollment_id = e.enrollment_id AND f.status = 'Completed'
@@ -1043,19 +1046,25 @@ def insights_cadence(conn, rating: str = "PPL") -> schemas.CadenceInsight | None
            FROM milestones m
            JOIN enrollments e USING (enrollment_id)
            JOIN ratings r USING (rating_id)
-           WHERE m.milestone_name = 'checkride' AND r.code = ?""",
-        (rating,),
+           WHERE m.milestone_name = 'checkride'"""
     ).fetchall()
     if not rows:
         return None
 
     grouped: dict[str, list] = {b[0]: [] for b in _CADENCE_BUCKETS}
+    total = 0
     for r in rows:
+        norm = norm_by_rating.get(r["rating"])
+        if not norm or not norm.median_hours or not norm.median_cost:
+            continue
         days = max(1, int(r["days"] or 1))
         cadence = float(r["nfl"] or 0) / (days / 7.0)
+        cost_vs = _pct_over(float(r["cost"] or 0), float(norm.median_cost))
+        hours_vs = _pct_over(float(r["hours"] or 0), float(norm.median_hours))
+        total += 1
         for label, lo, hi in _CADENCE_BUCKETS:
             if lo <= cadence < hi:
-                grouped[label].append((cadence, float(r["hours"] or 0), float(r["cost"] or 0), float(r["days"] or 0)))
+                grouped[label].append((cadence, float(r["days"] or 0), cost_vs, hours_vs))
                 break
 
     buckets = []
@@ -1067,11 +1076,11 @@ def insights_cadence(conn, rating: str = "PPL") -> schemas.CadenceInsight | None
         buckets.append(schemas.CadenceBucket(
             label=label, n=n,
             avgCadence=round(sum(x[0] for x in v) / n, 2),
-            avgHours=round(sum(x[1] for x in v) / n, 1),
-            avgCost=round(sum(x[2] for x in v) / n, 0),
-            avgDays=round(sum(x[3] for x in v) / n, 0),
+            avgDays=round(sum(x[1] for x in v) / n, 0),
+            costVsMedianPct=round(sum(x[2] for x in v) / n, 4),
+            hoursVsMedianPct=round(sum(x[3] for x in v) / n, 4),
         ))
-    return schemas.CadenceInsight(rating=rating, n=len(rows), buckets=buckets)
+    return schemas.CadenceInsight(scope="all ratings", n=total, buckets=buckets)
 
 
 def insights(threshold: float = 0.25) -> schemas.Insights:
@@ -1083,7 +1092,7 @@ def insights(threshold: float = 0.25) -> schemas.Insights:
         strengths = insights_instructor_ratings(norm_by_rating, base_rows)
         efficiency = insights_instructor_efficiency(norm_by_rating, base_rows)
         predictions = insights_predictions(conn, norm_by_rating)
-        cadence = insights_cadence(conn, "PPL")
+        cadence = insights_cadence(conn, norm_by_rating)
     finally:
         conn.close()
     return schemas.Insights(

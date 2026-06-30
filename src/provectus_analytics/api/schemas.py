@@ -256,13 +256,16 @@ class CadenceBucket(BaseModel):
     label: str
     n: int
     avgCadence: float             # flights per week
-    avgHours: float
-    avgCost: float
-    avgDays: float                # calendar days to checkride
+    avgDays: float                # calendar days to checkride (raw)
+    # Cost/hours are expressed vs each student's OWN rating median, so students
+    # across different ratings are comparable (a CFI and a PPL aren't mixed by
+    # raw dollars). -0.12 == 12% under the typical cost for their rating.
+    costVsMedianPct: float
+    hoursVsMedianPct: float
 
 
 class CadenceInsight(BaseModel):
-    rating: RatingCode
+    scope: str                   # "all ratings"
     n: int
     buckets: list[CadenceBucket]
 
