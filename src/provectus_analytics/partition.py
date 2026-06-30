@@ -278,7 +278,7 @@ def _resolve_overlap(
 
     # 4. Aircraft class tiebreaker
     ac = flight["aircraft_class"]
-    if ac == "ME":
+    if ac and ac.startswith("ME"):  # "ME" (legacy) / "ME_BASIC" — multi-engine
         me_c = [e for e in candidates if e["rating_code"] in ME_RATINGS]
         if len(me_c) == 1:
             return me_c[0]["enrollment_id"], "ME aircraft → AMEL/MEI"

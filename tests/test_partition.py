@@ -38,7 +38,7 @@ def test_olivia_concurrent_resolved_by_aircraft(pipeline_db):
     ))
     assert rows, "no Olivia overlap flights found"
     for r in rows:
-        if r["aircraft_class"] == "ME":
+        if (r["aircraft_class"] or "").startswith("ME"):
             assert r["rating"] == "AMEL", f"ME flight should be AMEL, got {r['rating']}"
         else:  # SE_BASIC or SE_COMPLEX
             assert r["rating"] == "COM", f"SE flight should be COM, got {r['rating']}"

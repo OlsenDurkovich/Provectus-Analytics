@@ -25,7 +25,7 @@ AIRCRAFT_CLASS = {
     # Synthetic fleet
     "172N": "SE_BASIC", "172S": "SE_BASIC", "PA-28-181": "SE_BASIC",
     "182RG": "SE_COMPLEX", "PA-28R-201": "SE_COMPLEX",
-    "PA-44-180": "ME",
+    "PA-44-180": "ME_BASIC",   # Piper Seminole (multi-engine)
     # Real Provectus fleet (extend as needed)
     "PA-28-180": "SE_BASIC",   # Piper Cherokee 180
     "PA-28-160": "SE_BASIC",   # Piper Cherokee 160
