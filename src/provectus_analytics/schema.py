@@ -61,7 +61,7 @@ DDL = [
         aircraft_tail    TEXT,
         aircraft_make    TEXT,
         aircraft_model   TEXT,
-        aircraft_class   TEXT,                  -- SE_BASIC, SE_COMPLEX, ME (derived)
+        aircraft_class   TEXT,                  -- SE_BASIC, SE_COMPLEX, ME_BASIC, HP_COMPLEX (derived)
         instructor       TEXT,
         hobbs_hours      REAL,                  -- actual Hobbs hours (null = ground lesson or synthetic data)
         billing_category TEXT,                  -- AMEL|MEI|CFI|CFII|PRIMARY|MISC|NONE (null = synthetic/unknown)

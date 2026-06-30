@@ -452,7 +452,15 @@ def _norm_billing(v) -> schemas.BillingKind:
     return v if v in _BILLING_VALUES else "—"
 
 
+# Map legacy / alternate aircraft-class tokens onto the canonical schema set.
+# The classifier historically emitted "ME" for multi-engine; the schema/UI use
+# "ME_BASIC". Without this alias, _norm_acclass silently relabeled every
+# multi-engine flight as SE_BASIC in the Flights tab.
+_ACCLASS_ALIASES = {"ME": "ME_BASIC"}
+
+
 def _norm_acclass(v) -> schemas.AcClass:
+    v = _ACCLASS_ALIASES.get(v, v)
     return v if v in _ACCLASS_VALUES else "SE_BASIC"
 
 
