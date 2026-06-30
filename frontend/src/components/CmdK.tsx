@@ -36,6 +36,7 @@ const NAV: { path: string; label: string; icon: IconName; kbd: string }[] = [
   { path: '/students', label: 'Student', icon: 'users', kbd: 'S' },
   { path: '/instructors', label: 'Instructor', icon: 'users', kbd: 'I' },
   { path: '/insights', label: 'Insights', icon: 'metrics', kbd: 'N' },
+  { path: '/summary', label: 'Summary (print / PDF)', icon: 'overview', kbd: 'Y' },
   { path: '/flights', label: 'Flights', icon: 'plane', kbd: 'F' },
 ];
 

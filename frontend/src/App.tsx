@@ -9,6 +9,7 @@ import RatingDetail from './routes/RatingDetail';
 import Student from './routes/Student';
 import Instructor from './routes/Instructor';
 import Insights from './routes/Insights';
+import Summary from './routes/Summary';
 import Flights from './routes/Flights';
 import Users from './routes/Users';
 import MyTraining from './routes/MyTraining';
@@ -200,6 +201,10 @@ function Shell({ user, isAdmin, isStudent, isInstructor, canSee, logout, theme, 
               <Route
                 path="/insights"
                 element={canSee('insights') ? <Insights /> : <Navigate to={firstAllowedPath ?? '/'} replace />}
+              />
+              <Route
+                path="/summary"
+                element={canSee('overview') ? <Summary /> : <Navigate to={firstAllowedPath ?? '/'} replace />}
               />
               <Route
                 path="/flights"
