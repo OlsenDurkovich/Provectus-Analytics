@@ -13,22 +13,24 @@ def _fresh(tmp_path, monkeypatch):
     return TestClient(create_app())
 
 
-def test_kpis_returns_three_cards_no_billing(tmp_path, monkeypatch):
+_KPI_KEYS = {"ratings_completed", "active_clients", "flight_hours", "in_training"}
+
+
+def test_kpis_cards_no_billing_with_in_training(tmp_path, monkeypatch):
     client = _fresh(tmp_path, monkeypatch)
     response = client.get("/api/kpis?range=12mo")
     assert response.status_code == 200
-    kpis = response.json()
-    # billing is intentionally omitted (owner doesn't track revenue here)
-    assert len(kpis) == 3
-    keys = {k["key"] for k in kpis}
-    assert keys == {"ratings_completed", "active_clients", "flight_hours"}
-    assert "total_billed" not in keys
-    for k in kpis:
+    kpis = {k["key"]: k for k in response.json()}
+    # billing dropped; 'in_training' (current pipeline) added
+    assert set(kpis) == _KPI_KEYS
+    assert "total_billed" not in kpis
+    for k in kpis.values():
         assert "value" in k and "spark" in k and isinstance(k["spark"], list)
         assert isinstance(k["delta"], float)
-        assert k["positive"] is (k["delta"] >= 0)
-        # a 12-month range has a prior window to compare against
-        assert k["comparable"] is True
+    # window metrics are comparable on a 12-month range; in_training is a 'now'
+    # snapshot so it never shows a period delta.
+    assert kpis["ratings_completed"]["comparable"] is True
+    assert kpis["in_training"]["comparable"] is False
 
 
 def test_kpis_range_all_not_comparable(tmp_path, monkeypatch):
@@ -36,7 +38,7 @@ def test_kpis_range_all_not_comparable(tmp_path, monkeypatch):
     response = client.get("/api/kpis?range=all")
     assert response.status_code == 200
     kpis = response.json()
-    assert len(kpis) == 3
+    assert {k["key"] for k in kpis} == _KPI_KEYS
     # "all" range has no prior window — not comparable, delta 0 (UI hides the badge).
     for k in kpis:
         assert k["comparable"] is False

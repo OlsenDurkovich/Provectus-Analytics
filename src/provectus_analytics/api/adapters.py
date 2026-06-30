@@ -112,6 +112,17 @@ def _kpi_window(conn: sqlite3.Connection, lo: date | None, hi: date | None) -> t
     return int(ratings_completed), int(active), float(hours), float(billed)
 
 
+def _in_training(conn: sqlite3.Connection) -> int:
+    """Students currently in the pipeline: an in-progress (partial) enrollment with
+    no checkride yet. A 'right now' snapshot — independent of the date range."""
+    return int(conn.execute(
+        "SELECT COUNT(DISTINCT e.student_id) FROM enrollments e "
+        "WHERE e.is_partial = 1 AND NOT EXISTS ("
+        "  SELECT 1 FROM milestones m WHERE m.enrollment_id = e.enrollment_id "
+        "  AND m.milestone_name = 'checkride')"
+    ).fetchone()[0])
+
+
 def _pct_delta(current: float, prior: float) -> float:
     """Return % change from prior to current, rounded to 3 decimals.
 
@@ -130,6 +141,7 @@ def kpis(range_key: schemas.RangeKey, today: date | None = None) -> list[schemas
     conn = sqlite3.connect(web_data.DEFAULT_DB)
     try:
         cur_ratings, cur_active, cur_hours, cur_billed = _kpi_window(conn, cutoff, None)
+        in_training = _in_training(conn)   # 'now' snapshot, range-independent
 
         # Prior window: equal-length stretch immediately before the current cutoff.
         # For "all" there's no prior — leave deltas at 0.
@@ -153,9 +165,8 @@ def kpis(range_key: schemas.RangeKey, today: date | None = None) -> list[schemas
         d_ratings = _pct_delta(cur_ratings, prior_ratings)
         d_active = _pct_delta(cur_active, prior_active)
         d_hours = _pct_delta(cur_hours, prior_hours)
-        d_billed = _pct_delta(cur_billed, prior_billed)
     else:
-        d_ratings = d_active = d_hours = d_billed = 0.0
+        d_ratings = d_active = d_hours = 0.0
 
     # Billing intentionally omitted — the owner doesn't track revenue here.
     return [
@@ -173,6 +184,11 @@ def kpis(range_key: schemas.RangeKey, today: date | None = None) -> list[schemas
             key="flight_hours", label="Flight hours",
             value=f"{cur_hours:,.0f}", sub=sub, delta=d_hours, positive=d_hours >= 0,
             comparable=has_prior, spark=[float(cur_hours)] * 8, color="#22D3EE",
+        ),
+        schemas.Kpi(
+            key="in_training", label="In training",
+            value=str(in_training), sub="in progress now", delta=0.0, positive=True,
+            comparable=False, spark=[float(in_training)] * 8, color="#F59E0B",
         ),
     ]
 
