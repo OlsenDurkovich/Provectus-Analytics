@@ -27,6 +27,7 @@ from .routers import meta as meta_router
 from .routers import public as public_router
 from .routers import ratings as ratings_router
 from .routers import students as students_router
+from .routers import trends as trends_router
 from .routers import upload as upload_router
 from .routers import users as users_router
 from .security_headers import SecurityHeadersMiddleware
@@ -158,6 +159,7 @@ def create_app() -> FastAPI:
     app.include_router(students_router.router,    dependencies=protected)
     app.include_router(instructors_router.router, dependencies=[Depends(require_page("instructors"))])
     app.include_router(insights_router.router,    dependencies=[Depends(require_page("insights"))])
+    app.include_router(trends_router.router,      dependencies=[Depends(require_page("overview"))])
 
     # Admin-only: user management, the Flights override surface, and FSP uploads.
     admin_only = [Depends(current_admin_user)]

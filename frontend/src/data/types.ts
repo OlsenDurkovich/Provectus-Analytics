@@ -298,6 +298,25 @@ export interface CadenceInsight {
   buckets: CadenceBucket[];
 }
 
+export interface TrendWindow {
+  label: string;
+  days: number;
+  value: number;
+  prior: number;
+  pct: number;
+}
+export interface TrendSeries {
+  metric: string;
+  label: string;
+  unit: 'count' | 'hours';
+  allTime: number;
+  windows: TrendWindow[];
+}
+export interface Trends {
+  activeNow: number;
+  series: TrendSeries[];
+}
+
 export interface Insights {
   atRiskThresholdPct: number;
   atRisk: AtRiskRow[];

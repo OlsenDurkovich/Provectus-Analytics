@@ -14,16 +14,22 @@ const bars = (metric: string) => [
 beforeEach(() => {
   globalThis.fetch = vi.fn().mockImplementation((url: string) => {
     let body: unknown = {};
-    if (url.includes('/api/kpis')) {
-      const r = (url.match(/range=(\w+)/) || [])[1] || 'all';
-      const rc = r === '6mo' ? '4' : r === '12mo' ? '12' : '81';
-      const fh = r === '6mo' ? '239' : r === '12mo' ? '771' : '4,455';
-      body = [
-        { key: 'ratings_completed', label: 'Ratings completed', value: rc, sub: '', delta: 0, positive: true, spark: [], color: '#fff' },
-        { key: 'flight_hours', label: 'Flight hours', value: fh, sub: '', delta: 0, positive: true, spark: [], color: '#fff' },
-        { key: 'active_clients', label: 'Active students', value: '4', sub: '', delta: 0, positive: true, spark: [], color: '#fff' },
-        { key: 'total_billed', label: 'Total billed', value: '$1.2M', sub: '', delta: 0, positive: true, spark: [], color: '#fff' },
-      ];
+    if (url.includes('/api/trends')) {
+      body = {
+        activeNow: 7,
+        series: [
+          { metric: 'ratings_completed', label: 'Ratings completed', unit: 'count', allTime: 104, windows: [
+            { label: '12 mo', days: 365, value: 12, prior: 33, pct: -0.64 },
+            { label: '6 mo', days: 180, value: 4, prior: 8, pct: -0.5 },
+            { label: '3 mo', days: 90, value: 1, prior: 3, pct: -0.67 },
+          ] },
+          { metric: 'flight_hours', label: 'Flight hours', unit: 'hours', allTime: 4455, windows: [
+            { label: '12 mo', days: 365, value: 771, prior: 1220, pct: -0.37 },
+            { label: '6 mo', days: 180, value: 239, prior: 529, pct: -0.55 },
+            { label: '3 mo', days: 90, value: 84, prior: 156, pct: -0.46 },
+          ] },
+        ],
+      };
     } else if (url.match(/\/api\/ratings\?/)) {
       const m = url.match(/metric=(\w+)/);
       body = bars(m ? m[1] : 'hours');
@@ -60,23 +66,26 @@ function wrap(ui: React.ReactNode) {
   return <QueryClientProvider client={qc}><MemoryRouter>{ui}</MemoryRouter></QueryClientProvider>;
 }
 
-test('renders the overview half (KPIs, per-rating table, highlights)', async () => {
+test('renders momentum (totals + period-over-period) and the overview half', async () => {
   render(wrap(<Summary />));
-  await waitFor(() => expect(screen.getByText('Ratings completed')).toBeTruthy());
-  expect(screen.getByText('81')).toBeTruthy();                 // all-time KPI value
-  expect(screen.getByText('Private Pilot')).toBeTruthy();      // per-rating table
+  await waitFor(() => expect(screen.getByText(/Momentum/)).toBeTruthy());
+  // full-size boxes: all-time totals + each window value
+  expect(screen.getByText('Ratings completed')).toBeTruthy();
+  expect(screen.getByText('104')).toBeTruthy();   // all-time ratings
+  expect(screen.getByText('771')).toBeTruthy();   // flight hours, last 12 mo
+  expect(screen.getByText('84')).toBeTruthy();    // flight hours, last 3 mo
+  expect(screen.getAllByText(/All time/).length).toBeGreaterThan(0);
+  expect(screen.getByText(/7 active now/)).toBeTruthy();
+  // period-over-period delta is shown
+  expect(screen.getAllByText(/%/).length).toBeGreaterThan(0);
+  // overview half
+  expect(screen.getByText('Private Pilot')).toBeTruthy();
   expect(screen.getByText('$16,500')).toBeTruthy();
-  expect(screen.getByText('Sarah Phillips')).toBeTruthy();     // highlight
+  expect(screen.getByText('Sarah Phillips')).toBeTruthy();
   expect(screen.getByText(/72 vs 363 days/)).toBeTruthy();
   expect(screen.getByRole('button', { name: /Print/ })).toBeTruthy();
   expect(screen.getByText(/Sample data/)).toBeTruthy();
-  // billing is intentionally hidden from the owner view
-  expect(screen.queryByText('Total billed')).toBeNull();
-  // 12/6-month breakdown rendered (flight-hours 12mo=771, 6mo=239 are unique)
-  const breakdown = screen.getByText(
-    (_t, el) => el?.className === 'summary-kpi-breakdown' && (el.textContent || '').includes('771'),
-  );
-  expect((breakdown.textContent || '').includes('239')).toBe(true);
+  expect(screen.queryByText('Total billed')).toBeNull();   // billing hidden
 });
 
 test('renders the "right now" half (pipeline, attention lists, upcoming, instructors)', async () => {

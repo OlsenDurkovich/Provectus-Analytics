@@ -407,6 +407,11 @@ input { font-family: inherit; color: inherit; }
 .summary-kpi-value { font-size: 26px; font-weight: 600; letter-spacing: -0.02em; }
 .summary-kpi-label { font-size: 12px; color: var(--fg-dim); margin-top: 2px; }
 .summary-kpi-breakdown { font-size: 11px; color: var(--fg-muted); margin-top: 6px; border-top: 1px solid var(--border); padding-top: 5px; }
+/* Momentum: full-size boxes per window (All time / 12 / 6 / 3 mo) */
+.summary-trend-label { font-size: 12px; font-weight: 600; color: var(--fg-muted); margin: 6px 0 6px; }
+.summary-trend-row { display: grid; grid-template-columns: repeat(4, 1fr); gap: 12px; margin-bottom: 6px; }
+@media (max-width: 800px) { .summary-trend-row { grid-template-columns: repeat(2, 1fr); } }
+.summary-active-pill { float: right; font-size: 12px; font-weight: 500; color: var(--fg-muted); border: 1px solid var(--border); border-radius: 999px; padding: 2px 10px; }
 .summary-section-title { font-size: 14px; font-weight: 600; margin-top: 4px; }
 .summary-table { width: 100%; border-collapse: collapse; }
 .summary-highlights { display: grid; grid-template-columns: repeat(3, 1fr); gap: 12px; }
