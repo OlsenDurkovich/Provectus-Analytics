@@ -15,9 +15,14 @@ beforeEach(() => {
   globalThis.fetch = vi.fn().mockImplementation((url: string) => {
     let body: unknown = {};
     if (url.includes('/api/kpis')) {
+      const r = (url.match(/range=(\w+)/) || [])[1] || 'all';
+      const rc = r === '6mo' ? '4' : r === '12mo' ? '12' : '81';
+      const fh = r === '6mo' ? '239' : r === '12mo' ? '771' : '4,455';
       body = [
-        { key: 'ratings_completed', label: 'Ratings completed', value: '81', sub: '', delta: 0, positive: true, spark: [], color: '#fff' },
+        { key: 'ratings_completed', label: 'Ratings completed', value: rc, sub: '', delta: 0, positive: true, spark: [], color: '#fff' },
+        { key: 'flight_hours', label: 'Flight hours', value: fh, sub: '', delta: 0, positive: true, spark: [], color: '#fff' },
         { key: 'active_clients', label: 'Active students', value: '4', sub: '', delta: 0, positive: true, spark: [], color: '#fff' },
+        { key: 'total_billed', label: 'Total billed', value: '$1.2M', sub: '', delta: 0, positive: true, spark: [], color: '#fff' },
       ];
     } else if (url.match(/\/api\/ratings\?/)) {
       const m = url.match(/metric=(\w+)/);
@@ -26,7 +31,10 @@ beforeEach(() => {
       body = {
         atRiskThresholdPct: 0.25,
         atRisk: [{ studentId: '1', name: 'Jamie Chen', rating: 'AMEL', hours: 18, medianHours: 14, pctOverHours: 0.29, cost: 9300, medianCost: 7080, pctOverCost: 0.31, days: 70, worstPct: 0.31, status: 'Completed' }],
-        strengths: [],
+        strengths: [{ rating: 'COM', medianHours: 28, medianCost: 27600, instructors: [
+          { instructor: 'Sarah Phillips', rating: 'COM', n: 5, avgHours: 24.1, avgCost: 24000, vsRestHoursPct: -0.18, vsRestCostPct: -0.18, comparable: true, lowSample: false, rank: 1 },
+          { instructor: 'Jenny Park', rating: 'COM', n: 4, avgHours: 30.5, avgCost: 31000, vsRestHoursPct: 0.14, vsRestCostPct: 0.14, comparable: true, lowSample: false, rank: 2 },
+        ] }],
         efficiency: [{ instructor: 'Sarah Phillips', students: 30, ratings: 7, avgHoursVsRestPct: -0.04, avgCostVsRestPct: -0.04, score: -0.04, rank: 1, lowSample: false }],
         predictions: [
           { studentId: '21', name: 'Henry Walsh', rating: 'PPL', currentHours: 59.5, medianHours: 64, pacePerWeek: 0.6, weeksRemaining: 7.3, projectedDate: '2026-08-20', lastFlight: '2026-05-11', daysSinceLastFlight: 50, status: 'on_track' },
@@ -55,26 +63,34 @@ function wrap(ui: React.ReactNode) {
 test('renders the overview half (KPIs, per-rating table, highlights)', async () => {
   render(wrap(<Summary />));
   await waitFor(() => expect(screen.getByText('Ratings completed')).toBeTruthy());
-  expect(screen.getByText('81')).toBeTruthy();                 // KPI value
+  expect(screen.getByText('81')).toBeTruthy();                 // all-time KPI value
   expect(screen.getByText('Private Pilot')).toBeTruthy();      // per-rating table
   expect(screen.getByText('$16,500')).toBeTruthy();
   expect(screen.getByText('Sarah Phillips')).toBeTruthy();     // highlight
   expect(screen.getByText(/72 vs 363 days/)).toBeTruthy();
   expect(screen.getByRole('button', { name: /Print/ })).toBeTruthy();
   expect(screen.getByText(/Sample data/)).toBeTruthy();
+  // billing is intentionally hidden from the owner view
+  expect(screen.queryByText('Total billed')).toBeNull();
+  // 12/6-month breakdown rendered (flight-hours 12mo=771, 6mo=239 are unique)
+  const breakdown = screen.getByText(
+    (_t, el) => el?.className === 'summary-kpi-breakdown' && (el.textContent || '').includes('771'),
+  );
+  expect((breakdown.textContent || '').includes('239')).toBe(true);
 });
 
-test('renders the "right now" half (pipeline, needs-attention, upcoming)', async () => {
+test('renders the "right now" half (pipeline, attention lists, upcoming, instructors)', async () => {
   render(wrap(<Summary />));
   await waitFor(() => expect(screen.getByText(/Right now/)).toBeTruthy());
-  // pipeline snapshot + statuses
   expect(screen.getByText('Behind pace')).toBeTruthy();
   expect(screen.getByText('Stalled')).toBeTruthy();
-  // needs-attention list surfaces the non-on-track + at-risk students
   expect(screen.getByText('Needs attention')).toBeTruthy();
   expect(screen.getByText('Grace Liu')).toBeTruthy();
-  expect(screen.getByText('Jamie Chen')).toBeTruthy();         // at-risk
-  // upcoming checkrides surfaces the on-track student
+  expect(screen.getByText('Jamie Chen')).toBeTruthy();         // at-risk student
   expect(screen.getByText(/Upcoming checkrides/)).toBeTruthy();
   expect(screen.getByText('Henry Walsh')).toBeTruthy();
+  // instructors-to-develop surfaces the one deviating >10% over peers
+  expect(screen.getByText('Instructors to develop')).toBeTruthy();
+  expect(screen.getByText('Jenny Park')).toBeTruthy();
+  expect(screen.getByText(/may need COM development/)).toBeTruthy();
 });

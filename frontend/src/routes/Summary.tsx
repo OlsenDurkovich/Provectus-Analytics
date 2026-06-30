@@ -28,8 +28,14 @@ function fmtDate(iso: string | null): string {
   return Number.isNaN(d.getTime()) ? iso : d.toLocaleDateString('en', { month: 'short', year: 'numeric' });
 }
 
+// KPIs that get a 12-month / 6-month breakdown under the all-time figure.
+const BREAKDOWN_KEYS = new Set(['ratings_completed', 'flight_hours']);
+const INSTR_HOURS_THRESHOLD = 0.10;   // instructor avg this far over peers → develop
+
 export default function Summary() {
   const kpis = useKpis('all');
+  const kpis12 = useKpis('12mo');
+  const kpis6 = useKpis('6mo');
   const hours = useRatingBars('hours' as MetricKey, 'all');
   const cost = useRatingBars('cost' as MetricKey, 'all');
   const days = useRatingBars('days' as MetricKey, 'all');
@@ -37,6 +43,9 @@ export default function Summary() {
   const meta = useMeta();
 
   const loading = kpis.isLoading || hours.isLoading || cost.isLoading || days.isLoading || insights.isLoading;
+  const kByKey = (rows: typeof kpis.data) => Object.fromEntries((rows ?? []).map((k) => [k.key, k.value]));
+  const k12 = kByKey(kpis12.data);
+  const k6 = kByKey(kpis6.data);
   const hMap = byCode(hours.data);
   const cMap = byCode(cost.data);
   const dMap = byCode(days.data);
@@ -75,6 +84,13 @@ export default function Summary() {
     .sort((a, b) => (a.weeksRemaining ?? 1e9) - (b.weeksRemaining ?? 1e9))
     .slice(0, 5);
 
+  // Instructors whose students run materially over their peers in a rating →
+  // may need development on that rating. (Hours only — owner doesn't track billing.)
+  const instructorAttention = (ins?.strengths ?? [])
+    .flatMap((s) => s.instructors)
+    .filter((i) => !i.lowSample && i.vsRestHoursPct >= INSTR_HOURS_THRESHOLD)
+    .sort((a, b) => b.vsRestHoursPct - a.vsRestHoursPct);
+
   const bestInstructor = ins?.efficiency?.find((e) => !e.lowSample) ?? ins?.efficiency?.[0];
   const cad = ins?.cadence;
   const slow = cad?.buckets?.[0];
@@ -104,10 +120,15 @@ export default function Summary() {
       ) : (
         <>
           <div className="summary-kpis">
-            {(kpis.data ?? []).map((k) => (
+            {(kpis.data ?? []).filter((k) => k.key !== 'total_billed').map((k) => (
               <div className="summary-kpi" key={k.key}>
                 <div className="summary-kpi-value">{k.value}</div>
                 <div className="summary-kpi-label">{k.label}</div>
+                {BREAKDOWN_KEYS.has(k.key) && (
+                  <div className="summary-kpi-breakdown">
+                    12&nbsp;mo <strong>{k12[k.key] ?? '—'}</strong> · 6&nbsp;mo <strong>{k6[k.key] ?? '—'}</strong>
+                  </div>
+                )}
               </div>
             ))}
           </div>
@@ -147,6 +168,22 @@ export default function Summary() {
                 <div className="summary-list-row" key={p.studentId}>
                   <div><strong>{p.name}</strong> <span className="muted tiny">{p.rating}</span></div>
                   <div className="summary-list-sub">~{fmtDate(p.projectedDate)} · {p.weeksRemaining}w · {p.currentHours.toFixed(0)}/{p.medianHours.toFixed(0)}h</div>
+                </div>
+              ))}
+            </div>
+            <div className="summary-list-card">
+              <div className="summary-list-title">Instructors to develop <span className="muted tiny">· hours vs peers</span></div>
+              {instructorAttention.length === 0 ? (
+                <div className="muted tiny">All instructors within range of their peers.</div>
+              ) : instructorAttention.slice(0, 6).map((i) => (
+                <div className="summary-list-row" key={`${i.instructor}-${i.rating}`}>
+                  <div>
+                    <span className="summary-dot" style={{ background: 'var(--warn, #E0A030)' }} />
+                    <strong>{i.instructor}</strong> <span className="muted tiny">{i.rating}</span>
+                  </div>
+                  <div className="summary-list-sub">
+                    +{Math.round(i.vsRestHoursPct * 100)}% hours vs other instructors — may need {i.rating} development
+                  </div>
                 </div>
               ))}
             </div>
