@@ -415,14 +415,37 @@ input { font-family: inherit; color: inherit; }
 .summary-highlight-cap { font-size: 12px; color: var(--fg-muted); margin-top: 4px; line-height: 1.45; }
 .summary-foot { margin-top: 8px; }
 
+/* Right-now pipeline strip + lists */
+.summary-pipeline {
+  display: flex; align-items: stretch; gap: 12px; flex-wrap: wrap;
+  border: 1px solid var(--border); border-radius: 10px; padding: 12px 16px; background: var(--bg-elev);
+}
+.summary-pipe-total {
+  font-size: 26px; font-weight: 700; letter-spacing: -0.02em; display: flex; align-items: baseline; gap: 8px;
+  padding-right: 16px; border-right: 1px solid var(--border);
+}
+.summary-pipe-total span { font-size: 12px; font-weight: 400; color: var(--fg-dim); }
+.summary-pipe-stat { display: flex; flex-direction: column; justify-content: center; min-width: 72px; }
+.summary-pipe-n { font-size: 20px; font-weight: 600; }
+.summary-pipe-label { font-size: 11px; color: var(--fg-dim); }
+.summary-now-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 12px; }
+@media (max-width: 800px) { .summary-now-grid { grid-template-columns: 1fr; } }
+.summary-list-card { border: 1px solid var(--border); border-radius: 10px; padding: 12px 16px; background: var(--bg-elev); }
+.summary-list-title { font-size: 13px; font-weight: 600; margin-bottom: 8px; }
+.summary-list-row { padding: 6px 0; border-top: 1px solid var(--border); font-size: 13px; }
+.summary-list-row:first-of-type { border-top: none; }
+.summary-list-sub { font-size: 12px; color: var(--fg-muted); margin-top: 1px; }
+.summary-dot { display: inline-block; width: 7px; height: 7px; border-radius: 50%; margin-right: 7px; vertical-align: middle; }
+
 @media print {
   .sidebar, .topbar, .cmdk, .cmdk-backdrop, .no-print { display: none !important; }
   .canvas { overflow: visible !important; padding: 0 !important; background: #fff !important; }
   body, .app, .canvas { background: #fff !important; }
   .summary-page { color: #111; gap: 12px; }
-  .summary-kpi, .summary-highlight, .summary-banner, .summary-table th, .summary-table td { border-color: #ddd !important; }
-  .summary-kpi, .summary-highlight { background: #fafafa !important; }
-  .summary-kpi-value, .summary-highlight-big, .page-title { color: #111 !important; }
+  .summary-kpi, .summary-highlight, .summary-banner, .summary-table th, .summary-table td,
+  .summary-pipeline, .summary-list-card, .summary-list-row, .summary-pipe-total { border-color: #ddd !important; }
+  .summary-kpi, .summary-highlight, .summary-pipeline, .summary-list-card { background: #fafafa !important; }
+  .summary-kpi-value, .summary-highlight-big, .summary-pipe-total, .page-title { color: #111 !important; }
   @page { margin: 1.2cm; }
 }
 /* Neutralize the ad-hoc margins these children carried for the old block
