@@ -11,10 +11,9 @@ beforeEach(() => {
     let body: unknown = [];
     if (url.includes('/api/kpis')) {
       body = [
-        { key: 'ratings_completed', label: 'Ratings completed', value: '12', sub: 'last 12 months', delta: 0, positive: true, spark: [1, 2, 3], color: '#6E56F8' },
-        { key: 'active_clients', label: 'Active clients', value: '27', sub: 'last 12 months', delta: 0, positive: true, spark: [1, 2, 3], color: '#3DD68C' },
-        { key: 'flight_hours', label: 'Flight hours', value: '1,697', sub: 'last 12 months', delta: 0, positive: true, spark: [1, 2, 3], color: '#22D3EE' },
-        { key: 'total_billed', label: 'Total billed', value: '$501k', sub: 'last 12 months', delta: 0, positive: true, spark: [1, 2, 3], color: '#F59E0B' },
+        { key: 'ratings_completed', label: 'Ratings completed', value: '12', sub: 'last 12 months', delta: 0.1, positive: true, comparable: true, spark: [1, 2, 3], color: '#6E56F8' },
+        { key: 'active_clients', label: 'Active clients', value: '27', sub: 'last 12 months', delta: 0, positive: true, comparable: true, spark: [1, 2, 3], color: '#3DD68C' },
+        { key: 'flight_hours', label: 'Flight hours', value: '1,697', sub: 'last 12 months', delta: 0, positive: true, comparable: true, spark: [1, 2, 3], color: '#22D3EE' },
       ];
     } else if (url.includes('/api/heatmap')) {
       body = { rows: Array.from({ length: 7 }, () => Array(12).fill(0)), buckets: Array(12).fill('x') };
@@ -47,6 +46,6 @@ test('renders KPI cards after data loads', async () => {
   // Wait on a KPI-only label — "Ratings completed" appears in both a KPI card and a chart card title.
   await waitFor(() => expect(screen.getByText('Active clients')).toBeTruthy());
   expect(screen.getByText('Flight hours')).toBeTruthy();
-  expect(screen.getByText('Total billed')).toBeTruthy();
+  expect(screen.queryByText('Total billed')).toBeNull();  // billing removed
   expect(screen.getByText('27')).toBeTruthy();  // active clients KPI value
 });

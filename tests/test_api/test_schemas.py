@@ -12,6 +12,7 @@ def test_kpi_roundtrip():
         sub="last 12 months",
         delta=0.12,
         positive=True,
+        comparable=True,
         spark=[1, 2, 3],
         color="#6E56F8",
     )

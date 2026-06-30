@@ -30,7 +30,8 @@ export function KpiGrid({ kpis, focusedKey, onFocus }: Props) {
             </div>
             <div className="kpi-value num num-tight">{k.value}</div>
             <div className="kpi-meta">
-              <Delta value={k.delta} positive={k.positive} />
+              {/* No prior period on the all-time range → no delta to show. */}
+              {k.comparable && <Delta value={k.delta} positive={k.positive} />}
             </div>
             <div className="kpi-sub">{k.sub}</div>
             <div className="kpi-spark" style={{ color: k.color }}>
