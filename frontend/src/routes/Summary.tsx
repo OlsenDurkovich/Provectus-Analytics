@@ -1,9 +1,9 @@
 // Exec one-pager: a single, print-friendly program summary for leadership.
 // Half "overview" (all-time cohort) + half "right now" (live operational state).
 // "Print" → browser Print → save as PDF.
-import { useKpis, useRatingBars, useInsights, useMeta } from '../data/queries';
+import { useTrends, useRatingBars, useInsights, useMeta } from '../data/queries';
 import { Skel } from '../components/primitives';
-import type { MetricKey, RatingCode, RatingBarPoint, PredictionRow } from '../data/types';
+import type { MetricKey, RatingCode, RatingBarPoint, PredictionRow, TrendSeries } from '../data/types';
 
 const RATING_ORDER: RatingCode[] = ['PPL', 'IFR', 'COM', 'AMEL', 'CFI', 'CFII', 'MEI'];
 const RATING_NAME: Record<RatingCode, string> = {
@@ -28,24 +28,27 @@ function fmtDate(iso: string | null): string {
   return Number.isNaN(d.getTime()) ? iso : d.toLocaleDateString('en', { month: 'short', year: 'numeric' });
 }
 
-// KPIs that get a 12-month / 6-month breakdown under the all-time figure.
-const BREAKDOWN_KEYS = new Set(['ratings_completed', 'flight_hours']);
 const INSTR_HOURS_THRESHOLD = 0.10;   // instructor avg this far over peers → develop
 
+function fmtTrend(v: number, unit: TrendSeries['unit']): string {
+  return unit === 'hours' ? Math.round(v).toLocaleString() : String(Math.round(v));
+}
+// Trend delta: for these metrics more is better, so positive change is good (green).
+function TrendDelta({ pct }: { pct: number }) {
+  const color = pct > 0.005 ? 'var(--positive)' : pct < -0.005 ? 'var(--negative)' : 'var(--fg-dim)';
+  const arrow = pct > 0.005 ? '▲' : pct < -0.005 ? '▼' : '·';
+  return <span style={{ color, fontVariantNumeric: 'tabular-nums' }}>{arrow} {pct > 0 ? '+' : ''}{Math.round(pct * 100)}%</span>;
+}
+
 export default function Summary() {
-  const kpis = useKpis('all');
-  const kpis12 = useKpis('12mo');
-  const kpis6 = useKpis('6mo');
+  const trends = useTrends();
   const hours = useRatingBars('hours' as MetricKey, 'all');
   const cost = useRatingBars('cost' as MetricKey, 'all');
   const days = useRatingBars('days' as MetricKey, 'all');
   const insights = useInsights(0.25);
   const meta = useMeta();
 
-  const loading = kpis.isLoading || hours.isLoading || cost.isLoading || days.isLoading || insights.isLoading;
-  const kByKey = (rows: typeof kpis.data) => Object.fromEntries((rows ?? []).map((k) => [k.key, k.value]));
-  const k12 = kByKey(kpis12.data);
-  const k6 = kByKey(kpis6.data);
+  const loading = trends.isLoading || hours.isLoading || cost.isLoading || days.isLoading || insights.isLoading;
   const hMap = byCode(hours.data);
   const cMap = byCode(cost.data);
   const dMap = byCode(days.data);
@@ -119,19 +122,31 @@ export default function Summary() {
         <Skel h={500} />
       ) : (
         <>
-          <div className="summary-kpis">
-            {(kpis.data ?? []).filter((k) => k.key !== 'total_billed').map((k) => (
-              <div className="summary-kpi" key={k.key}>
-                <div className="summary-kpi-value">{k.value}</div>
-                <div className="summary-kpi-label">{k.label}</div>
-                {BREAKDOWN_KEYS.has(k.key) && (
-                  <div className="summary-kpi-breakdown">
-                    12&nbsp;mo <strong>{k12[k.key] ?? '—'}</strong> · 6&nbsp;mo <strong>{k6[k.key] ?? '—'}</strong>
-                  </div>
-                )}
-              </div>
-            ))}
+          {/* ── MOMENTUM (totals + period-over-period) ──────────────────── */}
+          <div className="summary-section-title">
+            Momentum <span className="muted tiny">· total &amp; period-over-period</span>
+            <span className="summary-active-pill">{trends.data?.activeNow ?? 0} active now <span className="muted tiny">(90d)</span></span>
           </div>
+          {(trends.data?.series ?? []).map((s) => (
+            <div key={s.metric}>
+              <div className="summary-trend-label">{s.label}</div>
+              <div className="summary-trend-row">
+                <div className="summary-kpi">
+                  <div className="summary-kpi-value">{fmtTrend(s.allTime, s.unit)}</div>
+                  <div className="summary-kpi-label">All time</div>
+                </div>
+                {s.windows.map((w) => (
+                  <div className="summary-kpi" key={w.label}>
+                    <div className="summary-kpi-value">{fmtTrend(w.value, s.unit)}</div>
+                    <div className="summary-kpi-label">Last {w.label}</div>
+                    <div className="summary-kpi-breakdown">
+                      <TrendDelta pct={w.pct} /> <span className="muted tiny">vs prior {w.label}</span>
+                    </div>
+                  </div>
+                ))}
+              </div>
+            </div>
+          ))}
 
           {/* ── RIGHT NOW (current operational state) ───────────────────── */}
           <div className="summary-section-title">Right now <span className="muted tiny">· current students</span></div>

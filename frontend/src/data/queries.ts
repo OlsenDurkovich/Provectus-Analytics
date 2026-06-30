@@ -24,6 +24,7 @@ export const queryKeys = {
   instructors: ['instructors'] as const,
   instructor: (id: string) => ['instructor', id] as const,
   insights: (threshold: number) => ['insights', threshold] as const,
+  trends: ['trends'] as const,
   flights: (filter: object) => ['flights', filter] as const,
 };
 
@@ -88,6 +89,9 @@ export const useInsights = (threshold: number) =>
     queryKey: queryKeys.insights(threshold),
     queryFn: () => client.getInsights(threshold),
   });
+
+export const useTrends = () =>
+  useQuery({ queryKey: queryKeys.trends, queryFn: () => client.getTrends() });
 
 export const useStudent = (id: string | undefined) =>
   useQuery({

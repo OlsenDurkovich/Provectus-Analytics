@@ -22,6 +22,7 @@ import type {
   MyStudentsView,
   PublicTransparency,
   Insights,
+  Trends,
 } from './types';
 
 export class ApiError extends Error {
@@ -104,6 +105,7 @@ export const client = {
   getMyStudents: () => get<MyStudentsView>('/api/me/students'),
   getInsights: (threshold?: number) =>
     get<Insights>('/api/insights', threshold != null ? { threshold: String(threshold) } : undefined),
+  getTrends: () => get<Trends>('/api/trends'),
   getInstructors: () => get<InstructorSummary[]>('/api/instructors'),
   getInstructor: (id: string) => get<InstructorDetail>(`/api/instructors/${id}`),
   getFlights: (filter: {

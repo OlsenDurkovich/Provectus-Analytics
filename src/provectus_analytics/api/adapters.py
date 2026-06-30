@@ -181,6 +181,48 @@ def kpis(range_key: schemas.RangeKey, today: date | None = None) -> list[schemas
     ]
 
 
+_TREND_WINDOWS = [("12 mo", 365), ("6 mo", 180), ("3 mo", 90)]
+
+
+def trends(today: date | None = None) -> schemas.Trends:
+    """Period-over-period momentum for the headline metrics: each window's value
+    vs the equal-length window immediately before it (12 mo = year-over-year,
+    6 mo = 6-over-6, 3 mo = 3-over-3), plus the all-time total."""
+    today = today or date.today()
+    conn = sqlite3.connect(web_data.DEFAULT_DB)
+    try:
+        all_t = _kpi_window(conn, None, None)                       # (ratings, active, hours, billed)
+        active_now = _kpi_window(conn, today - timedelta(days=90), None)[1]
+        win: dict[str, tuple] = {}
+        for label, days in _TREND_WINDOWS:
+            lo = today - timedelta(days=days)
+            cur = _kpi_window(conn, lo, None)
+            prior = _kpi_window(conn, lo - timedelta(days=days), lo)
+            win[label] = (days, cur, prior)
+    finally:
+        conn.close()
+
+    def series(metric: str, label: str, idx: int, unit: str) -> schemas.TrendSeries:
+        windows = [
+            schemas.TrendWindow(
+                label=lbl, days=win[lbl][0],
+                value=float(win[lbl][1][idx]), prior=float(win[lbl][2][idx]),
+                pct=round(_pct_delta(win[lbl][1][idx], win[lbl][2][idx]), 4),
+            )
+            for lbl, _ in _TREND_WINDOWS
+        ]
+        return schemas.TrendSeries(metric=metric, label=label, unit=unit,
+                                   allTime=float(all_t[idx]), windows=windows)
+
+    return schemas.Trends(
+        activeNow=int(active_now),
+        series=[
+            series("ratings_completed", "Ratings completed", 0, "count"),
+            series("flight_hours", "Flight hours", 2, "hours"),
+        ],
+    )
+
+
 _RATING_DISPLAY = {
     "PPL": "Private Pilot",
     "IFR": "Instrument",

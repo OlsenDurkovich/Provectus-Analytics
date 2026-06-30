@@ -102,6 +102,22 @@ def test_predictions_cover_in_progress_states(tmp_path, monkeypatch):
     )
 
 
+def test_trends_period_over_period(tmp_path, monkeypatch):
+    c = _fresh(tmp_path, monkeypatch)
+    t = c.get("/api/trends").json()
+    assert "activeNow" in t and isinstance(t["activeNow"], int)
+    metrics = {s["metric"]: s for s in t["series"]}
+    assert {"ratings_completed", "flight_hours"} <= metrics.keys()
+    for s in t["series"]:
+        assert s["allTime"] >= 0
+        labels = [w["label"] for w in s["windows"]]
+        assert labels == ["12 mo", "6 mo", "3 mo"]
+        for w in s["windows"]:
+            # pct is the change of this window vs the prior equal-length window
+            if w["prior"]:
+                assert abs(w["pct"] - (w["value"] - w["prior"]) / w["prior"]) < 1e-3
+
+
 def test_cadence_buckets_monotonic(tmp_path, monkeypatch):
     c = _fresh(tmp_path, monkeypatch)
     cad = c.get("/api/insights").json()["cadence"]

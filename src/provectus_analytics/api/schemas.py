@@ -182,6 +182,28 @@ class Meta(BaseModel):
     dataState: DataState
 
 
+# ── Trends (period-over-period) ───────────────────────────────────────────────
+class TrendWindow(BaseModel):
+    label: str            # "12 mo" / "6 mo" / "3 mo"
+    days: int
+    value: float          # this window
+    prior: float          # the equal-length window immediately before it
+    pct: float            # change vs prior (0.12 == +12%)
+
+
+class TrendSeries(BaseModel):
+    metric: str           # "ratings_completed" | "flight_hours"
+    label: str
+    unit: Literal["count", "hours"]
+    allTime: float
+    windows: list[TrendWindow]   # each is current-vs-prior (YoY, 6-over-6, 3-over-3)
+
+
+class Trends(BaseModel):
+    activeNow: int        # distinct students who flew in the last 90 days
+    series: list[TrendSeries]
+
+
 # ── Insights tab ──────────────────────────────────────────────────────────────
 class AtRiskRow(BaseModel):
     """A student running materially over the cohort median for a rating."""
