@@ -8,6 +8,7 @@ import Overview from './routes/Overview';
 import RatingDetail from './routes/RatingDetail';
 import Student from './routes/Student';
 import Instructor from './routes/Instructor';
+import Insights from './routes/Insights';
 import Flights from './routes/Flights';
 import Users from './routes/Users';
 import MyTraining from './routes/MyTraining';
@@ -105,6 +106,7 @@ function Shell({ user, isAdmin, isStudent, isInstructor, canSee, logout, theme, 
     ['ratings', '/ratings'],
     ['students', '/students'],
     ['instructors', '/instructors'],
+    ['insights', '/insights'],
   ];
   // Scoped roles have no dashboard pages — their home is their own /me view.
   const firstAllowedPath = isStudent
@@ -194,6 +196,10 @@ function Shell({ user, isAdmin, isStudent, isInstructor, canSee, logout, theme, 
               <Route
                 path="/instructors/:id?"
                 element={canSee('instructors') ? <Instructor /> : <Navigate to={firstAllowedPath ?? '/'} replace />}
+              />
+              <Route
+                path="/insights"
+                element={canSee('insights') ? <Insights /> : <Navigate to={firstAllowedPath ?? '/'} replace />}
               />
               <Route
                 path="/flights"

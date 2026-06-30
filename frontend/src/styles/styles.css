@@ -387,7 +387,8 @@ input { font-family: inherit; color: inherit; }
    block-layout pages like Flights/Users keep their own spacing. */
 .overview,
 .student-detail,
-.instructor-detail {
+.instructor-detail,
+.insights-tab {
   display: flex;
   flex-direction: column;
   gap: 16px;
@@ -396,7 +397,8 @@ input { font-family: inherit; color: inherit; }
    layout, so the flex gap is the single source of spacing. */
 .overview > .page-head,
 .student-detail > .page-head,
-.instructor-detail > .page-head { margin-bottom: 0; }
+.instructor-detail > .page-head,
+.insights-tab > .page-head { margin-bottom: 0; }
 .student-detail .section-head,
 .instructor-detail .section-head { margin: 0; }
 .student-detail .rating-block,

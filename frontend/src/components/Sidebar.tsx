@@ -13,7 +13,7 @@ function initialsFromEmail(email: string): string {
 }
 
 type NavItem = {
-  key: 'overview' | 'rating' | 'student' | 'instructor' | 'flights' | 'users' | 'mytraining' | 'mystudents';
+  key: 'overview' | 'rating' | 'student' | 'instructor' | 'insights' | 'flights' | 'users' | 'mytraining' | 'mystudents';
   label: string;
   icon: IconName;
   kbd: string;
@@ -22,7 +22,7 @@ type NavItem = {
   studentOnly?: boolean;
   instructorOnly?: boolean;
   // For dashboard pages: the page-access key that controls visibility.
-  page?: 'overview' | 'ratings' | 'students' | 'instructors';
+  page?: 'overview' | 'ratings' | 'students' | 'instructors' | 'insights';
 };
 
 export const NAV: NavItem[] = [
@@ -30,6 +30,7 @@ export const NAV: NavItem[] = [
   { key: 'rating', label: 'Rating detail', icon: 'metrics', kbd: 'R', path: '/ratings', page: 'ratings' },
   { key: 'student', label: 'Student', icon: 'users', kbd: 'S', path: '/students', page: 'students' },
   { key: 'instructor', label: 'Instructor', icon: 'star', kbd: 'I', path: '/instructors', page: 'instructors' },
+  { key: 'insights', label: 'Insights', icon: 'metrics', kbd: 'N', path: '/insights', page: 'insights' },
   { key: 'flights', label: 'Flights', icon: 'plane', kbd: 'F', path: '/flights', adminOnly: true },
   { key: 'users', label: 'Users', icon: 'users', kbd: 'U', path: '/users', adminOnly: true },
   { key: 'mytraining', label: 'My training', icon: 'overview', kbd: 'T', path: '/my-training', studentOnly: true },

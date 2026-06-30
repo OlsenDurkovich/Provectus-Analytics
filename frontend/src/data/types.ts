@@ -212,13 +212,68 @@ export interface MyStudentsView {
 }
 
 // Toggleable dashboard pages (mirror of auth/users.py ALL_PAGES).
-export type PageKey = 'overview' | 'ratings' | 'students' | 'instructors';
+export type PageKey = 'overview' | 'ratings' | 'students' | 'instructors' | 'insights';
 export const ALL_PAGES: { key: PageKey; label: string }[] = [
   { key: 'overview', label: 'Overview' },
   { key: 'ratings', label: 'Rating detail' },
   { key: 'students', label: 'Student' },
   { key: 'instructors', label: 'Instructor' },
+  { key: 'insights', label: 'Insights' },
 ];
+
+// ── Insights tab ──────────────────────────────────────────────────────────────
+export interface AtRiskRow {
+  studentId: string;
+  name: string;
+  rating: RatingCode;
+  hours: number;
+  medianHours: number;
+  pctOverHours: number;
+  cost: number;
+  medianCost: number;
+  pctOverCost: number;
+  days: number;
+  worstPct: number;
+  status: FlightStatus;
+}
+
+export interface InstructorRatingStat {
+  instructor: string;
+  rating: RatingCode;
+  n: number;
+  avgHours: number;
+  avgCost: number;
+  avgDays: number;
+  vsMedianHoursPct: number;
+  vsMedianCostPct: number;
+  lowSample: boolean;
+  rank: number;
+}
+
+export interface RatingStrength {
+  rating: RatingCode;
+  medianHours: number;
+  medianCost: number;
+  instructors: InstructorRatingStat[];
+}
+
+export interface InstructorEfficiency {
+  instructor: string;
+  students: number;
+  ratings: number;
+  avgHoursVsMedianPct: number;
+  avgCostVsMedianPct: number;
+  score: number;
+  rank: number;
+  lowSample: boolean;
+}
+
+export interface Insights {
+  atRiskThresholdPct: number;
+  atRisk: AtRiskRow[];
+  strengths: RatingStrength[];
+  efficiency: InstructorEfficiency[];
+}
 
 export interface UserRow {
   user_id: number;

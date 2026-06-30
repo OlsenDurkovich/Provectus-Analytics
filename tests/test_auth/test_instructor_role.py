@@ -183,4 +183,4 @@ def test_switching_instructor_back_to_viewer_clears_link(client, instructor_name
     assert r.status_code == 200
     assert r.json()["role"] == "viewer"
     assert r.json()["instructor_name"] is None
-    assert sorted(r.json()["pages"]) == sorted(["overview", "ratings", "students", "instructors"])
+    assert sorted(r.json()["pages"]) == sorted(["overview", "ratings", "students", "instructors", "insights"])

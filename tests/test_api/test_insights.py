@@ -1,0 +1,70 @@
+from fastapi.testclient import TestClient
+
+from provectus_analytics.api import create_app
+from provectus_analytics.api import queries as web_data
+from provectus_analytics.api import adapters
+
+
+def _fresh(tmp_path, monkeypatch):
+    db = tmp_path / "test.db"
+    monkeypatch.setattr(web_data, "DEFAULT_DB", db)
+    monkeypatch.setattr(web_data, "FSP_EXPORTS_DIR", tmp_path / "no_exports")
+    web_data.build_db(db, force_synthetic=True)
+    web_data.clear_caches()
+    return TestClient(create_app())
+
+
+def test_insights_shape(tmp_path, monkeypatch):
+    c = _fresh(tmp_path, monkeypatch)
+    r = c.get("/api/insights")
+    assert r.status_code == 200, r.text
+    body = r.json()
+    assert {"atRiskThresholdPct", "atRisk", "strengths", "efficiency"} <= body.keys()
+    assert body["atRiskThresholdPct"] == 0.25
+    assert isinstance(body["atRisk"], list)
+    assert body["strengths"], "synthetic data should yield instructor-rating stats"
+    assert body["efficiency"], "synthetic data should yield an efficiency ranking"
+
+
+def test_at_risk_respects_threshold(tmp_path, monkeypatch):
+    c = _fresh(tmp_path, monkeypatch)
+    low = c.get("/api/insights?threshold=0.10").json()["atRisk"]
+    high = c.get("/api/insights?threshold=0.80").json()["atRisk"]
+    # A stricter (higher) threshold can only flag fewer students.
+    assert len(high) <= len(low)
+    # Every flagged row is genuinely over the threshold it was queried with.
+    for row in low:
+        assert row["worstPct"] >= 0.10
+        assert row["worstPct"] == max(row["pctOverHours"], row["pctOverCost"])
+
+
+def test_efficiency_ranked_best_first(tmp_path, monkeypatch):
+    c = _fresh(tmp_path, monkeypatch)
+    eff = c.get("/api/insights").json()["efficiency"]
+    scores = [e["score"] for e in eff]
+    assert scores == sorted(scores), "efficiency must be sorted by score ascending"
+    assert eff[0]["rank"] == 1
+    assert [e["rank"] for e in eff] == list(range(1, len(eff) + 1))
+
+
+def test_strengths_ranked_lowest_hours_first(tmp_path, monkeypatch):
+    c = _fresh(tmp_path, monkeypatch)
+    strengths = c.get("/api/insights").json()["strengths"]
+    for rating in strengths:
+        insts = rating["instructors"]
+        hours = [i["avgHours"] for i in insts]
+        assert hours == sorted(hours), f"{rating['rating']} not best-first"
+        assert insts[0]["rank"] == 1
+        # n below the 'good' sample size is flagged
+        for i in insts:
+            assert i["lowSample"] == (i["n"] < 3)
+
+
+def test_adapter_at_risk_threshold_unit(tmp_path, monkeypatch):
+    # Direct adapter call (no HTTP) — at a 200% threshold nobody is flagged.
+    db = tmp_path / "test.db"
+    monkeypatch.setattr(web_data, "DEFAULT_DB", db)
+    monkeypatch.setattr(web_data, "FSP_EXPORTS_DIR", tmp_path / "no_exports")
+    web_data.build_db(db, force_synthetic=True)
+    web_data.clear_caches()
+    assert adapters.insights(2.0).atRisk == []
