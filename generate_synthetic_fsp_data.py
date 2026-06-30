@@ -79,6 +79,9 @@ NOISE_CLIENTS = [
     ("Henry Walsh",        "C1021", "henry.walsh@gmail.com",        2025, "current student (mid PPL)"),
     ("Grace Liu",          "C1022", "grace.liu@gmail.com",          2025, "current student (early PPL)"),
     ("Daniel Park",        "C1023", "daniel.park@gmail.com",        2024, "current student (IFR phase)"),
+    ("Priya Nair",         "C1028", "priya.nair@gmail.com",         2025, "current student (PPL, near checkride)"),
+    ("Marcus Bell",        "C1029", "marcus.bell@gmail.com",        2026, "current student (PPL, just started)"),
+    ("Diana Cho",          "C1030", "diana.cho@gmail.com",          2025, "current student (PPL, steady)"),
     ("Michael Sanders",    "C1024", "msanders@yahoo.com",           2024, "discovery flight only"),
     ("Karen Yoshida",      "C1025", "kyoshida@gmail.com",           2025, "discovery flight only"),
     ("Robert Klein",       "C1026", "rklein.flies@gmail.com",       2019, "aircraft owner"),
@@ -379,11 +382,16 @@ def gen_noise(res_counter, flight_counter):
         res_counter[0] += 1
         flight_counter[0] += 1
 
-    # Current students (in FSP, not in survey — should NOT appear in alumni norms)
+    # Current students (in FSP, not in survey — should NOT appear in alumni norms).
+    # A spread of in-progress profiles for the completion-forecast: near-done,
+    # steady-mid, slow, brand-new, over-hours, stalled.
     current = [
         ("Henry Walsh", date(2025, 5, 1), date(2026, 5, 15), 35),
         ("Grace Liu", date(2025, 9, 1), date(2026, 5, 15), 22),
         ("Daniel Park", date(2024, 11, 1), date(2026, 5, 15), 45),
+        ("Priya Nair", date(2025, 10, 1), date(2026, 6, 18), 30),   # ~50h, on track, near done
+        ("Marcus Bell", date(2026, 3, 15), date(2026, 6, 18), 14),  # ~22h, just started
+        ("Diana Cho", date(2025, 6, 1), date(2026, 6, 15), 26),     # ~42h, steady mid
     ]
     for name, s, e, n in current:
         primary = get_primary_instructor(name)
@@ -416,18 +424,31 @@ def gen_noise(res_counter, flight_counter):
 # completers. CLEARLY SYNTHETIC — illustrative of a real, studied effect, not
 # measured from real alumni. (name, cadence flights/wk, email, client_id)
 CADENCE_COMPLETERS = [
-    ("Olivia Brennan",  0.9, "olivia.brennan@gmail.com",  "C1401", "2024"),
-    ("Liam Foster",     1.1, "liam.foster@gmail.com",     "C1402", "2024"),
-    ("Sophia Reyes",    1.3, "sophia.reyes@gmail.com",    "C1403", "2024"),
-    ("Noah Whitfield",  1.5, "noah.whitfield@gmail.com",  "C1404", "2024"),
-    ("Emma Caldwell",   1.7, "emma.caldwell@gmail.com",   "C1405", "2024"),
-    ("Mason Trent",     1.9, "mason.trent@gmail.com",     "C1406", "2024"),
-    ("Ava Donovan",     2.2, "ava.donovan@gmail.com",     "C1407", "2025"),
-    ("Lucas Hartman",   2.5, "lucas.hartman@gmail.com",   "C1408", "2025"),
-    ("Mia Sutton",      2.8, "mia.sutton@gmail.com",      "C1409", "2025"),
-    ("Ethan Bauer",     3.0, "ethan.bauer@gmail.com",     "C1410", "2025"),
-    ("Chloe Marsh",     3.3, "chloe.marsh@gmail.com",     "C1411", "2025"),
-    ("Jack Holloway",   3.5, "jack.holloway@gmail.com",   "C1412", "2025"),
+    ("Olivia Brennan",  1.2, "olivia.brennan@gmail.com",  "C1401", "2024"),
+    ("Liam Foster",     1.7, "liam.foster@gmail.com",     "C1402", "2024"),
+    ("Sophia Reyes",    2.2, "sophia.reyes@gmail.com",    "C1403", "2024"),
+    ("Noah Whitfield",  2.6, "noah.whitfield@gmail.com",  "C1404", "2024"),
+    ("Emma Caldwell",   3.0, "emma.caldwell@gmail.com",   "C1405", "2024"),
+    ("Mason Trent",     3.3, "mason.trent@gmail.com",     "C1406", "2024"),
+    ("Ava Donovan",     3.6, "ava.donovan@gmail.com",     "C1407", "2025"),
+    ("Lucas Hartman",   3.9, "lucas.hartman@gmail.com",   "C1408", "2025"),
+    ("Mia Sutton",      4.2, "mia.sutton@gmail.com",      "C1409", "2025"),
+    ("Ethan Bauer",     4.5, "ethan.bauer@gmail.com",     "C1410", "2025"),
+    ("Chloe Marsh",     4.8, "chloe.marsh@gmail.com",     "C1411", "2025"),
+    ("Jack Holloway",   5.2, "jack.holloway@gmail.com",   "C1412", "2025"),
+    ("Ruby Vance",      5.6, "ruby.vance@gmail.com",      "C1413", "2025"),
+    ("Owen Pratt",      6.0, "owen.pratt@gmail.com",      "C1414", "2025"),
+    ("Isla Romero",     6.5, "isla.romero@gmail.com",     "C1415", "2025"),
+    # a few more in the lower brackets so "≤2.5×" isn't only legacy alumni
+    ("Caleb Ford",      1.4, "caleb.ford@gmail.com",      "C1416", "2024"),
+    ("Nora Quinn",      2.0, "nora.quinn@gmail.com",      "C1417", "2024"),
+    ("Theo Walsh",      2.4, "theo.walsh@gmail.com",      "C1418", "2024"),
+    # extra density for the mid brackets (2.5–4×)
+    ("Gabriel Stone",   3.4, "gabriel.stone@gmail.com",   "C1419", "2024"),
+    ("Hazel Webb",      3.7, "hazel.webb@gmail.com",      "C1420", "2024"),
+    ("Adrian Cole",     4.0, "adrian.cole@gmail.com",     "C1421", "2025"),
+    ("Lila Hayes",      4.3, "lila.hayes@gmail.com",      "C1422", "2025"),
+    ("Felix Moreno",    4.6, "felix.moreno@gmail.com",    "C1423", "2025"),
 ]
 
 
@@ -438,7 +459,7 @@ def gen_cadence_completers(res_counter, flight_counter):
         # retention effect: denser schedule → fewer hours. Intercept tuned so the
         # cadence cohort's hours sit around/just below the existing PPL alumni and
         # decline monotonically across the low/med/high cadence buckets.
-        target_hours = max(50.0, min(80.0, 68.0 - 6.0 * (cadence - 0.9) + random.uniform(-1.5, 1.5)))
+        target_hours = max(46.0, min(80.0, 66.0 - 2.8 * (cadence - 0.9) + random.uniform(-1.5, 1.5)))
         n_flights = max(18, round(target_hours / 1.8))
         per_flight = target_hours / n_flights
         interval_days = 7.0 / cadence

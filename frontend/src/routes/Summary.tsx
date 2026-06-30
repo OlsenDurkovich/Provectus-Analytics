@@ -116,7 +116,7 @@ export default function Summary() {
               <div className="summary-highlight">
                 <div className="summary-highlight-big">{Math.round(fast.avgDays)} vs {Math.round(slow.avgDays)} days</div>
                 <div className="summary-highlight-cap">
-                  PPL students flying {fast.label.replace('×+/week', '×+/wk')} finish far sooner than {slow.label.replace('×/week', '×/wk')} — and ~${Math.round((slow.avgCost - fast.avgCost)).toLocaleString()} cheaper.
+                  Students flying {fast.avgCadence.toFixed(0)}×/week reach checkride far sooner than those at ~{slow.avgCadence.toFixed(1)}×/week — and ~{Math.abs(Math.round(fast.costVsMedianPct * 100))}% under their rating's typical cost.
                 </div>
               </div>
             )}

@@ -287,13 +287,13 @@ export interface CadenceBucket {
   label: string;
   n: number;
   avgCadence: number;
-  avgHours: number;
-  avgCost: number;
   avgDays: number;
+  costVsMedianPct: number;
+  hoursVsMedianPct: number;
 }
 
 export interface CadenceInsight {
-  rating: RatingCode;
+  scope: string;
   n: number;
   buckets: CadenceBucket[];
 }

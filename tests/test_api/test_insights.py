@@ -99,15 +99,17 @@ def test_predictions_cover_in_progress_states(tmp_path, monkeypatch):
 def test_cadence_buckets_monotonic(tmp_path, monkeypatch):
     c = _fresh(tmp_path, monkeypatch)
     cad = c.get("/api/insights").json()["cadence"]
-    assert cad and cad["rating"] == "PPL"
+    assert cad and cad["scope"] == "all ratings"
     buckets = cad["buckets"]
-    assert len(buckets) >= 2
-    # higher cadence (later bucket) → fewer calendar days and not-more cost
+    # all four cadence brackets should be populated by the synthetic cohort
+    assert len(buckets) == 4
     cadences = [b["avgCadence"] for b in buckets]
     days = [b["avgDays"] for b in buckets]
     assert cadences == sorted(cadences)
     assert days == sorted(days, reverse=True), "more frequent training should finish sooner"
-    assert buckets[-1]["avgCost"] <= buckets[0]["avgCost"]
+    # cost (vs each student's rating median) trends down with cadence
+    assert buckets[-1]["costVsMedianPct"] <= buckets[0]["costVsMedianPct"]
+    assert {"costVsMedianPct", "hoursVsMedianPct"} <= buckets[0].keys()
 
 
 def test_adapter_at_risk_threshold_unit(tmp_path, monkeypatch):

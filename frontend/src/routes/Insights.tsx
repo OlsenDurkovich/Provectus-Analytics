@@ -233,10 +233,11 @@ function Cadence({ data }: { data: CadenceInsight }) {
     <div className="card table-card">
       <div className="card-head">
         <div>
-          <div className="card-title">Training cadence vs outcomes · {RATING_META[data.rating].name}</div>
+          <div className="card-title">Training cadence vs outcomes · all students</div>
           <div className="card-sub">
-            Completed {data.rating} students grouped by how often they flew. Flying more frequently
-            finishes far sooner — and modestly cuts hours and cost. (n={data.n})
+            Every completed student ({data.n}) grouped by how often they flew. Flying more frequently
+            finishes far sooner. Cost &amp; hours are shown vs each student's <em>own rating median</em>,
+            so ratings are comparable (a CFI and a PPL aren't mixed by raw dollars).
           </div>
         </div>
       </div>
@@ -244,12 +245,13 @@ function Cadence({ data }: { data: CadenceInsight }) {
         <table className="dt">
           <thead>
             <tr>
-              <th>Cadence</th>
+              <th>Training frequency</th>
               <th className="num">Students</th>
-              <th className="num">Avg hours</th>
-              <th className="num">Avg cost</th>
+              <th className="num">Avg flights/wk</th>
               <th className="num">Days to checkride</th>
-              <th style={{ width: '28%' }}>Time</th>
+              <th style={{ width: '22%' }}>Time</th>
+              <th className="num">Cost vs typical</th>
+              <th className="num">Hours vs typical</th>
             </tr>
           </thead>
           <tbody>
@@ -257,14 +259,15 @@ function Cadence({ data }: { data: CadenceInsight }) {
               <tr key={b.label}>
                 <td>{b.label}</td>
                 <td className="num">{b.n}</td>
-                <td className="num">{b.avgHours.toFixed(1)}</td>
-                <td className="num">${Math.round(b.avgCost).toLocaleString()}</td>
+                <td className="num">{b.avgCadence.toFixed(1)}</td>
                 <td className="num">{Math.round(b.avgDays)}</td>
                 <td>
                   <div className="progress-bar">
                     <div className="progress-fill" style={{ width: `${(b.avgDays / maxDays) * 100}%`, background: 'var(--accent)' }} />
                   </div>
                 </td>
+                <td className="num"><VsRest value={b.costVsMedianPct} /></td>
+                <td className="num"><VsRest value={b.hoursVsMedianPct} /></td>
               </tr>
             ))}
           </tbody>
