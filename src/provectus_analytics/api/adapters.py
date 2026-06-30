@@ -140,22 +140,26 @@ def kpis(range_key: schemas.RangeKey, today: date | None = None) -> list[schemas
 
     conn = sqlite3.connect(web_data.DEFAULT_DB)
     try:
-        cur_ratings, cur_active, cur_hours, cur_billed = _kpi_window(conn, cutoff, None)
+        cur_ratings, _cur_active, cur_hours, cur_billed = _kpi_window(conn, cutoff, None)
         in_training = _in_training(conn)   # 'now' snapshot, range-independent
 
-        # Prior window: equal-length stretch immediately before the current cutoff.
-        # For "all" there's no prior — leave deltas at 0.
+        # Active clients is always "flew in the last 90 days" (recently active),
+        # independent of the selected range, with a 3-month-over-3-month delta.
+        act_lo = today - timedelta(days=90)
+        active_3mo = _kpi_window(conn, act_lo, None)[1]
+        active_3mo_prior = _kpi_window(conn, act_lo - timedelta(days=90), act_lo)[1]
+        d_active = _pct_delta(active_3mo, active_3mo_prior)
+
+        # Prior window for the range-driven metrics. For "all" there's no prior.
         if cutoff is None:
-            prior_ratings = prior_active = 0
+            prior_ratings = 0
             prior_hours = prior_billed = 0.0
             has_prior = False
         else:
             window_days = (today - cutoff).days
             prior_lo = cutoff - timedelta(days=window_days)
             prior_hi = cutoff
-            prior_ratings, prior_active, prior_hours, prior_billed = _kpi_window(
-                conn, prior_lo, prior_hi
-            )
+            prior_ratings, _pa, prior_hours, prior_billed = _kpi_window(conn, prior_lo, prior_hi)
             has_prior = True
     finally:
         conn.close()
@@ -163,10 +167,9 @@ def kpis(range_key: schemas.RangeKey, today: date | None = None) -> list[schemas
     sub = _RANGE_SUB[range_key]
     if has_prior:
         d_ratings = _pct_delta(cur_ratings, prior_ratings)
-        d_active = _pct_delta(cur_active, prior_active)
         d_hours = _pct_delta(cur_hours, prior_hours)
     else:
-        d_ratings = d_active = d_hours = 0.0
+        d_ratings = d_hours = 0.0
 
     # Billing intentionally omitted — the owner doesn't track revenue here.
     return [
@@ -177,8 +180,8 @@ def kpis(range_key: schemas.RangeKey, today: date | None = None) -> list[schemas
         ),
         schemas.Kpi(
             key="active_clients", label="Active clients",
-            value=str(cur_active), sub=sub, delta=d_active, positive=d_active >= 0,
-            comparable=has_prior, spark=[float(cur_active)] * 8, color="#3DD68C",
+            value=str(active_3mo), sub="last 3 months", delta=d_active, positive=d_active >= 0,
+            comparable=True, spark=[float(active_3mo)] * 8, color="#3DD68C",
         ),
         schemas.Kpi(
             key="flight_hours", label="Flight hours",
