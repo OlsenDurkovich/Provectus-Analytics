@@ -40,6 +40,9 @@ test('mini variant renders at smaller height', () => {
   const svg = container.querySelector('svg');
   expect(svg).toBeTruthy();
   expect(Number(svg!.getAttribute('height'))).toBeLessThan(80);
+  // Inline height must be set so the shared `.timechart svg { height: 280px }`
+  // stylesheet rule can't re-inflate the mini strip (caused huge blank gaps).
+  expect((svg as SVGElement).style.height).toBe('64px');
 });
 
 test('mini variant hides Y-axis label', () => {
