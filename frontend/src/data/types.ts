@@ -280,7 +280,7 @@ export interface PredictionRow {
   projectedDate: string | null;
   lastFlight: string;
   daysSinceLastFlight: number;
-  status: 'on_track' | 'over_median' | 'stalled';
+  status: 'on_track' | 'behind_pace' | 'over_median' | 'stalled';
 }
 
 export interface CadenceBucket {

@@ -948,6 +948,7 @@ def insights_instructor_efficiency(
 
 _PREDICT_PACE_WINDOW_DAYS = 84   # look at the trailing 12 weeks for current pace
 _PREDICT_STALLED_DAYS = 75       # no flight in this long → stalled, don't predict
+_PREDICT_BEHIND_WEEKS = 40       # active but projected > this far out → "behind pace"
 _PRIMARY_RATINGS = ("PPL", "IFR", "COM", "AMEL", "CFI", "CFII", "MEI")
 
 
@@ -1004,10 +1005,16 @@ def insights_predictions(conn, norm_by_rating) -> list[schemas.PredictionRow]:
         elif median and current >= median * 0.98:
             status = "over_median"
         else:
-            status = "on_track"
             if median and pace > 0:
                 weeks_remaining = round(max(0.0, (median - current)) / pace, 1)
                 projected = (today + _td(days=int(weeks_remaining * 7))).isoformat()
+            # Active and under median, but projected far out = flying too slowly
+            # to be genuinely "on track" — flag as behind pace (the call-them-now
+            # case before they drift into stalled).
+            if weeks_remaining is not None and weeks_remaining > _PREDICT_BEHIND_WEEKS:
+                status = "behind_pace"
+            else:
+                status = "on_track"
 
         out.append(schemas.PredictionRow(
             studentId=str(row["student_id"]), name=row["name"] or "Unknown",
@@ -1017,8 +1024,8 @@ def insights_predictions(conn, norm_by_rating) -> list[schemas.PredictionRow]:
             lastFlight=last_flight.isoformat(), daysSinceLastFlight=days_since,
             status=status,
         ))
-    # On-track first (soonest projected), then over-median, then stalled.
-    order = {"on_track": 0, "over_median": 1, "stalled": 2}
+    # On-track first (soonest projected), then behind-pace, over-median, stalled.
+    order = {"on_track": 0, "behind_pace": 1, "over_median": 2, "stalled": 3}
     out.sort(key=lambda p: (order[p.status], p.weeksRemaining if p.weeksRemaining is not None else 1e9))
     return out
 

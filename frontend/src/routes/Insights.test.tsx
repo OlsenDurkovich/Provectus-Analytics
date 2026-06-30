@@ -32,6 +32,7 @@ function payload(threshold: number) {
     ],
     predictions: [
       { studentId: '21', name: 'Henry Walsh', rating: 'PPL', currentHours: 59.5, medianHours: 64, pacePerWeek: 0.6, weeksRemaining: 7.3, projectedDate: '2026-08-20', lastFlight: '2026-05-11', daysSinceLastFlight: 50, status: 'on_track' },
+      { studentId: '22', name: 'Grace Liu', rating: 'PPL', currentHours: 34.8, medianHours: 64, pacePerWeek: 0.3, weeksRemaining: 97.9, projectedDate: '2028-05-15', lastFlight: '2026-04-23', daysSinceLastFlight: 68, status: 'behind_pace' },
       { studentId: '10', name: 'Tyler Brooks', rating: 'PPL', currentHours: 26, medianHours: 64, pacePerWeek: 0, weeksRemaining: null, projectedDate: null, lastFlight: '2024-01-26', daysSinceLastFlight: 886, status: 'stalled' },
     ],
     cadence: {
@@ -77,6 +78,7 @@ test('renders the three insight sections with data', async () => {
   expect(screen.getByText(/Completion forecast/)).toBeTruthy();
   expect(screen.getByText('Henry Walsh')).toBeTruthy();
   expect(screen.getByText(/On track/)).toBeTruthy();
+  expect(screen.getByText(/Behind pace/)).toBeTruthy();
   expect(screen.getByText(/Stalled/)).toBeTruthy();
   expect(screen.getByText(/Training cadence vs outcomes/)).toBeTruthy();
 });

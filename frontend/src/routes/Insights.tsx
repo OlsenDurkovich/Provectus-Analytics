@@ -162,6 +162,7 @@ function AtRisk({
 
 const PRED_STATUS: Record<PredictionRow['status'], { label: string; color: string }> = {
   on_track: { label: 'On track', color: 'var(--positive)' },
+  behind_pace: { label: 'Behind pace', color: 'var(--warn, #E0A030)' },
   over_median: { label: 'Over median', color: 'var(--negative)' },
   stalled: { label: 'Stalled', color: 'var(--fg-dim)' },
 };
