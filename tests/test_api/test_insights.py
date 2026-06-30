@@ -87,13 +87,19 @@ def test_predictions_cover_in_progress_states(tmp_path, monkeypatch):
     preds = {p["name"]: p for p in c.get("/api/insights").json()["predictions"]}
     assert preds, "synthetic data has in-progress students to predict"
     statuses = {p["status"] for p in preds.values()}
-    assert statuses <= {"on_track", "over_median", "stalled"}
+    assert statuses <= {"on_track", "behind_pace", "over_median", "stalled"}
     # Tyler hasn't flown in years → stalled, no projection.
     assert preds["Tyler Brooks"]["status"] == "stalled"
     assert preds["Tyler Brooks"]["projectedDate"] is None
-    # An on-track student gets a future projected date + weeks remaining.
+    # Grace is active + under median but flying far too slowly → behind pace, with
+    # a projection well past the threshold.
+    assert preds["Grace Liu"]["status"] == "behind_pace"
+    assert preds["Grace Liu"]["weeksRemaining"] > 40
+    # An on-track student gets a future projected date within the threshold.
     on_track = [p for p in preds.values() if p["status"] == "on_track"]
-    assert on_track and all(p["projectedDate"] and p["weeksRemaining"] is not None for p in on_track)
+    assert on_track and all(
+        p["projectedDate"] and 0 <= p["weeksRemaining"] <= 40 for p in on_track
+    )
 
 
 def test_cadence_buckets_monotonic(tmp_path, monkeypatch):

@@ -249,7 +249,7 @@ class PredictionRow(BaseModel):
     projectedDate: str | None     # ISO date of projected checkride-readiness
     lastFlight: str
     daysSinceLastFlight: int
-    status: Literal["on_track", "over_median", "stalled"]
+    status: Literal["on_track", "behind_pace", "over_median", "stalled"]
 
 
 class CadenceBucket(BaseModel):
